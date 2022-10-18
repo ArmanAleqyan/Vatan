@@ -1,0 +1,198 @@
+@media screen and (max-width: 1330px) {
+
+}
+
+@media screen and (max-width: 1292px){
+
+}
+
+@media screen and (max-width: 1199px) {
+
+}
+
+@media screen and (max-width: 1130px) {
+
+}
+
+@media screen and (max-width: 1080px) {
+
+}
+
+@media screen and (max-width: 1024px) {
+
+}
+
+@media screen and (max-width: 991px) {
+    .welcome_vatan_logo {
+        margin: 0 50px;
+    }
+}
+
+@media screen and (max-width: 975px) {
+
+}
+
+@media screen and (max-width: 900px) {
+
+}
+
+@media screen and (max-width: 770px) {
+    .welcome_vatan_logo {
+        display: none;
+    }
+
+    .welcome_vatan_title h1 ,
+    .welcome_vatan_video_title {
+        font-size: 35px;
+        line-height: 41px;
+    }
+
+    .welcome_vatan_description {
+        font-size: 17px;
+        line-height: 20px;
+    }
+
+    .header_bar .header_reg_and_login {
+        display: none;
+    }
+
+    .welcome_vatan_video_player {
+        height: 320px;
+    }
+
+    .welcome_reg_and_login {
+        display: block;
+        padding-top: 20px;
+    }
+
+    .welcome_reg_and_login .reg_button a {
+        margin: 0;
+        margin-right: 15px;
+    }
+
+    .welcome_reg_and_login .reg_button a {
+        margin: 0;
+    }
+
+    .welcome_vatan_video_info {
+        padding-top: 23px;
+    }
+
+    .login_button a, .reg_button a {
+        padding: 9.5px 18px;
+    }
+
+    .welcome {
+        margin: 0;
+    }
+
+    .header_logo {
+        height: 28px;
+    }
+
+    .mobile_nav_button {
+        display: flex;
+    }
+
+    .login_button a {
+        border: 1px solid #048E39;
+    }
+
+    .welcome_vatan_video_title span {
+        color: #048E39;
+    }
+
+    .__input input[type=text] ,
+    .__input input[type=password] {
+        font-weight: 500;
+        font-size: 15px;
+        line-height: 18px;
+    }
+
+    .resset_password_form a {
+        font-size: 16px;
+    }
+
+    .form_submit button {
+        width: 270px;
+        height: 46px;
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 22px;
+    }
+
+    .form_block_title {
+        font-size: 30px;
+    }
+
+    .form_block_description {
+        font-size: 15px;
+        line-height: 18px;
+    }
+
+    .form_submit {
+        padding-top: 29px;
+    }
+
+    .profile_info_and_login, .profile_info_and_login a {
+        font-size: 16px;
+    }
+
+    .modal_body_info {
+        padding: 50px 20px;
+        max-width: 360px;
+    }
+
+    .modal_title {
+        font-size: 26px;
+        line-height: 32px;
+    }
+
+    .login_layout_padding {
+        padding-top: 100px;
+    }
+}
+
+@media screen and (max-width: 660px) {
+
+}
+
+@media screen and (max-width: 576px){
+
+}
+
+@media screen and (max-width: 560px) {
+
+}
+
+@media screen and (max-width: 540px) {
+
+}
+
+@media screen and (min-width: 470px){
+
+}
+
+@media screen and (max-width: 470px){
+
+}
+
+@media screen and (max-width: 400px) {
+
+}
+
+@media screen and (max-width: 380px){
+
+}
+
+@media screen and (max-width: 340px) {
+
+}
+
+@media (max-width: 992px) {
+
+}
+
+@media (max-width: 650px) {
+
+}
