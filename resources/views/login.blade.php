@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <link rel="stylesheet" href="{{asset('css/media.css')}}">
 </head>
@@ -95,16 +96,18 @@
                     Эл. почта
                 </div>
             </div>
-            <form action="">
+            <form class="popup" action="{{route('forgot.password')}}" method="post">
+                @csrf
                 <div class="__input">
                     <input type="number" placeholder="Номер телефона" class="change_input_email_and_phone">
                 </div>
-            </form>
+
             <div class="form_submit d-flex align-items-center justify-content-center">
-                <button class="modal_click" type="button" data-id="login_phone">
+                <button type="submit" class="modal_click" data-id="login_phone">
                     Далее
                 </button>
             </div>
+            </form>
         </div>
     </div>
 </div>
@@ -156,7 +159,7 @@
                     <div class="view_password">
                         <img src="{{asset('img/icon.svg')}}" alt="">
                     </div>
-                    <input type="text" placeholder="Новый пароль">
+                    <input name="newpassword" type="text" placeholder="Новый пароль">
                 </div>
             </div>
             <div class="input_block">
@@ -164,7 +167,7 @@
                     <div class="view_password">
                         <img src="{{asset('img/icon.svg')}}" alt="">
                     </div>
-                    <input type="text" placeholder="Новый пароль">
+                    <input type="text" name="newpassword" placeholder="Новый пароль">
                 </div>
             </div>
             <div class="form_submit d-flex align-items-center justify-content-center">
