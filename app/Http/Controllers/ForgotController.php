@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class ForgotPasswordController extends Controller
+class ForgotController extends Controller
 {
     public function store(Request $request)
     {

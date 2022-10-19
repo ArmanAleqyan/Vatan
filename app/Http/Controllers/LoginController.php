@@ -8,6 +8,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Auth;
+use function PHPUnit\Framework\isEmpty;
 
 class LoginController extends Controller
 {
@@ -37,6 +38,26 @@ class LoginController extends Controller
                 return redirect('/login')->with('login_error', 'неверные данные');
             }
         }
+    }
 
+    public function verify(Request $request)
+    {
+        $user_code = $request->verified_code;
+
+        $users = User::where('verify_code', '=', $user_code)->get();
+
+        if (!$users->isEmpty()) {
+
+            $user_id = $users[0]->id;
+
+            $updating = User::where('id', '=', $user_id)->update(['verify_code' => 1]);
+            if ($updating) {
+                dd(true);
+            }
+            if (!$updating) {
+                dd(false);
+            }
+        }
     }
 }
+

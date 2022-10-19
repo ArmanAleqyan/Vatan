@@ -45,7 +45,7 @@
                     Эл. почта
                 </div>
             </div>
-            <form action="{{route('login.store')}}" method="post">
+            <form action="{{route('login')}}" method="post">
                 @csrf
                 <div class="__input">
                     <input type="number" name="number" placeholder="Номер телефона"
@@ -180,5 +180,7 @@
 </div>
 
 <script src="{{asset('js/script.js')}}"></script>
+
+
 </body>
 </html>
