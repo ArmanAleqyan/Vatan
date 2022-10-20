@@ -44,10 +44,13 @@ class RegisterController extends Controller
             Mail::to($user->email)->send(new SendMail($details));
             return redirect()->route('login');
         } else {
+            $number = $request->number;
+
+            $call_number = preg_replace('/[^0-9]/', '', $number);
             $user = User::create([
                 'name' => $request->name,
                 'surname' => $request->surname,
-                'number' => $request->number,
+                'number' => $call_number,
                 'verify_code' => $randomNumber,
                 'password' => Hash::make($request->password),
                 'patronymic' => $request->patronymic,
@@ -59,7 +62,6 @@ class RegisterController extends Controller
                 $client = new GreenSMS([
                     'user' => 'sadn',
                     'pass' => 'Dgdhh378qq',
-
                 ]);
 
                 $response = $client->sms->send([

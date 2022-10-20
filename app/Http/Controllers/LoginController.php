@@ -25,6 +25,7 @@ class LoginController extends Controller
             'password' => 'required|min:6'
         ]);
 
+
         if ($request->email) {
             if (Auth::attempt($data)) {
                 return redirect()->route('profile');
