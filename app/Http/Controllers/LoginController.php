@@ -3,20 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
-use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Auth;
-use function PHPUnit\Framework\isEmpty;
 
 class LoginController extends Controller
 {
-    public function index()
-    {
-        return view('login');
-    }
-
     public function store(Request $request)
     {
         $data = $this->validate($request, [
@@ -25,18 +16,21 @@ class LoginController extends Controller
             'password' => 'required|min:6'
         ]);
 
-
         if ($request->email) {
             if (Auth::attempt($data)) {
-                return redirect()->route('profile');
+                $token = auth()->user()->createToken('API Token')->accessToken;
+
+                return response(['user' => auth()->user(), 'token' => $token], 200);
             } else {
-                return redirect('/login')->with('login_error', 'неверные данные');
+                return response(['error_message' => 'Incorrect Details. Please try again']);
             }
         } else {
             if (Auth::attempt($data)) {
-                return redirect()->route('profile');
+                $token = auth()->user()->createToken('API Token')->accessToken;
+
+                return response(['user' => auth()->user(), 'token' => $token], 200);
             } else {
-                return redirect('/login')->with('login_error', 'неверные данные');
+                return response(['error_message' => 'Incorrect Details. Please try again']);
             }
         }
     }
@@ -53,12 +47,17 @@ class LoginController extends Controller
 
             $updating = User::where('id', '=', $user_id)->update(['verify_code' => 1]);
             if ($updating) {
-                dd(true);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'user successfully verified'
+                ], 200);
             }
             if (!$updating) {
-                dd(false);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'something was wrong'
+                ], 422);
             }
         }
     }
 }
-

@@ -2,6 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ForgotController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +21,14 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::post('registration', [RegisterController::class, 'store'])->name('registration');
+Route::post('login', [LoginController::class, 'store'])->name('login');
+Route::post('verify', [LoginController::class, 'verify'])->name('verify');
+Route::post('/code-sending', [ForgotController::class, 'send'])->name('code-sending');
+Route::post('/restore-password', [ForgotController::class, 'CodeSend']);
+Route::post('/update-password', [ForgotController::class, 'updatePassword']);
+
+
+

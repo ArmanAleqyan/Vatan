@@ -10,14 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use GreenSMS\GreenSMS;
 use Illuminate\Support\Facades\Mail;
 
-
 class RegisterController extends Controller
 {
-    public function index()
-    {
-        return view('registration');
-    }
-
     public function store(RegisterRequest $request)
     {
         $data = $request->validated();
@@ -42,7 +36,10 @@ class RegisterController extends Controller
             }
 
             Mail::to($user->email)->send(new SendMail($details));
-            return redirect()->route('login');
+            return response()->json([
+                'success' => true,
+                'message' => 'user successfully registered'
+            ], 200);
         } else {
             $number = $request->number;
 
@@ -70,7 +67,10 @@ class RegisterController extends Controller
                 ]);
 
             }
-            return redirect()->route('login');
+            return response()->json([
+                'success' => true,
+                'message' => 'user successfully registered'
+            ], 200);
         }
     }
 }

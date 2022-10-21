@@ -21,12 +21,3 @@ use App\Http\Controllers\ForgotController;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/registration', [RegisterController::class, 'index'])->name('registration');
-Route::post('/registration', [RegisterController::class, 'store'])->name('registration.store');
-Route::get('/login', [LoginController::class, 'index'])->name('login');
-Route::post('/login', [LoginController::class, 'store'])->name('login.store');
-Route::post('/login', [LoginController::class, 'verify'])->name('verify');
-Route::post('/forgot-password', [ForgotController::class, 'store'])->name('forgot.password');
-
