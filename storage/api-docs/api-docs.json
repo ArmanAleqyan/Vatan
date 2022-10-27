@@ -1,0 +1,734 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Your super  ApplicationAPI",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "api/send-email": {
+            "post": {
+                "tags": [
+                    "Add Email"
+                ],
+                "summary": "User Send Email for add",
+                "description": "User Send Email for add",
+                "operationId": "User Send Email for add",
+                "requestBody": {
+                    "description": "User Send Email for add",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "email",
+                                        "format": "email",
+                                        "example": "test@gmail.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/add-email": {
+            "post": {
+                "tags": [
+                    "Add Email"
+                ],
+                "summary": "User Send code for add",
+                "description": "User Send code for add",
+                "operationId": "User Send code for add",
+                "requestBody": {
+                    "description": "User Send code for add",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "random_int": {
+                                        "type": "integer",
+                                        "format": "int",
+                                        "example": "123456"
+                                    },
+                                    "user_id": {
+                                        "type": "integer",
+                                        "format": "int",
+                                        "example": "8"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/send-number": {
+            "post": {
+                "tags": [
+                    "Add Number"
+                ],
+                "summary": "User Send Number for add",
+                "description": "User Send Number for add",
+                "operationId": "User Send Number for add",
+                "requestBody": {
+                    "description": "User Send Number for add",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "number": {
+                                        "type": "integer",
+                                        "format": "number",
+                                        "example": "1234567"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/add-number": {
+            "post": {
+                "tags": [
+                    "Add Number"
+                ],
+                "summary": "User Send code for add",
+                "description": "User Send code for add",
+                "operationId": "User Send Code for add",
+                "requestBody": {
+                    "description": "User Send code for add",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "random_int": {
+                                        "type": "integer",
+                                        "format": "int",
+                                        "example": "1234567"
+                                    },
+                                    "user_id": {
+                                        "type": "integer",
+                                        "format": "int",
+                                        "example": "8"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/change-email": {
+            "post": {
+                "tags": [
+                    "Change Email"
+                ],
+                "summary": "User Send Email for change",
+                "description": "User Send Email for change",
+                "operationId": "User Send Email for change",
+                "requestBody": {
+                    "description": "User Send Email for change",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "email",
+                                        "format": "email",
+                                        "example": "test@gmail.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/update-email": {
+            "post": {
+                "tags": [
+                    "Change Email"
+                ],
+                "summary": "User Send code for change",
+                "description": "User Send code for change",
+                "operationId": "User Send code for change",
+                "requestBody": {
+                    "description": "User Send code for change",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "random_int": {
+                                        "type": "integer",
+                                        "format": "int",
+                                        "example": "123456"
+                                    },
+                                    "user_id": {
+                                        "type": "integer",
+                                        "format": "int",
+                                        "example": "8"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/change-password": {
+            "post": {
+                "tags": [
+                    "Change Password"
+                ],
+                "summary": "User Send Password for change",
+                "description": "User Send Password for change",
+                "operationId": "User Send Password for change",
+                "requestBody": {
+                    "description": "User Send Password for change",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "newpassword": {
+                                        "type": "password",
+                                        "format": "password",
+                                        "example": "1111111"
+                                    },
+                                    "oldpassword": {
+                                        "type": "password",
+                                        "format": "password",
+                                        "example": "1111111"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/change-username": {
+            "post": {
+                "tags": [
+                    "Change Username"
+                ],
+                "summary": "User Send Username for change",
+                "description": "User Send Username for change",
+                "operationId": "User Send Username for change",
+                "requestBody": {
+                    "description": "User Send Username for change",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "username": {
+                                        "type": "text",
+                                        "format": "text",
+                                        "example": "example"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/code-sending": {
+            "post": {
+                "tags": [
+                    "Forgot-password"
+                ],
+                "summary": "User Send Email",
+                "description": "User Send Email",
+                "operationId": "User Send Email",
+                "requestBody": {
+                    "description": "User Send Email",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "email",
+                                        "format": "email",
+                                        "example": "test@gmail.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/restore-password": {
+            "post": {
+                "tags": [
+                    "Forgot-password"
+                ],
+                "summary": "restore-password",
+                "description": "restore-password",
+                "operationId": "restore-password",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "random_int": {
+                                        "type": "integer",
+                                        "format": "integer",
+                                        "example": "551485"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/update-password": {
+            "post": {
+                "tags": [
+                    "Forgot-password"
+                ],
+                "summary": "update-password",
+                "description": "update-password",
+                "operationId": "update-password",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "format": "integer",
+                                        "example": "3"
+                                    },
+                                    "password": {
+                                        "type": "password",
+                                        "format": "password",
+                                        "example": "1234"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/login": {
+            "post": {
+                "tags": [
+                    "Login"
+                ],
+                "summary": "User Login",
+                "description": "User Login here",
+                "operationId": "Login",
+                "requestBody": {
+                    "description": "User Login here",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "number"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "email"
+                                    },
+                                    "password": {
+                                        "type": "password"
+                                    },
+                                    "number": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User Login here",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/verify": {
+            "post": {
+                "tags": [
+                    "Verify"
+                ],
+                "summary": "User Verify",
+                "description": "User Verify here",
+                "operationId": "Verify",
+                "requestBody": {
+                    "description": "User Verify here",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "verified_code"
+                                ],
+                                "properties": {
+                                    "verified_code": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User Verify here",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/change-number": {
+            "post": {
+                "tags": [
+                    "Change Number"
+                ],
+                "summary": "User Send Number for change",
+                "description": "User Send Number for change",
+                "operationId": "User Send Number for change",
+                "requestBody": {
+                    "description": "User Send Number for change",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "number": {
+                                        "type": "integer",
+                                        "format": "number",
+                                        "example": "1234567\n     * "
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/update-number": {
+            "post": {
+                "tags": [
+                    "Change Number"
+                ],
+                "summary": "User Send code for change",
+                "description": "User Send code for change",
+                "operationId": "User Send code ",
+                "requestBody": {
+                    "description": "User Send code for change",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "random_int": {
+                                        "type": "integer",
+                                        "format": "int",
+                                        "example": "123456"
+                                    },
+                                    "user_id": {
+                                        "type": "integer",
+                                        "format": "int",
+                                        "example": "8"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/registration": {
+            "post": {
+                "tags": [
+                    "Register"
+                ],
+                "summary": "User Register",
+                "description": "User Register here",
+                "operationId": "Register",
+                "requestBody": {
+                    "description": "User Register here",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation",
+                                    "surname",
+                                    "patronymic",
+                                    "city",
+                                    "username",
+                                    "date_of_birth",
+                                    "number"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "text"
+                                    },
+                                    "email": {
+                                        "type": "email"
+                                    },
+                                    "password": {
+                                        "type": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "password"
+                                    },
+                                    "surname": {
+                                        "type": "text"
+                                    },
+                                    "patronymic": {
+                                        "type": "text"
+                                    },
+                                    "city": {
+                                        "type": "text"
+                                    },
+                                    "username": {
+                                        "type": "text"
+                                    },
+                                    "date_of_birth": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "number": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User Register here",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

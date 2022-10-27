@@ -8,6 +8,33 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    /**
+     * @OA\Post(
+     * path="api/login",
+     * summary="User Login",
+     * description="User Login here",
+     * operationId="Login",
+     * tags={"Login"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="User Login here",
+     *    @OA\JsonContent(
+     *               required={"email", "password","number"},
+     *               @OA\Property(property="email", type="email"),
+     *               @OA\Property(property="password", type="password"),
+     *               @OA\Property(property="number", type="integer"),
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="User Login here",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
     public function store(Request $request)
     {
         $data = $this->validate($request, [
@@ -35,8 +62,34 @@ class LoginController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     * path="api/verify",
+     * summary="User Verify",
+     * description="User Verify here",
+     * operationId="Verify",
+     * tags={"Verify"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="User Verify here",
+     *    @OA\JsonContent(
+     *               required={"verified_code"},
+     *               @OA\Property(property="verified_code", type="int"),
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="User Verify here",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
     public function verify(Request $request)
     {
+
         $user_code = $request->verified_code;
 
         $users = User::where('verify_code', '=', $user_code)->get();

@@ -3,9 +3,17 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
+use App\Nova\License;
+use App\Nova\Release;
+use App\Nova\Series;
+use App\Nova\User;
+use Illuminate\Http\Request;
+use Laravel\Nova\Nova\Dashboards\Main;
+use Laravel\Nova\Menu\Menu;
+use Laravel\Nova\Menu\MenuItem;
+use Laravel\Nova\Menu\MenuSection;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
-
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
     /**
@@ -15,7 +23,16 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     public function boot()
     {
-        parent::boot();
+       parent::boot();
+
+        Nova::mainMenu(function (Request $request) {
+            return [
+
+                MenuSection::make('Пользватели', [
+                    MenuItem::resource(User::class),
+                ])->icon('user')->collapsable(),
+            ];
+        });
     }
 
     /**

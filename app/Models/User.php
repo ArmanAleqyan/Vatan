@@ -38,4 +38,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'date_of_birth' => 'datetime',
     ];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
 }

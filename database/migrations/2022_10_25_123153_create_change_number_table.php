@@ -13,10 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('news_and_sales', function (Blueprint $table) {
+        Schema::create('change_number', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('number');
-            $table->integer('user_id');
+            $table->unsignedBigInteger('number')->nullable();
+            $table->integer('user_id')->nullable();
+            $table->unsignedBigInteger('random_int')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('news_and_sales');
+        Schema::dropIfExists('change_number');
     }
 };

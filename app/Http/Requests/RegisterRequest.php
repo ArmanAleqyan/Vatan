@@ -31,10 +31,11 @@ class RegisterRequest extends FormRequest
             'surname' => 'required|min:3|max:64',
             'email' => 'min:3|max:64|unique:users',
             'password' => 'required|min:6|max:64|confirmed',
-            'number' => 'max:64',
+            'password_confirmation' => 'required|min:6|max:64',
+            'number' => 'min:3|max:64',
             'patronymic' => 'required|min:3|max:64',
             'city' => 'required',
-            'username' => 'required',
+            'username' => 'unique:users|required',
             'date_of_birth' => 'required',
         ];
 
