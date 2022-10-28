@@ -11,6 +11,7 @@ use App\Http\Controllers\AddEmailController;
 use App\Http\Controllers\AddNumberController;
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\HiddenAccountController;
+use App\Http\Controllers\PostController;
 
 
 /*
@@ -35,6 +36,7 @@ Route::post('verify', [LoginController::class, 'verify'])->name('verify');
 Route::post('/code-sending', [ForgotController::class, 'send'])->name('code-sending');
 Route::post('/restore-password', [ForgotController::class, 'CodeSend']);
 Route::post('/update-password', [ForgotController::class, 'updatePassword']);
+Route::delete('users-delete/{id?}', [HiddenAccountController::class, 'destroy']);
 
 Route::group(['middleware' => ['auth:api']], function () {
     Route::post('change-number', [ProfileController::class, 'addNumber']);
@@ -53,6 +55,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('change-username', [ChangePasswordController::class, 'ChangeUsername']);
 
     Route::post('hidden-account', [HiddenAccountController::class, 'hiddenAccount']);
+    Route::post('post', [PostController::class, 'store']);
 
 });
 

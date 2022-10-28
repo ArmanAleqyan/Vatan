@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Validator;
 
 class LoginController extends Controller
 {
@@ -37,14 +38,20 @@ class LoginController extends Controller
 
     public function store(Request $request)
     {
-        $data = $this->validate($request, [
+        $rules = array(
             'email' => 'email|max:255',
             'number' => 'max:255',
             'password' => 'required|min:6'
-        ]);
+
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
 
         if ($request->email) {
-            if (Auth::attempt($data)) {
+            if (Auth::attempt($request->all())) {
                 $token = auth()->user()->createToken('API Token')->accessToken;
 
                 return response(['user' => auth()->user(), 'token' => $token], 200);
@@ -52,7 +59,7 @@ class LoginController extends Controller
                 return response(['error_message' => 'Incorrect Details. Please try again']);
             }
         } else {
-            if (Auth::attempt($data)) {
+            if (Auth::attempt($request->all())) {
                 $token = auth()->user()->createToken('API Token')->accessToken;
 
                 return response(['user' => auth()->user(), 'token' => $token], 200);

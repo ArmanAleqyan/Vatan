@@ -481,6 +481,88 @@
                 }
             }
         },
+        "api/hidden-account": {
+            "post": {
+                "tags": [
+                    "Hide Account"
+                ],
+                "summary": "User Send password for hide account",
+                "description": "User Send password for hide account",
+                "operationId": "User SenD password for hide account",
+                "requestBody": {
+                    "description": "User Send password for hide account",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "password": {
+                                        "type": "password",
+                                        "format": "password",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/users-delete/id": {
+            "delete": {
+                "tags": [
+                    "Delete Account"
+                ],
+                "summary": "User Send password for delete account",
+                "description": "User Send password for delete account",
+                "operationId": "User SenD password for delete account",
+                "requestBody": {
+                    "description": "User Send password for hide account",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "password": {
+                                        "type": "password",
+                                        "format": "password",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "api/login": {
             "post": {
                 "tags": [
