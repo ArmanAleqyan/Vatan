@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Post;
+use App\Models\Image;
 use Validator;
 
 class PostController extends Controller
@@ -29,7 +30,6 @@ class PostController extends Controller
         $data['user_id'] = Auth::user()->id;
         DB::beginTransaction();
         $post = Post::query()->create($data);
-        dd(count($fileNames));
         if (count($fileNames)) {
             foreach ($fileNames as $fileName) {
                 $image = $request->file($fileName);
@@ -38,7 +38,7 @@ class PostController extends Controller
 
                 $image->storeAs($destinationPath, $originalFile);
                 Image::create([
-                    'product_id' => $post->id,
+                    'post_id' => $post->id,
                     'image' => $originalFile
                 ]);
             }
