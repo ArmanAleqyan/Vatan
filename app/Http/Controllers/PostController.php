@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Mail\Image;
 use App\Mail\Post;
@@ -13,7 +14,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $rules = array(
-            'number' => 'min:3|max:64|unique:users',
+            'description' => 'required',
         );
 
         $validator = Validator::make($request->all(), $rules);
