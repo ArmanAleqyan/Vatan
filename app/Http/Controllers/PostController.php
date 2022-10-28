@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Mail\Image;
-use App\Mail\Post;
+use App\Models\User;
 use Validator;
 
 class PostController extends Controller
@@ -28,7 +27,8 @@ class PostController extends Controller
         $fileNames = array_keys($request->allFiles());
         $data['user_id'] = Auth::user()->id;
         DB::beginTransaction();
-        $product = Post::query()->create($data);
+        $post = Post::query()->create($data);
+        dd(count($fileNames));
         if (count($fileNames)) {
             foreach ($fileNames as $fileName) {
                 $image = $request->file($fileName);
@@ -37,7 +37,7 @@ class PostController extends Controller
 
                 $image->storeAs($destinationPath, $originalFile);
                 Image::create([
-                    'product_id' => $product->id,
+                    'product_id' => $post->id,
                     'image' => $originalFile
                 ]);
             }
