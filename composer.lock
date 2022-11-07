@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f25903cd0e4a446d5e9042f1e048c12",
+    "content-hash": "b3b2fc6c8f4283375113fcb7808ba9ad",
     "packages": [
         {
             "name": "brick/math",
@@ -1108,6 +1108,54 @@
                 "source": "https://github.com/firebase/php-jwt/tree/v6.3.0"
             },
             "time": "2022-07-15T16:48:45+00:00"
+        },
+        {
+            "name": "formfeed-uk/nova-logo-url",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Formfeed-UK/nova-logo-url.git",
+                "reference": "623658a4b95a37d2afbfb977e0a193d47798a959"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Formfeed-UK/nova-logo-url/zipball/623658a4b95a37d2afbfb977e0a193d47798a959",
+                "reference": "623658a4b95a37d2afbfb977e0a193d47798a959",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/nova": "^4.0",
+                "php": "^7.3|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Formfeed\\NovaLogoUrl\\AssetServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Formfeed\\NovaLogoUrl\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Laravel Nova Package for custom App Logo Urls and Links",
+            "homepage": "https://github.com/formfeed-uk/nova-logo-url",
+            "keywords": [
+                "laravel",
+                "logo",
+                "nova"
+            ],
+            "support": {
+                "issues": "https://github.com/Formfeed-UK/nova-logo-url/issues",
+                "source": "https://github.com/Formfeed-UK/nova-logo-url/tree/1.0.0"
+            },
+            "time": "2022-09-27T10:56:51+00:00"
         },
         {
             "name": "fruitcake/php-cors",
@@ -7906,6 +7954,47 @@
                 }
             ],
             "time": "2022-03-08T17:03:00+00:00"
+        },
+        {
+            "name": "wdelfuego/nova4-customizable-footer",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wdelfuego/nova4-customizable-footer.git",
+                "reference": "3560fd04685fb6131398a138f274c5aece6bfe1d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wdelfuego/nova4-customizable-footer/zipball/3560fd04685fb6131398a138f274c5aece6bfe1d",
+                "reference": "3560fd04685fb6131398a138f274c5aece6bfe1d",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/nova": "^4.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Wdelfuego\\Nova4\\CustomizableFooter\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Willem Vervuurt",
+                    "email": "willem@studiodelfuego.com"
+                }
+            ],
+            "description": "Customizable footer for Laravel's Nova 4",
+            "support": {
+                "issues": "https://github.com/wdelfuego/nova4-customizable-footer/issues",
+                "source": "https://github.com/wdelfuego/nova4-customizable-footer/tree/v1.0.3"
+            },
+            "abandoned": true,
+            "time": "2022-05-03T22:37:27+00:00"
         },
         {
             "name": "webmozart/assert",

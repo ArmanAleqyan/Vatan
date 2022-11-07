@@ -39,14 +39,7 @@ class ProfileController extends Controller
 
     public function addNumber(Request $request)
     {
-//        $rules = array(
-//            'number' => 'required|min:3|max:64|unique:users',
-//        );
 
-//        $validator = Validator::make($request->all(), $rules);
-//        if ($validator->fails()) {
-//            return $validator->errors();
-//        }
 
         $call_number = preg_replace('/[^0-9]/', '', $request->number);
 

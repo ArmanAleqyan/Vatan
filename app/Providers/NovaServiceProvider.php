@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Nova\License;
 use App\Nova\Release;
 use App\Nova\Series;
+use Wdelfuego\Nova4\CustomizableFooter\Footer;
 use App\Nova\User;
 use Illuminate\Http\Request;
 use Laravel\Nova\Nova\Dashboards\Main;
@@ -24,6 +25,10 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     public function boot()
     {
        parent::boot();
+
+       Nova::style('asd',asset('NovaCss.css'));
+        Footer::set('<p class="text-center">Vatan </p>');
+
 
         Nova::mainMenu(function (Request $request) {
             return [

@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Post extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
+
 
     public function user()
     {
@@ -18,5 +20,15 @@ class Post extends Model
     public function images()
     {
         return $this->hasMany(Image::class);
+    }
+
+    public function comment()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function postlikes()
+    {
+        return $this->hasMany(Postlikes::class);
     }
 }

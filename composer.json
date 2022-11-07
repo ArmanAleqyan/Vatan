@@ -10,6 +10,7 @@
     "require": {
         "php": "^8.0.2",
         "darkaonline/l5-swagger": "^8.4",
+        "formfeed-uk/nova-logo-url": "^1.0",
         "greensms/greensms": "^1.7",
         "guzzlehttp/guzzle": "^7.2",
         "jorenvanhocht/laravel-share": "^4.2",
@@ -17,7 +18,8 @@
         "laravel/nova": "~4.0",
         "laravel/passport": "^11.2",
         "laravel/sanctum": "^3.0",
-        "laravel/tinker": "^2.7"
+        "laravel/tinker": "^2.7",
+        "wdelfuego/nova4-customizable-footer": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

@@ -50,20 +50,7 @@ class User extends Resource
     public function fields(NovaRequest $request)
     {
         return [
-
-
-            Image::make('Автар','avatar')->store(
-                function (Request $request, $model) {
-                    //Saving the model early in order to have a valid $model->id
-                    if (!$model->id) {
-                        $model->save();
-                    }
-                    return [
-                        'avatar' => $request->avatar->store('public'),
-                    ];
-                }
-            ),
-
+            Image::make('Автар','avatar'),
             Text::make('Имя','name')
                 ->sortable()
                 ->rules('required', 'max:255'),

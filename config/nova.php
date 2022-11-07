@@ -162,15 +162,17 @@ return [
     |
     */
 
-    // 'brand' => [
-    //     'logo' => resource_path('/img/example-logo.svg'),
-
-    //     'colors' => [
-    //         "400" => "24, 182, 155, 0.5",
-    //         "500" => "24, 182, 155",
-    //         "600" => "24, 182, 155, 0.75",
-    //     ]
-    // ],
+    'brand' => [
+        'logo' => 'https://vatan.justcode.am/uploads/Chaguch.png',
+        'logo_url' => 'https://vatan.justcode.am/uploads/Chaguch.png',
+        'logo_class' => 'h-12',
+        'width' => '6000px',
+        'colors' => [
+            "400" => "24, 182, 155, 0.5",
+            "500" => "24, 182, 155",
+            "600" => "24, 182, 155, 0.75",
+        ]
+    ],
 
     /*
     |--------------------------------------------------------------------------

@@ -12,6 +12,34 @@ use Validator;
 
 class PostController extends Controller
 {
+
+    /**
+     * @OA\Post(
+     * path="api/post",
+     * summary="User Create Posts",
+     * description="User Create Posts",
+     * operationId="Users Create Posts",
+     * tags={"Post"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Users Create Posts",
+     *    @OA\JsonContent(
+     *       required={"required"},
+     *          @OA\Property(property="description", type="string", format="text", example="some description"),
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Wrong credentials response",
+     *
+     *
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
     public function store(Request $request)
     {
         $rules = array(
@@ -32,15 +60,21 @@ class PostController extends Controller
         $post = Post::query()->create($data);
         if (count($fileNames)) {
             foreach ($fileNames as $fileName) {
-                $image = $request->file($fileName);
-                $destinationPath = 'public/uploads';
-                $originalFile = time() . $image->getClientOriginalName();
+                $images = $request->file($fileName);
+                $test = [];
+                $time = time();
+                foreach ($images as $image) {
 
-                $image->storeAs($destinationPath, $originalFile);
-                Image::create([
-                    'post_id' => $post->id,
-                    'image' => $originalFile
-                ]);
+                    $destinationPath = 'uploads';
+                    $originalFile = $time++ . $image->getClientOriginalName();
+                    $image->move($destinationPath, $originalFile);
+
+                    $test[] = $image->getPathname();
+                    Image::create([
+                        'post_id' => $post->id,
+                        'image' => $originalFile
+                    ]);
+                }
             }
         }
         DB::commit();

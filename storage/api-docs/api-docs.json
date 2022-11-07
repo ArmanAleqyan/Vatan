@@ -353,6 +353,262 @@
                 }
             }
         },
+        "api/comment": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "User Create Comments",
+                "description": "User Create Comments",
+                "operationId": "Users Create Comments",
+                "requestBody": {
+                    "description": "User Create Comments",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "comment": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "some comment"
+                                    },
+                                    "post_id": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User Create Comments",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/comment-reply": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "User Create Comments Reply",
+                "description": "User Create Comments Reply",
+                "operationId": "User Create Comments Reply",
+                "requestBody": {
+                    "description": "User Create Comments",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "comment_reply": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "some comment"
+                                    },
+                                    "comment_id": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User Create Comments",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/send-family-request": {
+            "post": {
+                "tags": [
+                    "Family"
+                ],
+                "summary": "user send family request",
+                "description": "user send family request",
+                "operationId": "users send family request",
+                "requestBody": {
+                    "description": "user send family request",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "receiver_id": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "user send family request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/confirm-family-request": {
+            "post": {
+                "tags": [
+                    "Family"
+                ],
+                "summary": "user accepts family request",
+                "description": "user accepts family request",
+                "operationId": "users accepts family request",
+                "requestBody": {
+                    "description": "user accepts family request",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "sender_id": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "user accepts family request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/cancel-family-request": {
+            "post": {
+                "tags": [
+                    "Family"
+                ],
+                "summary": "user request canceled",
+                "description": "user request canceled",
+                "operationId": "users request canceled",
+                "requestBody": {
+                    "description": "user request canceled",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "sender_id": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "user request canceled",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/delete-family-request": {
+            "post": {
+                "tags": [
+                    "Family"
+                ],
+                "summary": "user removed from family list",
+                "description": "user removed from family list",
+                "operationId": "user removed from family list",
+                "requestBody": {
+                    "description": "user removed from family list",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "sender_id": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "user removed from family list",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "api/code-sending": {
             "post": {
                 "tags": [
@@ -472,6 +728,170 @@
                 "responses": {
                     "200": {
                         "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/add-friends": {
+            "post": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "User Send Request",
+                "description": "User Send Request",
+                "operationId": "Users Send Request",
+                "requestBody": {
+                    "description": "user sent a friend pressure request",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "receiver_id": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "user sent a friend pressure request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/confirm-request": {
+            "post": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "user accepts friend request",
+                "description": "user accepts friend request",
+                "operationId": "user accepts friend request",
+                "requestBody": {
+                    "description": "user accepts friend request",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "sender_id": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "user accepts friend request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/cancel-request": {
+            "post": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "user request canceled",
+                "description": "user request canceled",
+                "operationId": "user request canceled",
+                "requestBody": {
+                    "description": "user request canceled",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "sender_id": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "user request canceled",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/delete-friend": {
+            "post": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "user removed from friends list",
+                "description": "user removed from friends list",
+                "operationId": "user removed from friends list",
+                "requestBody": {
+                    "description": "user removed from friends list",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "sender_id": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "user removed from friends list",
                         "content": {
                             "application/json": {
                                 "schema": {}
@@ -649,6 +1069,211 @@
                 }
             }
         },
+        "api/post": {
+            "post": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "User Create Posts",
+                "description": "User Create Posts",
+                "operationId": "Users Create Posts",
+                "requestBody": {
+                    "description": "Users Create Posts",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "description": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "some description"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/post-likes": {
+            "post": {
+                "tags": [
+                    "Post Likes"
+                ],
+                "summary": "User Likes Posts",
+                "description": "User Likes Posts",
+                "operationId": "Users Likes Posts",
+                "requestBody": {
+                    "description": "Users Likes Posts",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "post_id": {
+                                        "type": "integer",
+                                        "format": "number",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/comment-likes": {
+            "post": {
+                "tags": [
+                    "Comments Likes"
+                ],
+                "summary": "User Comments like",
+                "description": "User Comments like",
+                "operationId": "Users Comments like",
+                "requestBody": {
+                    "description": "Users Comments like",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "comment_id": {
+                                        "type": "integer",
+                                        "format": "number",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/comment-reply-likes": {
+            "post": {
+                "tags": [
+                    "Comments Reply Likes"
+                ],
+                "summary": "User Comments reply like",
+                "description": "Users Comments reply like",
+                "operationId": "User Comments reply like",
+                "requestBody": {
+                    "description": "Users Comments reply like",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "comment_id": {
+                                        "type": "integer",
+                                        "format": "number",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/reply-answer-likes": {
+            "post": {
+                "tags": [
+                    "Reply Answer like"
+                ],
+                "summary": "User reply answer like",
+                "description": "User reply answer like",
+                "operationId": "Users reply answer like",
+                "requestBody": {
+                    "description": "User reply answer like",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "comment_id": {
+                                        "type": "integer",
+                                        "format": "number",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "api/change-number": {
             "post": {
                 "tags": [
@@ -803,6 +1428,52 @@
                 "responses": {
                     "200": {
                         "description": "User Register here",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/comment-reply-answer": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "User Create Comments Replys",
+                "description": "User Create Comments Replys",
+                "operationId": "User Create Comments Replys",
+                "requestBody": {
+                    "description": "User Create Comments Reply",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "reply": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "some comment"
+                                    },
+                                    "reply_id": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User Create Comments",
                         "content": {
                             "application/json": {
                                 "schema": {}
