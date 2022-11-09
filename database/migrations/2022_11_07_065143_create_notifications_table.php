@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('notification_type')->nullable();
             $table->integer('receiver_id')->nullable();
             $table->integer('sender_id')->nullable();
+            $table->integer('foreign_id')->nullable();
             $table->string('status')->default(true);
             $table->timestamps();
         });

@@ -353,6 +353,80 @@
                 }
             }
         },
+        "api/all-notifications": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "User all notifications",
+                "description": "User all notifications",
+                "operationId": "Users all notifications",
+                "requestBody": {
+                    "description": "User all notifications",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User all notifications",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/viewed-notification": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "User viewed Comments",
+                "description": "User viewed Comments",
+                "operationId": "Users viewed Comments",
+                "requestBody": {
+                    "description": "User viewed Comments",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "notification_id": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User viewed Comments",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "api/comment": {
             "post": {
                 "tags": [
@@ -390,6 +464,47 @@
                 "responses": {
                     "200": {
                         "description": "User Create Comments",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/reply_viewed-notification": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "User viewed Reply Comments",
+                "description": "User viewed Reply Comments",
+                "operationId": "Users viewed Reply Comments",
+                "requestBody": {
+                    "description": "User viewed Reply Comments",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "notification_id": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User viewed Reply Comments",
                         "content": {
                             "application/json": {
                                 "schema": {}
@@ -1428,6 +1543,47 @@
                 "responses": {
                     "200": {
                         "description": "User Register here",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/replyanswer_viewed-notification": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "User viewed Reply Answer Comments",
+                "description": "User viewed Reply Answer Comments",
+                "operationId": "Users viewed Reply Answer Comments",
+                "requestBody": {
+                    "description": "Users viewed Reply Answer Comments",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "notification_id": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User viewed Reply Answer Comments",
                         "content": {
                             "application/json": {
                                 "schema": {}

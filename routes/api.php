@@ -18,6 +18,7 @@ use App\Http\Controllers\ReplyAnsverController;
 use App\Http\Controllers\PostLikesController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\FamilyController;
+use App\Http\Controllers\UserController;
 
 
 /*
@@ -66,6 +67,10 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('comment', [CommentController::class, 'store']);
     Route::post('comment-reply', [CommentReplyController::class, 'store']);
     Route::post('comment-reply-answer', [ReplyAnsverController::class, 'store']);
+    Route::get('all-notifications', [CommentController::class, 'index']);
+    Route::post('viewed-notification', [CommentController::class, 'changeStatus']);
+    Route::post('reply_viewed-notification', [CommentReplyController::class, 'changeStatus']);
+    Route::post('replyanswer_viewed-notification', [ReplyAnsverController::class, 'changeStatus']);
 
     Route::post('post-likes', [PostLikesController::class, 'store']);
     Route::post('comment-likes', [PostLikesController::class, 'commentStore']);
@@ -84,6 +89,10 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('delete-family-request', [FamilyController::class, 'deleteFamily']);
 
 });
+Route::post('status', [UserController::class, 'userOnlineStatus']);
+
+
+
 
 
 

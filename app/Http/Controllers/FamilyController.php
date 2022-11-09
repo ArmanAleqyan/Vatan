@@ -100,7 +100,7 @@ class FamilyController extends Controller
             ], 404);
         } else {
             $confirmSuccess = Friend::where('receiver_id', auth()->user()->id)
-                ->where('sender_id', $request->sender_id)->update(['family' => true, 'family_status' => null]);
+                ->where('sender_id', $request->sender_id)->update(['family' => 'true', 'family_status' => null]);
 
             if ($confirmSuccess) {
                 return response()->json([
@@ -145,7 +145,7 @@ class FamilyController extends Controller
     public function cancelFamilyRequest(Request $request)
     {
         $cacnelRequest = Friend::where('receiver_id', auth()->user()->id)
-            ->where('sender_id', $request->sender_id)->update(['family' => false]);
+            ->where('sender_id', $request->sender_id)->update(['family' => 'false']);
 
         if ($cacnelRequest) {
             return response()->json([
@@ -190,7 +190,7 @@ class FamilyController extends Controller
     {
         $cacnelRequest = Friend::where('receiver_id', auth()->user()->id)
             ->where('sender_id', $request->sender_id)
-            ->where('family', true)->update(['family' => false]);
+            ->where('family', true)->update(['family' => 'false']);
 
         if ($cacnelRequest) {
             return response()->json([

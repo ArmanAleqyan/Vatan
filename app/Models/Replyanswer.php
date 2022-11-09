@@ -15,7 +15,7 @@ class Replyanswer extends Model
 
     public function commentreply()
     {
-        return $this->hasMany(Comentreply::class);
+        return $this->belongsTo(Comentreply::class);
     }
 
     public function user()

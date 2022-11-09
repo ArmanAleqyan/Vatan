@@ -7,7 +7,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Post;
+use App\Models\Notification;
 use App\Models\Image;
+use App\Events\PostNotification;
+
 use Validator;
 
 class PostController extends Controller
@@ -42,6 +45,7 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+
         $rules = array(
             'description' => 'required',
         );
@@ -56,8 +60,19 @@ class PostController extends Controller
         $data = $request->except($fileNames);
         $fileNames = array_keys($request->allFiles());
         $data['user_id'] = Auth::user()->id;
+
+        $user = auth()->user();
         DB::beginTransaction();
+
         $post = Post::query()->create($data);
+
+
+//        $notificationCreate = Notification::create([
+//            'notification_type' => 'new post',
+//            'sender_id' => auth()->user()->id,
+//        ]);
+//        $notificationData = $notificationCreate->with(['sendernotification', 'receivernotification'])->get();
+
         if (count($fileNames)) {
             foreach ($fileNames as $fileName) {
                 $images = $request->file($fileName);
@@ -79,6 +94,7 @@ class PostController extends Controller
         }
         DB::commit();
 
+        event(new PostNotification($data,$user));
         return response()->json([
             'success' => true,
             'message' => 'product was successfully created'

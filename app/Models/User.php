@@ -89,4 +89,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Friend::class, 'sender_id');
     }
+
+    public function isOnline()
+    {
+        return Cache::has('user_is_Online' . $this->id);
+    }
 }

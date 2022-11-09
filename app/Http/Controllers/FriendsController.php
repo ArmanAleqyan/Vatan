@@ -5,16 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Friend;
+use App\Models\Notification;
+use Illuminate\Support\Facades\DB;
 
 class FriendsController extends Controller
 {
     public function index()
     {
-        $data = Friend::where('receiver_id', auth()->user()->id)->where('status', true)->with('sender')->get();
+        $data = Friend::where('receiver_id', auth()->user()->id)->where('status', 'unconfirm')->with('sender')->get();
         if ($data) {
             return response()->json([
                 'success' => true,
-                'message' => 'your request sended'
+                'message' => 'sent you a request',
+                'data' => $data,
             ], 200);
         } else {
             return response()->json([
@@ -56,19 +59,28 @@ class FriendsController extends Controller
         $friendData = [
             'receiver_id' => $request->receiver_id,
             'sender_id' => auth()->user()->id,
+            'status' => 'unconfirm'
         ];
 
+        DB::beginTransaction();
+
         $addFriends = Friend::create($friendData);
+
+        $notificationFriends = Friend::where('receiver_id', $request->receiver_id)->with('receiver')
+            ->get();
+
+        DB::commit();
 
         if ($addFriends) {
             return response()->json([
                 'success' => true,
-                'message' => 'your request sended'
+                'message' => 'your request sended',
+                'data' => $notificationFriends,
             ], 200);
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'something was wrong'
+                'message' => 'something was wrong',
             ]);
         }
     }
@@ -111,7 +123,7 @@ class FriendsController extends Controller
             ], 404);
         } else {
             $confirmSuccess = Friend::where('receiver_id', auth()->user()->id)
-                ->where('sender_id', $request->sender_id)->update(['status' => true]);
+                ->where('sender_id', $request->sender_id)->update(['status' => 'true']);
 
             if ($confirmSuccess) {
                 return response()->json([
@@ -156,7 +168,7 @@ class FriendsController extends Controller
     public function cancelRequest(Request $request)
     {
         $cacnelRequest = Friend::where('receiver_id', auth()->user()->id)
-            ->where('sender_id', $request->sender_id)->update(['status' => false]);
+            ->where('sender_id', $request->sender_id)->update(['status' => 'false']);
 
         if ($cacnelRequest) {
             return response()->json([

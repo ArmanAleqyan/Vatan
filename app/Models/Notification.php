@@ -21,4 +21,17 @@ class Notification extends Model
     {
         return $this->belongsTo(User::class, 'receiver_id');
     }
+
+//    public function TypeId()
+//    {
+//        if ($this->notification_type = 'new comment') {
+//            return $this->belongsTo(Comment::class, 'foreign_id');
+//        }
+//        if ($this->notification_type = 'new comment reply') {
+//            return $this->belongsTo(Comentreply::class, 'foreign_id');
+//        }
+//        if ($this->notification_type = 'new comment reply answer') {
+//            return $this->belongsTo(Replyanswer::class, 'foreign_id');
+//        }
+//    }
 }
