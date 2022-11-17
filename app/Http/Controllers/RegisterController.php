@@ -59,6 +59,11 @@ class RegisterController extends Controller
         $data = $request->validated();
         $randomNumber = random_int(100000, 999999);
         if ($request->email) {
+
+
+            $dateStr = $request->date_of_birth;
+            $dateArray = date_parse_from_format('Y-m-d', $dateStr);
+
             $user = User::create([
                 'name' => $request->name,
                 'surname' => $request->surname,
@@ -69,7 +74,9 @@ class RegisterController extends Controller
                 'patronymic' => $request->patronymic,
                 'city' => $request->city,
                 'username' => $request->username,
-                'date_of_birth' => $request->date_of_birth,
+                'date_of_birth' => $dateStr,
+                'day' => $dateArray['day'],
+                'mount' => $dateArray['month'],
             ]);
             if ($user) {
 
@@ -94,7 +101,9 @@ class RegisterController extends Controller
                 return $validator->errors();
             }
 
-
+            $dateStr = $request->date_of_birth;
+            $dateArray = date_parse_from_format('Y-m-d', $dateStr);
+            
             $number = $request->number;
 
             $call_number = preg_replace('/[^0-9]/', '', $number);
@@ -108,7 +117,9 @@ class RegisterController extends Controller
                 'patronymic' => $request->patronymic,
                 'city' => $request->city,
                 'username' => $request->username,
-                'date_of_birth' => $request->date_of_birth,
+                'date_of_birth' => $dateStr,
+                'day' => $dateArray['day'],
+                'mount' => $dateArray['month'],
             ]);
             if ($user) {
 

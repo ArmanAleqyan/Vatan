@@ -31,4 +31,9 @@ class Post extends Model
     {
         return $this->hasMany(Postlikes::class);
     }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
 }

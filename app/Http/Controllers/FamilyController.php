@@ -204,4 +204,9 @@ class FamilyController extends Controller
             ], 422);
         }
     }
+
+    public function friendsBirth(Request $request)
+    {
+
+    }
 }

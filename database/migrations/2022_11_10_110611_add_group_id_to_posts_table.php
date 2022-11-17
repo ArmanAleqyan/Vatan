@@ -12,8 +12,8 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('last_seen')->nullable();
+        Schema::table('posts', function (Blueprint $table) {
+            $table->integer('group_id')->nullable();
         });
     }
 
@@ -24,8 +24,8 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('last_seen');
+        Schema::table('posts', function (Blueprint $table) {
+            $table->dropColumn('group_id');
         });
     }
 };

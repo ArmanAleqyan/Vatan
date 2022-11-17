@@ -54,6 +54,8 @@ class LoginController extends Controller
             if (Auth::attempt($request->all())) {
                 $token = auth()->user()->createToken('API Token')->accessToken;
 
+                User::where('id', auth()->user()->id)->update(['last_seen' => 'online']);
+
                 return response(['user' => auth()->user(), 'token' => $token], 200);
             } else {
                 return response(['error_message' => 'Incorrect Details. Please try again']);

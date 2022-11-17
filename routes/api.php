@@ -19,6 +19,8 @@ use App\Http\Controllers\PostLikesController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\GroupMembersController;
+use App\Http\Controllers\GroupController;
 
 
 /*
@@ -63,6 +65,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::post('hidden-account', [HiddenAccountController::class, 'hiddenAccount']);
     Route::post('post', [PostController::class, 'store']);
+    Route::get('post', [PostController::class, 'index']);
 
     Route::post('comment', [CommentController::class, 'store']);
     Route::post('comment-reply', [CommentReplyController::class, 'store']);
@@ -82,14 +85,38 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('confirm-request', [FriendsController::class, 'confirmRequest']);
     Route::post('cancel-request', [FriendsController::class, 'cancelRequest']);
     Route::post('delete-friend', [FriendsController::class, 'deleteFriend']);
+    Route::post('friends-birth', [FriendsController::class, 'friendsBirth']);
 
     Route::post('send-family-request', [FamilyController::class, 'sendRequest']);
     Route::post('confirm-family-request', [FamilyController::class, 'confirmFamilyRequest']);
     Route::post('cancel-family-request', [FamilyController::class, 'cancelFamilyRequest']);
     Route::post('delete-family-request', [FamilyController::class, 'deleteFamily']);
 
+    Route::get('user-logout', [UserController::class, 'logout']);
+    Route::post('change-online-status', [UserController::class, 'changeStatus']);
+
+//Admin
+    Route::post('add-group', [GroupMembersController::class, 'store']);
+    Route::post('confirm-group-request', [GroupMembersController::class, 'confirmRequest']);
+    Route::post('cancel-group-request', [GroupMembersController::class, 'cancelRequest']);
+    Route::post('leave-the-group', [GroupMembersController::class, 'leaveGroup']);
+    Route::get('group-data/{id?}', [GroupMembersController::class, 'index']);
+    Route::get('admin-delete-user/{id?}', [GroupController::class, 'AdminDeleteUsers']);
+    Route::post('create-group', [GroupController::class, 'store']);
+    Route::post('create-moderator', [GroupController::class, 'ModeratorCreate']);
+
+//    Moderator
+    Route::post('admin-update-posts', [GroupController::class, 'updatePosts']);
+    Route::post('admin-delete-posts', [GroupController::class, 'deletePosts']);
+    Route::post('moderator-update-posts', [GroupController::class, 'ModeratotupdatePosts']);
+    Route::post('moderator-delete-posts', [GroupController::class, 'ModeratordeletePosts']);
+    Route::post('update-group-name', [GroupController::class, 'UpdateGroup']);
+    Route::get('delete-group', [GroupController::class, 'deleteGroup']);
+    Route::post('delete-moderator', [GroupController::class, 'DeleteModerator']);
+
 });
-Route::post('status', [UserController::class, 'userOnlineStatus']);
+
+Route::get('status/{id?}', [UserController::class, 'userOnlineStatus']);
 
 
 

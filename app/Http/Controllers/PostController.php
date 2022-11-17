@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Post;
+use App\Models\Group;
 use App\Models\Notification;
 use App\Models\Image;
 use App\Events\PostNotification;
@@ -15,6 +16,16 @@ use Validator;
 
 class PostController extends Controller
 {
+    public function index()
+    {
+        $postData = Post::where('id', 12)->with(['comment', 'comment.comentreply'])->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'product was successfully created',
+            'data' => $postData
+        ], 201);
+    }
 
     /**
      * @OA\Post(
@@ -45,6 +56,7 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        $group = Group::where('id', $request->group_id)->with('posts')->get();
 
         $rules = array(
             'description' => 'required',
@@ -94,7 +106,7 @@ class PostController extends Controller
         }
         DB::commit();
 
-        event(new PostNotification($data,$user));
+        event(new PostNotification($data, $user));
         return response()->json([
             'success' => true,
             'message' => 'product was successfully created'

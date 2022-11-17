@@ -12,8 +12,14 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('last_seen')->nullable();
+        Schema::create('group', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('status')->default('open');
+            $table->string('image')->nullable();
+            $table->integer('user_id');
+            $table->string('role')->default('admin');
+            $table->timestamps();
         });
     }
 
@@ -24,8 +30,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('last_seen');
-        });
+        Schema::dropIfExists('group');
     }
 };

@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Passport\HasApiTokens;
+use PHPUnit\TextUI\XmlConfiguration\Group;
 
 class User extends Authenticatable
 {
@@ -90,8 +92,14 @@ class User extends Authenticatable
         return $this->hasMany(Friend::class, 'sender_id');
     }
 
-    public function isOnline()
+    public function receivergroup()
     {
-        return Cache::has('user_is_Online' . $this->id);
+        return $this->hasMany(Groupmember::class, 'receiver_id');
     }
+
+    public function sendergroup()
+    {
+        return $this->hasMany(Groupmember::class, 'sender_id');
+    }
+
 }

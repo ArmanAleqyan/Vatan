@@ -3,40 +3,64 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Carbon\CarbonImmutable;
+use App\Models\Groupmember;
 use Illuminate\Http\Request;
-use App\Models\Friend;
-use App\Models\Notification;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class FriendsController extends Controller
+class GroupMembersController extends Controller
 {
-    public function index()
+
+    /**
+     * @OA\Get(
+     * path="api/group-data",
+     * summary="Group members data",
+     * description="Group members data",
+     * operationId="Groups members data",
+     * tags={"Groups Members"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Group members data",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="id", type="integer",format="id", example="1"),
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Group members data",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+    public function index($id)
     {
-        $data = Friend::where('receiver_id', auth()->user()->id)->where('status', 'unconfirm')->with('sender')->get();
-        if ($data) {
+        $groupData = Groupmember::where('group_id', $id)->where('user_status', '=', null)->with('receiver')->get();
+
+
+        if ($groupData) {
             return response()->json([
                 'success' => true,
-                'message' => 'sent you a request',
-                'data' => $data,
+                'message' => 'this group members',
+                'data' => $groupData,
             ], 200);
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'something was wrong'
-            ]);
+                'message' => 'something was wrong',
+            ], 422);
         }
     }
 
     /**
      * @OA\Post(
-     * path="api/add-friends",
+     * path="api/add-group",
      * summary="User Send Request",
      * description="User Send Request",
-     * operationId="Users Send Request",
-     * tags={"Friends"},
+     * operationId="Userss Send Request",
+     * tags={"Groups"},
      * @OA\RequestBody(
      *    required=true,
      *    description="user sent a friend pressure request",
@@ -48,7 +72,7 @@ class FriendsController extends Controller
      * ),
      * @OA\Response(
      *    response=200,
-     *    description="user sent a friend pressure request",
+     *    description="User Send Request",
      *    @OA\JsonContent(
      *        )
      *     )
@@ -59,18 +83,19 @@ class FriendsController extends Controller
     public function store(Request $request)
     {
         $user = User::where('id', auth()->user()->id)->with('sender')->get();
-        $friendData = [
+        $GroupMembersData = [
             'receiver_id' => $request->receiver_id,
             'sender_id' => auth()->user()->id,
-            'status' => 'unconfirm'
+            'user_status' => 'unconfirm',
+            'group_id' => $request->group_id,
         ];
 
         DB::beginTransaction();
 
-        $requesCount = Friend::where('receiver_id', $request->receiver_id)
-            ->where('sender_id', auth()->user()->id)->get();
+        $requesCount = Groupmember::where('receiver_id', $request->receiver_id)
+            ->where('group_id', $request->group_id)->get();
         if ($requesCount->count() < 1) {
-            $addFriends = Friend::create($friendData);
+            $addMembers = Groupmember::create($GroupMembersData);
         } else {
             return response()->json([
                 'success' => false,
@@ -78,16 +103,16 @@ class FriendsController extends Controller
             ], 422);
         }
 
-        $notificationFriends = Friend::where('receiver_id', $request->receiver_id)->with('receiver')
+        $notificationMembers = Groupmember::where('receiver_id', $request->receiver_id)->with('receiver')
             ->get();
 
         DB::commit();
 
-        if ($addFriends) {
+        if ($addMembers) {
             return response()->json([
                 'success' => true,
                 'message' => 'your request sended',
-                'data' => $notificationFriends,
+                'data' => $notificationMembers,
             ], 200);
         } else {
             return response()->json([
@@ -97,17 +122,16 @@ class FriendsController extends Controller
         }
     }
 
-
     /**
      * @OA\Post(
-     * path="api/confirm-request",
-     * summary="user accepts friend request",
-     * description="user accepts friend request",
-     * operationId="user accepts friend request",
-     * tags={"Friends"},
+     * path="api/confirm-group-request",
+     * summary="user accepts group request",
+     * description="user accepts group request",
+     * operationId="user accepts group request",
+     * tags={"Groups"},
      * @OA\RequestBody(
      *    required=true,
-     *    description="user accepts friend request",
+     *    description="user accepts group request",
      *    @OA\JsonContent(
      *               required={"true"},
      *               @OA\Property(property="sender_id", type="integer",format="text", example="1"),
@@ -116,7 +140,7 @@ class FriendsController extends Controller
      * ),
      * @OA\Response(
      *    response=200,
-     *    description="user accepts friend request",
+     *    description="user accepts group request",
      *    @OA\JsonContent(
      *        )
      *     )
@@ -126,7 +150,7 @@ class FriendsController extends Controller
 
     public function confirmRequest(Request $request)
     {
-        $confirm = Friend::where('receiver_id', auth()->user()->id)
+        $confirm = Groupmember::where('receiver_id', auth()->user()->id)
             ->where('sender_id', $request->sender_id)->with('sender')->get();
 
         if ($confirm->isEmpty()) {
@@ -135,7 +159,7 @@ class FriendsController extends Controller
                 'message' => 'sender not found'
             ], 404);
         } else {
-            $confirmSuccess = Friend::where('receiver_id', auth()->user()->id)
+            $confirmSuccess = Groupmember::where('receiver_id', auth()->user()->id)
                 ->where('sender_id', $request->sender_id)->update(['user_status' => 'true']);
 
             if ($confirmSuccess) {
@@ -154,11 +178,11 @@ class FriendsController extends Controller
 
     /**
      * @OA\Post(
-     * path="api/cancel-request",
+     * path="api/cancel-group-request",
      * summary="user request canceled",
      * description="user request canceled",
-     * operationId="user request canceled",
-     * tags={"Friends"},
+     * operationId="userss request canceled",
+     * tags={"Groups"},
      * @OA\RequestBody(
      *    required=true,
      *    description="user request canceled",
@@ -180,8 +204,8 @@ class FriendsController extends Controller
 
     public function cancelRequest(Request $request)
     {
-        $cacnelRequest = Friend::where('receiver_id', auth()->user()->id)
-            ->where('sender_id', $request->sender_id)->update(['status' => 'false']);
+        $cacnelRequest = Groupmember::where('receiver_id', auth()->user()->id)
+            ->where('sender_id', $request->sender_id)->update(['user_status' => 'false']);
 
         if ($cacnelRequest) {
             return response()->json([
@@ -197,40 +221,37 @@ class FriendsController extends Controller
     }
 
     /**
-     * @OA\Post(
-     * path="api/delete-friend",
-     * summary="user removed from friends list",
-     * description="user removed from friends list",
-     * operationId="user removed from friends list",
-     * tags={"Friends"},
+     * @OA\Get(
+     * path="api/leave-the-group",
+     * summary="Leave Group ",
+     * description="Leave Group",
+     * operationId="Leave Group",
+     * tags={"Groups"},
      * @OA\RequestBody(
      *    required=true,
-     *    description="user removed from friends list",
+     *    description="Leave Group",
      *    @OA\JsonContent(
      *               required={"true"},
-     *               @OA\Property(property="sender_id", type="integer",format="text", example="1"),
+     *               @OA\Property(property="receiver_id", type="integer",format="id", example="1"),
      *
      *    ),
      * ),
      * @OA\Response(
      *    response=200,
-     *    description="user removed from friends list",
+     *    description="Leave Group",
      *    @OA\JsonContent(
      *        )
      *     )
      * )
      */
 
-
-    public function deleteFriend(Request $request)
+    public function leaveGroup(Request $request)
     {
-        $cacnelRequest = Friend::where('receiver_id', auth()->user()->id)
-            ->where('sender_id', $request->sender_id)->delete();
-
+        $cacnelRequest = Groupmember::where('receiver_id', auth()->user()->id)->delete();
         if ($cacnelRequest) {
             return response()->json([
                 'success' => true,
-                'message' => 'user successfully removed from your friends list'
+                'message' => 'you have successfully left the group'
             ], 200);
         } else {
             return response()->json([
@@ -242,22 +263,23 @@ class FriendsController extends Controller
 
     /**
      * @OA\Post(
-     * path="api/friends-birth",
-     * summary="get users birthday",
-     * description="get users birthday",
-     * operationId="get user birthday",
-     * tags={"Friends"},
+     * path="api/add-black-list",
+     * summary="Black List ",
+     * description="Black List",
+     * operationId="Black Lists",
+     * tags={"Groups"},
      * @OA\RequestBody(
      *    required=true,
-     *    description="get users birthday",
+     *    description="Black List",
      *    @OA\JsonContent(
      *               required={"true"},
+     *               @OA\Property(property="user_id", type="integer",format="id", example="1"),
      *
      *    ),
      * ),
      * @OA\Response(
      *    response=200,
-     *    description="get users birthday",
+     *    description="Black List",
      *    @OA\JsonContent(
      *        )
      *     )
@@ -265,70 +287,20 @@ class FriendsController extends Controller
      */
 
 
-    public function friendsBirth(Request $request)
+    public function BlackList(Request $request)
     {
-        $user = Friend::where('sender_id', auth()->user()->id)
-            ->orWhere('receiver_id', auth()->user()->id)
-            ->with(['sender', 'receiver'])
-            ->get();
+        $blackList = Groupmember::where('receiver_id', $request->user_id)->update(['user_status' => 'black_list']);
 
-        foreach ($user as $value) {
-
-            $users = [];
-            if ($value['sender']->id != auth()->user()->id) {
-                $users = [
-                    'id' => $value['sender']->id
-                ];
-
-            }
-            if ($value['receiver']->id != auth()->user()->id) {
-                $users = [
-                    'id' => $value['receiver']->id
-                ];
-            }
-            $today = Carbon::now();
-            $date = today();
-
-            $userBirth = User::where('id', $users)
-                ->whereMonth('date_of_birth', $today->month)
-                ->whereDay('date_of_birth', $today->day)
-                ->get();
-
-            if (!$userBirth->isEmpty()) {
-                $usersbirthday[] = $userBirth;
-            }
-
-            $UsersData = User::where('id', $users)
-                ->where('day', $today->month)
-                ->whereBetween('mount', array($today
-                    ->addDays(-5)->day, $today
-                    ->addDays(5)->day))->get();
-            if (!$UsersData->isEmpty()) {
-                $beetwen[] = $UsersData;
-
-            }
-
-
-            foreach ($UsersData as $userTime) {
-                $int = (int)$userTime['mount'];
-
-                $sum = $int - $today->day;
-
-                if (!$UsersData->isEmpty()) ;
-                $howMany[] = [
-                    'user_id' => $userTime['id'],
-                    'username' => $userTime['name'],
-                    'between days' => $sum
-                ];
-            }
+        if ($blackList) {
+            return response()->json([
+                'success' => true,
+                'message' => 'user successfully added to black list'
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'something was wrong'
+            ], 200);
         }
-        return response()->json([
-            'success' => true,
-            'message' => 'success',
-            'data' => [
-                $beetwen,
-                $howMany
-            ],
-        ]);
     }
 }
