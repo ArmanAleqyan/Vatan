@@ -141,3 +141,4 @@ class AddEmailController extends Controller
         }
     }
 }
+

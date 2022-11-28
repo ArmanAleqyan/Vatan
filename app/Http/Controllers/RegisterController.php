@@ -56,9 +56,20 @@ class RegisterController extends Controller
 
     public function store(RegisterRequest $request)
     {
+
         $data = $request->validated();
         $randomNumber = random_int(100000, 999999);
         if ($request->email) {
+
+            $rules = array(
+                'email' => 'required|min:3|max:64|unique:users',
+            );
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return $validator->errors();
+            }
+
 
 
             $dateStr = $request->date_of_birth;
@@ -103,7 +114,7 @@ class RegisterController extends Controller
 
             $dateStr = $request->date_of_birth;
             $dateArray = date_parse_from_format('Y-m-d', $dateStr);
-            
+
             $number = $request->number;
 
             $call_number = preg_replace('/[^0-9]/', '', $number);
@@ -122,30 +133,32 @@ class RegisterController extends Controller
                 'mount' => $dateArray['month'],
             ]);
             if ($user) {
-
-                try {
-                    $client = new GreenSMS([
-                        'user' => 'sadn',
-                        'pass' => 'Dgdhh378qq',
-                    ]);
-
-                    $response = $client->sms->send([
-                        'to' => $call_number,
-                        'txt' => 'Ваш код потверждения' . $randomNumber
-                    ]);
-                } catch (Exception $e) {
-                    User::where('id', $user->id)->delete();
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'Error in Green Smms',
-                    ]);
-                }
-
+                return response()->json([
+                    'success' => true,
+                    'message' => 'user successfully registered'
+                ], 200);
             }
-            return response()->json([
-                'success' => true,
-                'message' => 'user successfully registered'
-            ], 200);
+//
+//                try {
+//                    $client = new GreenSMS([
+//                        'user' => 'sadn',
+//                        'pass' => 'Dgdhh378qq',
+//                    ]);
+//
+//                    $response = $client->sms->send([
+//                        'to' => $call_number,
+//                        'txt' => 'Ваш код потверждения' . $randomNumber
+//                    ]);
+//                } catch (Exception $e) {
+//                    User::where('id', $user->id)->delete();
+//                    return response()->json([
+//                        'status' => false,
+//                        'message' => 'Error in Green Smms',
+//                    ]);
+//                }
+//
+//            }
+
         }
     }
 }

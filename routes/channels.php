@@ -28,3 +28,8 @@ Broadcast::channel('comment-reply', function () {
 Broadcast::channel('posts', function () {
     return true;
 });
+
+Broadcast::channel('chat', function () {
+    return true;
+});
+

@@ -40,7 +40,6 @@ class ProfileController extends Controller
     public function addNumber(Request $request)
     {
 
-
         $call_number = preg_replace('/[^0-9]/', '', $request->number);
 
         $randomNumber = random_int(100000, 999999);

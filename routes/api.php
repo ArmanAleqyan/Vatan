@@ -21,6 +21,8 @@ use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GroupMembersController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\MediaController;
+use App\Http\Controllers\ChatController;
 
 
 /*
@@ -39,7 +41,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
+
 Route::post('registration', [RegisterController::class, 'store'])->name('registration');
+
+
+
 Route::post('login', [LoginController::class, 'store'])->name('login');
 Route::post('verify', [LoginController::class, 'verify'])->name('verify');
 Route::post('/code-sending', [ForgotController::class, 'send'])->name('code-sending');
@@ -113,6 +119,16 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('update-group-name', [GroupController::class, 'UpdateGroup']);
     Route::get('delete-group', [GroupController::class, 'deleteGroup']);
     Route::post('delete-moderator', [GroupController::class, 'DeleteModerator']);
+
+//    Media
+    Route::post('users-media', [MediaController::class, 'MyMedia']);
+    Route::post('send-friend', [PostController::class, 'store']);
+
+//    Chat
+    Route::post('/chat', [ChatController::class, 'store']);
+    Route::get('/rightsidechat', [ChatController::class, 'RightSiteUsers']);
+    Route::get('/chat/{receiver_id}', [ChatController::class, 'getUsersData'])->name('chat');
+
 
 });
 

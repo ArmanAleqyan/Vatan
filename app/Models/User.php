@@ -102,4 +102,15 @@ class User extends Authenticatable
         return $this->hasMany(Groupmember::class, 'sender_id');
     }
 
+    public function reciverchat()
+    {
+        return $this->hasMany(Chat::class, 'receiver_id');
+    }
+
+    public function senderchat()
+    {
+        return $this->hasMany(Chat::class, 'sender_id');
+    }
+
+
 }

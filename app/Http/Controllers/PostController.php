@@ -59,7 +59,7 @@ class PostController extends Controller
         $group = Group::where('id', $request->group_id)->with('posts')->get();
 
         $rules = array(
-            'description' => 'required',
+            'description' => 'min:1',
         );
 
         $validator = Validator::make($request->all(), $rules);

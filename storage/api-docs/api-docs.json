@@ -1872,6 +1872,39 @@
                 }
             }
         },
+        "api/users-media": {
+            "get": {
+                "tags": [
+                    "Media"
+                ],
+                "summary": "User photo and video",
+                "description": "User photo and video",
+                "operationId": "User photo and video",
+                "requestBody": {
+                    "description": "User photo and video",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User photo and video",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "api/post": {
             "post": {
                 "tags": [

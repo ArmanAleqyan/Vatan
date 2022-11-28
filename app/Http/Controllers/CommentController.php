@@ -80,7 +80,6 @@ class CommentController extends Controller
      * )
      */
 
-
     public function changeStatus(Request $request)
     {
         $deleteNotification = Notification::where('id', $request->notification_id)->update(['status' => false]);
