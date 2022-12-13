@@ -95,9 +95,12 @@ class ChangePasswordController extends Controller
 
     public function ChangeUsername(Request $request)
     {
+
+
         $username = $request->username;
         if (isset($username)) {
-            $changeUsername = User::where('id', auth()->user()->id)->update(['username' => $username]);
+
+                $changeUsername = User::where('id', auth()->user()->id)->update(['username' => $username]);
             if ($changeUsername) {
                 return response()->json([
                     'success' => true,
@@ -109,6 +112,11 @@ class ChangePasswordController extends Controller
                     'message' => 'something was wrong please try again'
                 ], 422);
             }
+        }else{
+            return response()->json([
+                'status' => false,
+                'message' =>  'username required'
+            ], 422);
         }
     }
 }

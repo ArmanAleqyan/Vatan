@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Post;
 use App\Models\Group;
+use App\Models\Friend;
 use App\Models\Notification;
 use App\Models\Image;
 use App\Events\PostNotification;
@@ -18,13 +19,38 @@ class PostController extends Controller
 {
     public function index()
     {
-        $postData = Post::where('id', 12)->with(['comment', 'comment.comentreply'])->get();
+        $postData = Post::where('user_id', auth()->user()->id)->with(['comment', 'comment.comentreply'])->get();
 
         return response()->json([
             'success' => true,
             'message' => 'product was successfully created',
             'data' => $postData
         ], 201);
+    }
+
+    public function friendsPosts()
+    {
+        $data = Friend::where('receiver_id', auth()->user()->id)->where('status', 'true')->with('sender')->get();
+
+
+        $usersPostData = [];
+        foreach ($data as $datum) {
+            $friendId = $datum['sender']['id'];
+            $usersPost = User::where('id', $friendId)->with(['post.comment.comentreply'])->get();
+            $usersPostData[] = $usersPost;
+        }
+        if (!$data->isEmpty()) {
+            return response()->json([
+                'success' => true,
+                'message' => "these are your friend's posts",
+                'data' => $usersPostData,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                "message" => "you dont have friends"
+            ]);
+        }
     }
 
     /**
@@ -77,13 +103,6 @@ class PostController extends Controller
         DB::beginTransaction();
 
         $post = Post::query()->create($data);
-
-
-//        $notificationCreate = Notification::create([
-//            'notification_type' => 'new post',
-//            'sender_id' => auth()->user()->id,
-//        ]);
-//        $notificationData = $notificationCreate->with(['sendernotification', 'receivernotification'])->get();
 
         if (count($fileNames)) {
             foreach ($fileNames as $fileName) {

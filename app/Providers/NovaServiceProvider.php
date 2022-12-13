@@ -2,12 +2,16 @@
 
 namespace App\Providers;
 
+use http\Header;
 use Illuminate\Support\Facades\Gate;
 use App\Nova\License;
 use App\Nova\Release;
 use App\Nova\Series;
 use Wdelfuego\Nova4\CustomizableFooter\Footer;
 use App\Nova\User;
+use App\Nova\Post;
+use App\Nova\Comment;
+use App\Nova\Comentreply;
 use Illuminate\Http\Request;
 use Laravel\Nova\Nova\Dashboards\Main;
 use Laravel\Nova\Menu\Menu;
@@ -15,6 +19,8 @@ use Laravel\Nova\Menu\MenuItem;
 use Laravel\Nova\Menu\MenuSection;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
+
+
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
     /**
@@ -22,20 +28,49 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      *
      * @return void
      */
+
+
+
     public function boot()
     {
-       parent::boot();
 
-       Nova::style('asd',asset('NovaCss.css'));
+
+
+        parent::boot();
+
+
+        Nova::withoutNotificationCenter();
+    
+        Nova::style('asd', asset('NovaCss.css'));
         Footer::set('<p class="text-center">Vatan </p>');
 
 
         Nova::mainMenu(function (Request $request) {
+
+
+
+
+
+
+
+
             return [
 
                 MenuSection::make('Пользватели', [
                     MenuItem::resource(User::class),
                 ])->icon('user')->collapsable(),
+
+                MenuSection::make('Посты', [
+                    MenuItem::resource(Post::class),
+                ])->icon('post')->collapsable(),
+//
+//                MenuSection::make('Комментарии', [
+//                    MenuItem::resource(Comment::class),
+//                ])->icon('comments')->collapsable(),
+//
+//                MenuSection::make('Oтвет комментрия', [
+//                    MenuItem::resource(Comentreply::class),
+//                ])->icon('comments')->collapsable(),
             ];
         });
     }
@@ -47,10 +82,12 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     protected function routes()
     {
+
+
         Nova::routes()
-                ->withAuthenticationRoutes()
-                ->withPasswordResetRoutes()
-                ->register();
+            ->withAuthenticationRoutes()
+            ->withPasswordResetRoutes()
+            ->register();
     }
 
     /**
@@ -62,9 +99,12 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     protected function gate()
     {
+
+
+
         Gate::define('viewNova', function ($user) {
             return in_array($user->email, [
-                //
+
             ]);
         });
     }

@@ -12,6 +12,26 @@ use App\Mail\RessetpasswordMail;
 
 class ForgotController extends Controller
 {
+    
+    public function index()
+    {
+        $data = Groupmembers::where('receiver_id', auth()->user()->id)->where('status', 'unconfirm')->with('sender')->get();
+        if ($data) {
+            return response()->json([
+                'success' => true,
+                'message' => 'sent you a request',
+                'data' => $data,
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'something was wrong'
+            ]);
+        }
+    }
+
+
+
     /**
      * @OA\Post(
      * path="api/code-sending",
@@ -61,7 +81,8 @@ class ForgotController extends Controller
                 ]);
                 return response()->json([
                     'success' => true,
-                    'message' => 'code os sended to your email'
+                    'message' => 'code os sended to your email',
+                    'code' => $randomNumber,
                 ], 200);
 
             }
@@ -96,28 +117,6 @@ class ForgotController extends Controller
                 $randomNumber = random_int(100000, 999999);
                 $user_id = $email_exist[0]->id;
 
-                $details = [
-                    'title' => 'Mail from Vatan',
-                    'code' => $randomNumber,
-                    'body' => 'This is for forggot password'
-                ];
-
-            Mail::to($request->email)->send(new RessetpasswordMail($details));
-
-                $code = RessetPassword::create([
-                    "user_id" => $user_id,
-                    "random_int" => $randomNumber,
-                ]);
-                return response()->json([
-                    'success' => true,
-                    'message' => 'code os sended to your number'
-                ], 200);
-
-            }
-            if (!$email_exist->isEmpty()) {
-
-                $randomNumber = random_int(100000, 999999);
-                $user_id = $email_exist[0]->id;
 
                 $details = [
                     'title' => 'Mail from Vatan',
@@ -125,7 +124,7 @@ class ForgotController extends Controller
                     'body' => 'This is for forggot password'
                 ];
 
-            Mail::to($request->email)->send(new RessetpasswordMail($details));
+//                Mail::to($request->email)->send(new RessetpasswordMail($details));
 
                 $code = RessetPassword::create([
                     "user_id" => $user_id,
@@ -133,15 +132,16 @@ class ForgotController extends Controller
                 ]);
                 return response()->json([
                     'success' => true,
-                    'message' => 'code os sended to your number'
+                    'message' => 'code os sended to your number',
+                    'code' => $randomNumber,
                 ], 200);
 
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'this number does not exist'
+                ], 404);
             }
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'номер не существует !'
-            ]);
         }
     }
 
@@ -179,13 +179,13 @@ class ForgotController extends Controller
         if (!$updatePassword->isEmpty()) {
             return response()->json([
                 'success' => true,
-                'message' => 'you can continue'
+                'message' => 'you can continue',
+                'user_id' => $updatePassword[0]->user_id
             ], 200);
-
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'code is not right'
+                'message' => 'code is not right',
             ], 422);
         }
     }
@@ -226,7 +226,9 @@ class ForgotController extends Controller
                 'password' => Hash::make($request->password)
             ]);
 
-        $delete = RessetPassword::where(['user_id' => $request->user_id])->delete();
+        $delete = RessetPassword::where([
+            'user_id' => $request->user_id
+        ])->delete();
 
         if ($delete) {
             return response()->json([
@@ -236,7 +238,7 @@ class ForgotController extends Controller
         } else {
             return response()->json([
                 'status' => false,
-                'message', 'Произошла ошибка!',
+                'message' => 'Произошла ошибка!',
             ]);
         }
     }

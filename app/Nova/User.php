@@ -11,7 +11,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\Number;
-
+use Laravel\Nova\Fields\HasMany;
 
 
 class User extends Resource
@@ -36,11 +36,14 @@ class User extends Resource
      * @var array
      */
     public static $search = [
-         'name', 'email', 'surname', 'number','patronymic','username'
+        'name', 'email', 'surname', 'number', 'patronymic', 'username'
     ];
-    public static function label() {
+
+    public static function label()
+    {
         return 'Пользватели';
     }
+
     /**
      * Get the fields displayed by the resource.
      *
@@ -50,43 +53,47 @@ class User extends Resource
     public function fields(NovaRequest $request)
     {
         return [
-            Image::make('Автар','avatar'),
-            Text::make('Имя','name')
+            Image::make('Автар', 'avatar')->disk('public')->hidefromindex(),
+
+            Text::make('Имя', 'name')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Text::make('Фамилия','surname')
+            Text::make('Фамилия', 'surname')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Text::make('Отчество','patronymic')->hideFromIndex()
+            Text::make('Отчество', 'patronymic')->hideFromIndex()
                 ->sortable()
-                ->rules('required', 'max:255'),
+                ->rules('required', 'max:255')->hidefromindex(),
 
-            Number::make('Ном.Телефона','number')
+            Number::make('Ном.Телефона', 'number')
                 ->sortable()
-                ->rules('required', 'max:255'),
+                ->rules( 'max:255'),
 
-
-
-            Date::make('Дата Рождения','date_of_birth')->hideFromIndex()
+            Date::make('Дата Рождения', 'date_of_birth')->hideFromIndex()
                 ->sortable()
-                ->rules('required'),
+                ->rules('required')
+            ->hidefromindex(),
 
-            Text::make('Имя Пользвателя','username')
+            Text::make('Имя Пользвателя', 'username')
                 ->sortable()
-                ->rules('required', 'max:255'),
+                ->rules('required', 'max:255')
+            ,
 
-            Text::make('Эл.почта','email')
+            Text::make('Эл.почта', 'email')
                 ->sortable()
-                ->rules('required', 'email', 'max:254')
+                ->rules( 'email', 'max:254')
                 ->creationRules('unique:users,email')
-                ->updateRules('unique:users,email,{{resourceId}}'),
+                ->updateRules('unique:users,email,{{resourceId}}')->hidefromindex(),
 
-            Password::make('Пароль','password')
+            Password::make('Пароль', 'password')
                 ->onlyOnForms()
                 ->creationRules('required', Rules\Password::defaults())
                 ->updateRules('nullable', Rules\Password::defaults()),
+            
+            HasMany::make('Post')
+
         ];
     }
 

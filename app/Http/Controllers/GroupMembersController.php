@@ -39,7 +39,6 @@ class GroupMembersController extends Controller
     {
         $groupData = Groupmember::where('group_id', $id)->where('user_status', '=', null)->with('receiver')->get();
 
-
         if ($groupData) {
             return response()->json([
                 'success' => true,

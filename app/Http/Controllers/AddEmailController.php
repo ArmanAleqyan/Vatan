@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMail;
 use Validator;
 
+
 class AddEmailController extends Controller
 {
     /**
@@ -38,6 +39,7 @@ class AddEmailController extends Controller
 
     public function sendemail(Request $request)
     {
+
         $rules = array(
             'email' => 'min:3|max:64|unique:users',
         );
@@ -72,7 +74,8 @@ class AddEmailController extends Controller
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'email change code sent to your phone '
+                    'message' => 'email change code sent to your phone ',
+                    'verify' => $randomNumber
                 ], 200);
             } else {
                 return response()->json([
@@ -119,7 +122,9 @@ class AddEmailController extends Controller
         $user_email = Changeemail::where('random_int', $code)->get();
 
         if (!$user_email->isEmpty()) {
-            $number = User::create(['email' => $user_email[0]->email]);
+
+            $user = User::where('id', auth()->user()->id)->get();
+            $number = User::where('id', auth()->user()->id)->update(['email' => $user_email[0]->email]);
             $delete = Changeemail::where(['user_id' => $user_id])->delete();
 
             if ($delete) {

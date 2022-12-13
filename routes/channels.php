@@ -33,3 +33,13 @@ Broadcast::channel('chat', function () {
     return true;
 });
 
+Broadcast::channel('friends', function () {
+    return true;
+});
+
+Broadcast::channel('group', function () {
+    return true;
+});
+
+
+

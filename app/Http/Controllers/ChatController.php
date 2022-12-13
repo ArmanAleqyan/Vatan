@@ -10,6 +10,33 @@ use App\Events\ChatNotification;
 
 class ChatController extends Controller
 {
+
+    /**
+     * @OA\Post(
+     * path="api/chat",
+     * summary="User Send message",
+     * description="User send message",
+     * operationId="Users send message",
+     * tags={"Chat"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="User send message",
+     *    @OA\JsonContent(
+     *       required={"required"},
+     *          @OA\Property(property="receiver_id", type="int", format="int", example="1"),
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+
     public function store(Request $request)
     {
         $get_chat = Chat::where('receiver_id', $request->receiver_id)->where('sender_id', auth()->user()->id)->first();
@@ -54,11 +81,9 @@ class ChatController extends Controller
 
         $chat = Chat::create($data);
 
-
         if ($chat) {
 
             $chat_data = Chat::where("receiver_id", $request->receiver_id)->where("sender_id", auth()->user()->id)->get();
-
             foreach ($chat_data as $chat_datum)
                 if ($chat_datum->receiver_id == auth()->id()) {
                     $chat_datum->receiver_id = $chat_data->sender_id;
@@ -76,7 +101,6 @@ class ChatController extends Controller
                     "message" => $chat,
                     "sender" => $user,
                     "receiver" => $receiverUser,
-//                    'receiver_id' => $chat_datum->receiver_id,
                 ]
             ]);
         } else {
@@ -86,6 +110,30 @@ class ChatController extends Controller
             ], 422);
         }
     }
+
+    /**
+     * @OA\Get(
+     * path="api/rightsidechat",
+     * summary="those users with whom you communicated",
+     * description="those users with whom you communicated",
+     * operationId="those userss with whom you communicated",
+     * tags={"Chat"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="those users with whom you communicated",
+     *    @OA\JsonContent(
+     *       required={"required"},
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
 
     public function RightSiteUsers()
     {
@@ -101,6 +149,7 @@ class ChatController extends Controller
             ->get()
             ->unique('room_id')
             ->toArray();
+
         $right_side_data = [];
 
         foreach ($usersChat as $item) {
@@ -114,7 +163,6 @@ class ChatController extends Controller
 
             $messages = $item["messages"];
             $et_message = Chat::where('receiver_id', $receiver_id)->where('room_id', $item['room_id'])->sum('review');
-
 
             $right_side_data[] = [
                 'user_name' => $user_name,
@@ -133,6 +181,33 @@ class ChatController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Get(
+     * path="api/chat{id}",
+     * summary="user correspondence",
+     * description="user correspondence",
+     * operationId="user correspondence",
+     * tags={"Chat"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="user correspondence",
+     *    @OA\JsonContent(
+     *       required={"required"},
+     *     @OA\Property(property="id", type="int", format="int", example="1"),
+     *
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+
     public function getUsersData(Request $request, $receiver_id)
     {
         $data = Chat::where(function ($query) use ($receiver_id) {
@@ -146,7 +221,6 @@ class ChatController extends Controller
             ->with(['user', 'forusers'])
             ->orderBy('id', 'ASC')
             ->get();
-
 
         $get_views = Chat::where('review', 1, 'room_id', $request->room_id, 'receiver_id', \auth()->id())
             ->get();
@@ -178,8 +252,13 @@ class ChatController extends Controller
                 'message' => "chat between two users",
                 'data' => $data,
                 "receiver_user_data" => $user,
-                "receiver_id" => $reciver_id
+                "receiver_id" => $reciver_id,
             ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'user with this not found'
+            ], 422);
         }
     }
 }

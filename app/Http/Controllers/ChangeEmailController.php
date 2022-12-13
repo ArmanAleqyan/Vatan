@@ -7,6 +7,7 @@ use App\Models\Changeemail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Validator;
 
 class ChangeEmailController extends Controller
 {
@@ -37,6 +38,18 @@ class ChangeEmailController extends Controller
 
     public function addEmail(Request $request)
     {
+
+        $rules=array(
+            'email' => 'required|unique:users',
+
+        );
+        $validator=Validator::make($request->all(),$rules);
+        if($validator->fails())
+        {
+            return $validator->errors();
+        }
+
+
         $randomNumber = random_int(100000, 999999);
         $credentails = [
             'email' => $request->email,
@@ -57,7 +70,8 @@ class ChangeEmailController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'email change code sent to your phone '
+                'message' => 'email change code sent to your phone ',
+                'varify' => $randomNumber
             ], 200);
         } else {
             return response()->json([

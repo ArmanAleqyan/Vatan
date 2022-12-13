@@ -353,6 +353,121 @@
                 }
             }
         },
+        "api/chat": {
+            "post": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "User Send message",
+                "description": "User send message",
+                "operationId": "Users send message",
+                "requestBody": {
+                    "description": "User send message",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "receiver_id": {
+                                        "type": "integer",
+                                        "format": "int",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/rightsidechat": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "those users with whom you communicated",
+                "description": "those users with whom you communicated",
+                "operationId": "those userss with whom you communicated",
+                "requestBody": {
+                    "description": "those users with whom you communicated",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/chat{id}": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "user correspondence",
+                "description": "user correspondence",
+                "operationId": "user correspondence",
+                "requestBody": {
+                    "description": "user correspondence",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "api/all-notifications": {
             "get": {
                 "tags": [

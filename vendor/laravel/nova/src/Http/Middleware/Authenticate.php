@@ -21,6 +21,17 @@ class Authenticate extends BaseAuthenticationMiddleware
      */
     public function handle($request, Closure $next, ...$guards)
     {
+
+        if(auth()->user()){
+            if(auth()->user()->role_id != 1){
+                auth()->logout();
+                throw new NovaAuthenticationException('Unauthenticated.');
+               //return redirect()->back();
+            }
+        }
+
+
+        
         try {
             $guard = config('nova.guard');
 

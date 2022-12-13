@@ -10,6 +10,21 @@ use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
+    public function index()
+    {
+        $user = auth()->user();
+
+        if ($user) {
+            return response()->json([
+                'success' => true,
+                $user
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+            ], 422);
+        }
+    }
 
     public function changeStatus(Request $request)
     {
@@ -40,7 +55,6 @@ class UserController extends Controller
                     'message' => 'something was wrong'
                 ], 422);
             }
-
         }
     }
 
@@ -85,5 +99,37 @@ class UserController extends Controller
                 'message' => 'something was wrong'
             ], 422);
         }
+    }
+
+    public function profile()
+    {
+        $auth = User::where('id', auth()->user()->id)->with('post.comment')->get();
+        if ($auth) {
+            return response()->json([
+                'status' => true,
+                'message' => 'user profile',
+                'data' => $auth
+            ], 200);
+        } else
+            return response()->json([
+                'status' => false,
+                'message' => 'something was wrong'
+            ], 422);
+        }
+
+    public function OtherProfile($id)
+    {
+        $auth = User::where('id', $id)->with('post.comment')->get();
+        if ($auth) { 
+            return response()->json([
+                'status' => true,
+                'message' => 'user profile',
+                'data' => $auth
+            ], 200);
+        } else
+            return response()->json([
+                'status' => false,
+                'message' => 'something was wrong'
+            ], 422);
     }
 }

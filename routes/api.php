@@ -40,11 +40,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
-
 Route::post('registration', [RegisterController::class, 'store'])->name('registration');
-
-
 
 Route::post('login', [LoginController::class, 'store'])->name('login');
 Route::post('verify', [LoginController::class, 'verify'])->name('verify');
@@ -89,9 +85,10 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('add-friends', [FriendsController::class, 'index']);
     Route::post('add-friends', [FriendsController::class, 'store']);
     Route::post('confirm-request', [FriendsController::class, 'confirmRequest']);
-    Route::post('cancel-request', [FriendsController::class, 'cancelRequest']);
+    Route::put('cancel-request', [FriendsController::class, 'cancelRequest']);
     Route::post('delete-friend', [FriendsController::class, 'deleteFriend']);
     Route::post('friends-birth', [FriendsController::class, 'friendsBirth']);
+    Route::post('friends-posts', [PostController::class, 'friendsPosts']);
 
     Route::post('send-family-request', [FamilyController::class, 'sendRequest']);
     Route::post('confirm-family-request', [FamilyController::class, 'confirmFamilyRequest']);
@@ -103,6 +100,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
 //Admin
     Route::post('add-group', [GroupMembersController::class, 'store']);
+    Route::get('add-group', [GroupController::class, 'index']);
     Route::post('confirm-group-request', [GroupMembersController::class, 'confirmRequest']);
     Route::post('cancel-group-request', [GroupMembersController::class, 'cancelRequest']);
     Route::post('leave-the-group', [GroupMembersController::class, 'leaveGroup']);
@@ -110,6 +108,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('admin-delete-user/{id?}', [GroupController::class, 'AdminDeleteUsers']);
     Route::post('create-group', [GroupController::class, 'store']);
     Route::post('create-moderator', [GroupController::class, 'ModeratorCreate']);
+    Route::get('your-group', [GroupController::class, 'YourGroup']);
 
 //    Moderator
     Route::post('admin-update-posts', [GroupController::class, 'updatePosts']);
@@ -129,10 +128,15 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/rightsidechat', [ChatController::class, 'RightSiteUsers']);
     Route::get('/chat/{receiver_id}', [ChatController::class, 'getUsersData'])->name('chat');
 
+    Route::get('user-data', [UserController::class, 'index']);
+    Route::get('profile-user', [UserController::class, 'profile']);
+    Route::get('some-user/{id?}', [UserController::class, 'OtherProfile']);
+    Route::get('all-friends', [FriendsController::class, 'AllFriends']);
 
 });
 
 Route::get('status/{id?}', [UserController::class, 'userOnlineStatus']);
+
 
 
 

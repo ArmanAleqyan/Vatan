@@ -2,15 +2,70 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Group;
 use App\Models\Post;
 use App\Models\Groupmember;
 use Illuminate\Support\Facades\Gate;
+use App\Events\GroupRequestEvent;
 
 
 class GroupController extends Controller
 {
+    public function index()
+    {
+        $data = Groupmember::where('receiver_id', auth()->user()->id)
+            ->where('user_status', 'unconfirm')
+            ->with('sender')
+            ->get();
+
+        $userData = [];
+
+        foreach ($data as $datum) {
+            $int = (int)$datum['sender_id'];
+
+            $userss = User::where('id', $int)->get();
+            $userData[] = $userss;
+        }
+        event(new GroupRequestEvent($userData));
+
+        if ($data) {
+            return response()->json([
+                'success' => true,
+                'message' => 'sent you a request',
+                'data' => $data,
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'something was wrong'
+            ]);
+        }
+    }
+
+    public function YourGroup(Request $request)
+    {
+        $user = Groupmember::where('receiver_id', auth()->user()->id)
+            ->where('user_status', 'true')
+            ->with('group')
+            ->get();
+//        dd($user);
+//        $groupData = Group::where()
+
+        if ($user->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'you dont have a group'
+            ]);
+        } else {
+            return response()->json([
+                'success' => true,
+                'data' => $user
+            ]);
+        }
+    }
+
     /**
      * @OA\Post(
      * path="api/create-group",

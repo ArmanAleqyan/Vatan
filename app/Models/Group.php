@@ -9,11 +9,16 @@ class Group extends Model
 {
     use HasFactory;
 
-    protected $table =  'group';
+    protected $table = 'group';
     protected $guarded = [];
 
     public function posts()
     {
         return $this->hasMany(Post::class, 'group_id');
+    }
+
+    public function groupmembers()
+    {
+        return $this->hasMany(Groupmember::class);
     }
 }

@@ -52,7 +52,7 @@ class AddNumberController extends Controller
         if (isset(auth()->user()->number)) {
             return response()->json([
                 'success' => false,
-                'message' => 'you have number'
+                'message' => 'you have number',
             ], 422);
         } else {
 
@@ -79,7 +79,8 @@ class AddNumberController extends Controller
 //                ]);
                 return response()->json([
                     'success' => true,
-                    'message' => 'code successfully send in your number'
+                    'message' => 'code successfully send in your number',
+                    'varify' => $randomNumber
                 ], 200);
             } else {
                 return response()->json([
@@ -119,16 +120,16 @@ class AddNumberController extends Controller
 
     public function addnumber(Request $request)
     {
+
         $code = $request->random_int;
         $user_id = $request->user_id;
 
         $user_number = Changenumber::where('random_int', $code)->get();
-
         if (!$user_number->isEmpty()) {
-            $number = User::create(['number' => $user_number[0]->number]);
-            $delete = Changenumber::where(['user_id' => $user_id])->delete();
+            $user = User::where('id', auth()->user()->id)->get();
+            $number = User::where('id', auth()->user()->id)->update(['number' => $user_number[0]->number]);
 
-            if ($delete) {
+            if ($number) {
                 return response()->json([
                     'success' => true,
                     'message' => 'your number successfully added'

@@ -21,7 +21,7 @@ class ActivityByUser
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check()) {
+        if (Auth::check() && Auth::user()->role_id == 1) {
             $expiresAt = Carbon::now()->addMinutes(1);
             Cache::put('user-is-online-' . Auth::user()->id, true, $expiresAt);
         }

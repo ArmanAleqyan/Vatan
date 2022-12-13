@@ -39,10 +39,9 @@ class LoginController extends Controller
     public function store(Request $request)
     {
         $rules = array(
-            'email' => 'email|max:255',
+            'email' => 'max:255',
             'number' => 'max:255',
             'password' => 'required|min:6'
-
         );
 
         $validator = Validator::make($request->all(), $rules);
@@ -50,22 +49,26 @@ class LoginController extends Controller
             return $validator->errors();
         }
 
-        if ($request->email) {
-            if (Auth::attempt($request->all())) {
+
+        if ($request->email && $request->email!= null) {
+            if (Auth::attempt($request->only('email','password'))) {
                 $token = auth()->user()->createToken('API Token')->accessToken;
-
                 User::where('id', auth()->user()->id)->update(['last_seen' => 'online']);
-
                 return response(['user' => auth()->user(), 'token' => $token], 200);
             } else {
                 return response(['error_message' => 'Incorrect Details. Please try again']);
             }
         } else {
-            if (Auth::attempt($request->all())) {
-                $token = auth()->user()->createToken('API Token')->accessToken;
 
+                 $call_number = preg_replace('/[^0-9]/', '', $request->number);
+            $request['number'] = $call_number;
+            $loginrt = Auth::attempt($request->only('number','password'));
+            dd($loginrt);
+            if ($loginrt == true ) {
+                $token = auth()->user()->createToken('API Token')->accessToken;
                 return response(['user' => auth()->user(), 'token' => $token], 200);
             } else {
+
                 return response(['error_message' => 'Incorrect Details. Please try again']);
             }
         }

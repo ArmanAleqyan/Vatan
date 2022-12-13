@@ -71,7 +71,6 @@ class RegisterController extends Controller
             }
 
 
-
             $dateStr = $request->date_of_birth;
             $dateArray = date_parse_from_format('Y-m-d', $dateStr);
 
@@ -98,9 +97,11 @@ class RegisterController extends Controller
             }
 
             Mail::to($user->email)->send(new SendMail($details));
+
             return response()->json([
                 'success' => true,
-                'message' => 'Register Successfully'
+                'message' => 'Register Successfully',
+                'verify code' => $randomNumber
             ], 200);
         } else {
             $rules = array(
@@ -132,33 +133,39 @@ class RegisterController extends Controller
                 'day' => $dateArray['day'],
                 'mount' => $dateArray['month'],
             ]);
+
+            try {
+                $client = new GreenSMS([
+                    'user' => 'sadn',
+                    'pass' => 'Dgdhh378qq',
+                ]);
+
+                $response = $client->sms->send([
+                    'to' => $call_number,
+                    'txt' => 'Ваш код потверждения' . $randomNumber
+                ]);
+            } catch (Exception $e) {
+                User::where('id', $user->id)->delete();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Error in Green Smms',
+                ]);
+            }
+
+
+
             if ($user) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'user successfully registered'
+                    'message' => 'user successfully registered',
+                    'verify code' => $randomNumber
                 ], 200);
             }
-//
-//                try {
-//                    $client = new GreenSMS([
-//                        'user' => 'sadn',
-//                        'pass' => 'Dgdhh378qq',
-//                    ]);
-//
-//                    $response = $client->sms->send([
-//                        'to' => $call_number,
-//                        'txt' => 'Ваш код потверждения' . $randomNumber
-//                    ]);
-//                } catch (Exception $e) {
-//                    User::where('id', $user->id)->delete();
-//                    return response()->json([
-//                        'status' => false,
-//                        'message' => 'Error in Green Smms',
-//                    ]);
-//                }
-//
-//            }
+
+
+
+            }
 
         }
-    }
+
 }

@@ -22,7 +22,7 @@ class PostNotification implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($data,$user)
+    public function __construct($data, $user)
     {
         $this->data = $data;
         $this->user = $user;

@@ -63,7 +63,8 @@ class ProfileController extends Controller
 //            ]);
             return response()->json([
                 'success' => true,
-                'message' => 'number change code sent to your phone'
+                'message' => 'number change code sent to your phone',
+                'verify'=>$randomNumber
             ], 200);
         } else {
             return response()->json([
@@ -121,7 +122,7 @@ class ProfileController extends Controller
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'something was wrong'
+                    'message' => 'something was wrong',
                 ]);
             }
         } else {

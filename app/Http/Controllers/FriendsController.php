@@ -11,16 +11,48 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Events\FriendRequestEvent;
 
 class FriendsController extends Controller
 {
     public function index()
     {
-        $data = Friend::where('receiver_id', auth()->user()->id)->where('status', 'unconfirm')->with('sender')->get();
+        $data = Friend::where('receiver_id', auth()->user()->id)
+            ->where('status', 'unconfirm')
+            ->with('sender')
+            ->get();
+
+        $userData = [];
+
+        foreach ($data as $datum) {
+            $int = (int)$datum['sender_id'];
+
+            $userss = User::where('id', $int)->get();
+            $userData[] = $userss;
+        }
+        event(new FriendRequestEvent($userData));
+
         if ($data) {
             return response()->json([
                 'success' => true,
                 'message' => 'sent you a request',
+                'data' => $userData,
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'something was wrong'
+            ]);
+        }
+    }
+
+    public function AllFriends()
+    {
+        $data = Friend::where('receiver_id', auth()->user()->id)->where('status', 'true')->with('sender')->get();
+        if ($data) {
+            return response()->json([
+                'success' => true,
+                'message' => 'your friends',
                 'data' => $data,
             ], 200);
         } else {
@@ -30,6 +62,7 @@ class FriendsController extends Controller
             ]);
         }
     }
+
 
     /**
      * @OA\Post(
@@ -55,7 +88,6 @@ class FriendsController extends Controller
      *     )
      * )
      */
-
 
     public function store(Request $request)
     {
@@ -137,7 +169,7 @@ class FriendsController extends Controller
             ], 404);
         } else {
             $confirmSuccess = Friend::where('receiver_id', auth()->user()->id)
-                ->where('sender_id', $request->sender_id)->update(['user_status' => 'true']);
+                ->where('sender_id', $request->sender_id)->update(['status' => 'true']);
 
             if ($confirmSuccess) {
                 return response()->json([
@@ -273,64 +305,72 @@ class FriendsController extends Controller
             ->orWhere('receiver_id', auth()->user()->id)
             ->with(['sender', 'receiver'])
             ->get();
+        if (!$user->isEmpty()) {
 
-        foreach ($user as $value) {
 
-            $users = [];
-            if ($value['sender']->id != auth()->user()->id) {
-                $users = [
-                    'id' => $value['sender']->id
-                ];
+            foreach ($user as $value) {
 
+                $users = [];
+                if ($value['sender']->id != auth()->user()->id) {
+                    $users = [
+                        'id' => $value['sender']->id
+                    ];
+
+                }
+                if ($value['receiver']->id != auth()->user()->id) {
+                    $users = [
+                        'id' => $value['receiver']->id
+                    ];
+                }
+                $today = Carbon::now();
+                $date = today();
+
+                $userBirth = User::where('id', $users)
+                    ->whereMonth('date_of_birth', $today->month)
+                    ->whereDay('date_of_birth', $today->day)
+                    ->get();
+
+                if (!$userBirth->isEmpty()) {
+                    $usersbirthday[] = $userBirth;
+                }
+
+                $UsersData = User::where('id', $users)
+                    ->where('day', $today->month)
+                    ->whereBetween('mount', array($today
+                        ->addDays(-5)->day, $today
+                        ->addDays(5)->day))->get();
+                if (!$UsersData->isEmpty()) {
+                    $beetwen[] = $UsersData;
+
+                }
+
+
+                foreach ($UsersData as $userTime) {
+                    $int = (int)$userTime['mount'];
+
+                    $sum = $int - $today->day;
+
+                    if (!$UsersData->isEmpty()) ;
+                    $howMany[] = [
+                        'user_id' => $userTime['id'],
+                        'username' => $userTime['name'],
+                        'between days' => $sum
+                    ];
+                }
             }
-            if ($value['receiver']->id != auth()->user()->id) {
-                $users = [
-                    'id' => $value['receiver']->id
-                ];
-            }
-            $today = Carbon::now();
-            $date = today();
-
-            $userBirth = User::where('id', $users)
-                ->whereMonth('date_of_birth', $today->month)
-                ->whereDay('date_of_birth', $today->day)
-                ->get();
-
-            if (!$userBirth->isEmpty()) {
-                $usersbirthday[] = $userBirth;
-            }
-
-            $UsersData = User::where('id', $users)
-                ->where('day', $today->month)
-                ->whereBetween('mount', array($today
-                    ->addDays(-5)->day, $today
-                    ->addDays(5)->day))->get();
-            if (!$UsersData->isEmpty()) {
-                $beetwen[] = $UsersData;
-
-            }
-
-
-            foreach ($UsersData as $userTime) {
-                $int = (int)$userTime['mount'];
-
-                $sum = $int - $today->day;
-
-                if (!$UsersData->isEmpty()) ;
-                $howMany[] = [
-                    'user_id' => $userTime['id'],
-                    'username' => $userTime['name'],
-                    'between days' => $sum
-                ];
-            }
+            return response()->json([
+                'success' => true,
+                'message' => 'success',
+                'data' => [
+                    $beetwen,
+                    $howMany
+                ],
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'you donthave friends'
+            ], 404);
         }
-        return response()->json([
-            'success' => true,
-            'message' => 'success',
-            'data' => [
-                $beetwen,
-                $howMany
-            ],
-        ]);
     }
 }
