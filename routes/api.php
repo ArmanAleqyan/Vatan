@@ -49,9 +49,11 @@ Route::post('/restore-password', [ForgotController::class, 'CodeSend']);
 Route::post('/update-password', [ForgotController::class, 'updatePassword']);
 Route::delete('users-delete/{id?}', [HiddenAccountController::class, 'destroy']);
 
+
 Route::group(['middleware' => ['auth:api']], function () {
     Route::post('change-number', [ProfileController::class, 'addNumber']);
     Route::post('update-number', [ProfileController::class, 'UpdateNumber']);
+    Route::get('/rightsidechat', [ChatController::class, 'RightSiteUsers']);
 
     Route::post('change-email', [ChangeEmailController::class, 'addEmail']);
     Route::post('update-email', [ChangeEmailController::class, 'UpdateEmail']);
@@ -66,8 +68,15 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('change-username', [ChangePasswordController::class, 'ChangeUsername']);
 
     Route::post('hidden-account', [HiddenAccountController::class, 'hiddenAccount']);
+
     Route::post('post', [PostController::class, 'store']);
+
     Route::get('post', [PostController::class, 'index']);
+
+
+    Route::post('allpost', [PostController::class, 'allpost' ]);
+    Route::get('singlePageUser/user_id={id}', [UserController::class,'singlePageUser']);
+
 
     Route::post('comment', [CommentController::class, 'store']);
     Route::post('comment-reply', [CommentReplyController::class, 'store']);
@@ -125,7 +134,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
 //    Chat
     Route::post('/chat', [ChatController::class, 'store']);
-    Route::get('/rightsidechat', [ChatController::class, 'RightSiteUsers']);
+
     Route::get('/chat/{receiver_id}', [ChatController::class, 'getUsersData'])->name('chat');
 
     Route::get('user-data', [UserController::class, 'index']);
@@ -134,6 +143,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('all-friends', [FriendsController::class, 'AllFriends']);
 
 });
+
+
 
 Route::get('status/{id?}', [UserController::class, 'userOnlineStatus']);
 

@@ -28,15 +28,15 @@ class FriendsController extends Controller
             $int = (int)$datum['sender_id'];
 
             $userss = User::where('id', $int)->get();
-            $userData[] = $userss;
+//            $userData[] = $userss;
         }
-        event(new FriendRequestEvent($userData));
 
+        event(new FriendRequestEvent($userss));
         if ($data) {
             return response()->json([
                 'success' => true,
                 'message' => 'sent you a request',
-                'data' => $userData,
+                'data' => $userss,
             ], 200);
         } else {
             return response()->json([

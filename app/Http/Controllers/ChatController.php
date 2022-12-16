@@ -40,7 +40,6 @@ class ChatController extends Controller
     public function store(Request $request)
     {
         $get_chat = Chat::where('receiver_id', $request->receiver_id)->where('sender_id', auth()->user()->id)->first();
-
         if ($get_chat == null) {
             $get_chat2 = Chat::where('receiver_id', auth()->user()->id)->where('sender_id', $request->receiver_id)->first();
             if ($get_chat2 == null) {
@@ -51,7 +50,6 @@ class ChatController extends Controller
         } else {
             $room_id = $get_chat->room_id;
         }
-
         $fileNames = array_keys($request->allFiles());
         $data = $request->except($fileNames);
         $fileNames = array_keys($request->allFiles());
@@ -78,11 +76,9 @@ class ChatController extends Controller
                 'room_id' => $room_id,
             ];
         }
-
         $chat = Chat::create($data);
 
         if ($chat) {
-
             $chat_data = Chat::where("receiver_id", $request->receiver_id)->where("sender_id", auth()->user()->id)->get();
             foreach ($chat_data as $chat_datum)
                 if ($chat_datum->receiver_id == auth()->id()) {
@@ -92,15 +88,14 @@ class ChatController extends Controller
             $user = auth()->user();
             $receiverUser = User::where('id', $chat_datum->receiver_id)->get();
             event(new ChatNotification($chat, $receiverUser, auth()->user()));
-
-
             return response()->json([
                 "success" => true,
                 "message" => "your message has been successfully sent",
                 "data" => [
-                    "message" => $chat,
-                    "sender" => $user,
-                    "receiver" => $receiverUser,
+                    'message' =>  'message created'
+//                    "message" => $chat,
+//                    "sender" => $user,
+//                    "receiver" => $receiverUser,
                 ]
             ]);
         } else {
@@ -135,13 +130,15 @@ class ChatController extends Controller
      * )
      */
 
-    public function RightSiteUsers()
+    public function RightSiteUsers(Request $request)
     {
-        $usersChat = Chat::query()->where(function ($query) {
+        $usersChat = Chat::query()->where(function ($query) use ($request) {
             $query->where([
                 'sender_id' => auth()->id(),
+//                'sender_id' => $request->auth_user_id,
             ])->orWhere([
                 'receiver_id' => auth()->id(),
+//                'receiver_id' => $request->auth_user_id,
             ]);
         })
             ->with(['user', 'forusers'])
@@ -151,30 +148,43 @@ class ChatController extends Controller
             ->toArray();
 
         $right_side_data = [];
-
         foreach ($usersChat as $item) {
-
             $review_count = collect($item);
             $user_name = auth()->id() == $item['forusers']['id'] ? $item['user']['name'] : $item['forusers']['name'];
             $receiver_id = auth()->id() == $item['forusers']['id'] ? $item['user']['id'] : $item['forusers']['id'];
             $user_image = auth()->id() == $item['forusers']['id'] ? $item['user']['avatar'] : $item['forusers']['avatar'];
+            $user_surname = auth()->id() == $item['forusers']['id'] ? $item['user']['surname'] : $item['forusers']['surname'];
+
+//            $user_name = $request->auth_user_id == $item['forusers']['id'] ? $item['user']['name'] : $item['forusers']['name'];
+//            $receiver_id = $request->auth_user_id == $item['forusers']['id'] ? $item['user']['id'] : $item['forusers']['id'];
+//            $user_image =$request->auth_user_id == $item['forusers']['id'] ? $item['user']['avatar'] : $item['forusers']['avatar'];
+//            $user_surname = $request->auth_user_id == $item['forusers']['id'] ? $item['user']['surname'] : $item['forusers']['surname'];
+
+
             $image = $item['file'];
             $review = $review_count->sum('review');
-
             $messages = $item["messages"];
             $et_message = Chat::where('receiver_id', $receiver_id)->where('room_id', $item['room_id'])->sum('review');
 
+          $rev = Chat::where('room_id',$item['room_id'])->where('receiver_id', auth()->user()->id)->sum('review');
+//            $rev = Chat::where('room_id',$item['room_id'])->where('receiver_id', $request->auth_user_id)->sum('review');
+
+            $hty = Chat::where('room_id', $item['room_id'])->latest()->first();
             $right_side_data[] = [
+                'created_at' =>  $hty['created_at'],
                 'user_name' => $user_name,
                 'user_image' => $user_image,
-                'messages' => $messages,
-                'image' => $image,
+                'messages' => $hty['message'],
+                'image' => $hty['file'],
                 'receiver_id' => $receiver_id,
-                'review' => $review,
+                'review' => $rev,
                 'count' => $et_message,
                 'room_id' => $item['room_id'],
+                'surname' => $user_surname,
             ];
         }
+
+
         return response()->json([
             'success' => true,
             'userschatdata' => $right_side_data,

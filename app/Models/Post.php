@@ -22,15 +22,40 @@ class Post extends Model
         return $this->hasMany(Image::class);
     }
 
+
     public function comment()
     {
         return $this->hasMany(Comment::class);
     }
 
+    public function commentLike()
+    {
+        return $this->hasMany(Commentslike::class);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function postlikes()
     {
         return $this->hasMany(Postlikes::class);
     }
+
+
 
     public function group()
     {

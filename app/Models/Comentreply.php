@@ -31,4 +31,8 @@ class Comentreply extends Model
     {
         return $this->hasMany(Commentreplylike::class, 'comment_id');
     }
+    public function commentsreplylikeAuthUser()
+    {
+        return $this->hasMany(Commentreplylike::class, 'comment_id')->where('user_id', auth()->user()->id);
+    }
 }

@@ -39,11 +39,8 @@ class ChangePasswordController extends Controller
     {
         $newpassword = $request->newpassword;
         $oldpassword = $request->oldpassword;
-
         $user = User::where('id', auth()->user()->id)->first();
-
         $hash_check = Hash::check($request->oldpassword, $user->password);
-
         if ($hash_check) {
             $passwordchange = User::where('password', $user->password)->update([
                 'password' => Hash::make($newpassword),

@@ -13,10 +13,14 @@ class Replyanswerlike extends Model
 
     protected $guarded = [];
 
-    public function replyanswer()
+    public function replyanswerlike()
     {
-        return $this->belongsTo(Replyanswer::class, 'reply_id');
+        return $this->belongsTo(Replyanswer::class, 'comment_id');
     }
+
+
+
+
 
     public function user()
     {

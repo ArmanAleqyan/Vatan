@@ -31,4 +31,11 @@ class Comment extends Model
     {
         return $this->hasMany(Commentslike::class, 'comment_id');
     }
+
+    public function commmentlikeAuthUser()
+    {
+        return $this->hasMany(Commentslike::class, 'comment_id')->where('user_id', auth()->user()->id);
+    }
+
+
 }

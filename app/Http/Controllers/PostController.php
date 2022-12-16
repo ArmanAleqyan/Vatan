@@ -28,6 +28,61 @@ class PostController extends Controller
         ], 201);
     }
 
+    public function allpost(Request $request){
+
+        if(isset($request->group_id)){
+            $post = Post::wheer('group_id', $request->group_id)->with('images','user','comment', 'comment.commmentlikeAuthUser',
+                'comment.comentreply','comment.comentreply.user','comment.comentreply.commentsreplylikeAuthUser',
+                'comment.comentreply.comentreplyanswer',
+                'comment.comentreply.comentreplyanswer.user'
+            )->withCount('postlikes', 'comment')
+                ->with([
+                    'comment' => function ($query) {
+                        $query->withCount('commmentlike')->withCount('comentreply');
+                    },
+                    'comment.comentreply' => function ($query) {
+                        $query->withCount('commentsreplylike')->withCount('comentreplyanswer');
+                    }
+                    ,
+                    'comment.comentreply.comentreplyanswer' => function ($query) {
+                        $query->withCount('replyanswerlike');
+                    },
+
+                ])
+                ->orderBy('id', 'desc')
+                ->simplepaginate(15);
+        }else{
+            $post = Post::with('images','user','comment', 'comment.commmentlikeAuthUser',
+                'comment.comentreply','comment.comentreply.user','comment.comentreply.commentsreplylikeAuthUser',
+                'comment.comentreply.comentreplyanswer',
+                'comment.comentreply.comentreplyanswer.user'
+            )
+                ->withCount('postlikes', 'comment')
+                ->with([
+                    'comment' => function ($query) {
+                        $query->withCount('commmentlike')->withCount('comentreply');
+                    },
+                    'comment.comentreply' => function ($query) {
+                        $query->withCount('commentsreplylike')->withCount('comentreplyanswer');
+                    }
+                    ,
+                    'comment.comentreply.comentreplyanswer' => function ($query) {
+                        $query->withCount('replyanswerlike');
+                    },
+
+                ])
+                ->orderBy('id', 'desc')
+                ->simplepaginate(15);
+        }
+
+
+
+        return response()->json([
+           'status' => true,
+           'date' => $post
+        ],200);
+    }
+
     public function friendsPosts()
     {
         $data = Friend::where('receiver_id', auth()->user()->id)->where('status', 'true')->with('sender')->get();

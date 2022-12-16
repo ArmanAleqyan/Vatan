@@ -17,4 +17,5 @@ class Postlikes extends Model
     {
         return $this->belongsTo(Post::class);
     }
+
 }

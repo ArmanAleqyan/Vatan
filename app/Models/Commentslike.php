@@ -18,6 +18,13 @@ class Commentslike extends Model
         return $this->belongsTo(Comment::class,'comment_id');
     }
 
+    public function commentLike()
+    {
+        return $this->belongsTo(Post::class,'post_id');
+    }
+
+
+
     public function user()
     {
         return $this->belongsTo(User::class);

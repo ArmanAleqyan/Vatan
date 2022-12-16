@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RessetpasswordMail;
+use Validator;
 
 
 class ForgotController extends Controller
@@ -219,27 +220,32 @@ class ForgotController extends Controller
 
     public function updatePassword(Request $request)
     {
-        $user_id = $request->user_id;
-
-        $user = User::where('id', '=', $request->user_id)
+        $rules = array(
+            'password' => 'min:6|max:254',
+        );
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+        User::where('id', '=', $request->user_id)
             ->update([
                 'password' => Hash::make($request->password)
             ]);
-
-        $delete = RessetPassword::where([
+       RessetPassword::where([
             'user_id' => $request->user_id
         ])->delete();
 
-        if ($delete) {
+
             return response()->json([
                     'status' => true,
-                    'message' => 'Ваш пароль успешно изменен!']
-            );
-        } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Произошла ошибка!',
+                    'message' => 'Ваш пароль успешно изменен!'
             ]);
-        }
+
+
+//            return response()->json([
+//                'status' => false,
+//                'message' => 'Произошла ошибка!',
+
+//        }
     }
 }

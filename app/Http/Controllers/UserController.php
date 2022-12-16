@@ -132,4 +132,16 @@ class UserController extends Controller
                 'message' => 'something was wrong'
             ], 422);
     }
+
+
+
+    public function singlePageUser($id){
+        $user = User::where('id', $id)->get();
+
+
+        return response()->json([
+           'status' => true,
+           'data' => $user
+        ],200);
+    }
 }
