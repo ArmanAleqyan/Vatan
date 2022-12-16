@@ -50,6 +50,8 @@ Route::post('/update-password', [ForgotController::class, 'updatePassword']);
 Route::delete('users-delete/{id?}', [HiddenAccountController::class, 'destroy']);
 
 
+Route::post('SendCodeTwo',[RegisterController::class, 'SendCodeTwo'])->name('SendCodeTwo');
+
 Route::group(['middleware' => ['auth:api']], function () {
     Route::post('change-number', [ProfileController::class, 'addNumber']);
     Route::post('update-number', [ProfileController::class, 'UpdateNumber']);

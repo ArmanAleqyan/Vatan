@@ -56,20 +56,40 @@ class RegisterController extends Controller
 
     public function store(RegisterRequest $request)
     {
+        $rules = array(
+            'name' => 'required|min:3|max:64',
+            'surname' => 'required|min:3|max:64',
+            'password' => 'required|min:6|max:64|confirmed',
+            'password_confirmation' => 'required|min:6|max:64',
+            'patronymic' => 'required|min:3|max:64',
+            'city' => 'required',
+            'username' => 'unique:users|required',
+            'date_of_birth' => 'required',
+        );
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
 
-        $data = $request->validated();
+
+//        $data = $request->validated();
         $randomNumber = random_int(100000, 999999);
         if ($request->email) {
-
             $rules = array(
                 'email' => 'required|min:3|max:64|unique:users',
+                'name' => 'required|min:3|max:64',
+                'surname' => 'required|min:3|max:64',
+                'password' => 'required|min:6|max:64|confirmed',
+                'password_confirmation' => 'required|min:6|max:64',
+                'patronymic' => 'required|min:3|max:64',
+                'city' => 'required',
+                'username' => 'unique:users|required',
+                'date_of_birth' => 'required',
             );
-
             $validator = Validator::make($request->all(), $rules);
             if ($validator->fails()) {
                 return $validator->errors();
             }
-
 
             $dateStr = $request->date_of_birth;
             $dateArray = date_parse_from_format('Y-m-d', $dateStr);
@@ -91,7 +111,7 @@ class RegisterController extends Controller
             if ($user) {
 
                 $details = [
-                    'email' => $user->email,
+                    'email' => $user->name,
                     'verification_at' => $randomNumber,
                 ];
             }
@@ -106,6 +126,14 @@ class RegisterController extends Controller
         } else {
             $rules = array(
                 'number' => 'required|min:3|max:64|unique:users',
+                'name' => 'required|min:3|max:64',
+                'surname' => 'required|min:3|max:64',
+                'password' => 'required|min:6|max:64|confirmed',
+                'password_confirmation' => 'required|min:6|max:64',
+                'patronymic' => 'required|min:3|max:64',
+                'city' => 'required',
+                'username' => 'unique:users|required',
+                'date_of_birth' => 'required',
             );
 
             $validator = Validator::make($request->all(), $rules);
@@ -161,11 +189,65 @@ class RegisterController extends Controller
                     'verify code' => $randomNumber
                 ], 200);
             }
-
-
-
             }
-
         }
 
+
+        public function SendCodeTwo(Request $request){
+            $randomNumber = random_int(100000, 999999);
+
+        if(isset($request->number)){
+            $number = $request->number;
+            $call_number = preg_replace('/[^0-9]/', '', $number);
+            try {
+                $client = new GreenSMS([
+                    'user' => 'sadn',
+                    'pass' => 'Dgdhh378qq',
+                ]);
+                $response = $client->sms->send([
+                    'to' => $call_number,
+                    'txt' => 'Ваш код потверждения' . $randomNumber
+                ]);
+                User::where('number', $request->number)->where('verify_code', '!=', 1)->update([
+                   'verify_code' =>  $randomNumber
+                ]);
+            } catch (Exception $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Error in Green Smms',
+                ]);
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'code send your number',
+                'code' => $randomNumber,
+            ], 200);
+        }elseif (isset($request->email)){
+            User::where('email', $request->email)->where('verify_code', '!=', 1)->update([
+                'verify_code' =>  $randomNumber
+            ]);
+
+            $details = [
+                'email' => $request->email,
+                'verification_at' => $randomNumber,
+            ];
+            Mail::to($request->email)->send(new SendMail($details));
+
+            return response()->json([
+                'status' => true,
+                'message' => 'code send your email',
+                'code' => $randomNumber,
+            ], 200);
+        }else{
+            return response()->json([
+                'status' => false,
+                'message' =>  'Kisat prat tvyalner Mi uxarki Mane Jan'
+            ],422);
+        }
+
+
+
+
+
+        }
 }
