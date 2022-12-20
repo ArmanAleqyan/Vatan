@@ -111,15 +111,12 @@ class RegisterController extends Controller
                 'mount' => $dateArray['month'],
             ]);
             if ($user) {
-
                 $details = [
                     'email' => $user->name,
                     'verification_at' => $randomNumber,
                 ];
             }
-
             Mail::to($user->email)->send(new SendMail($details));
-
             return response()->json([
                 'success' => true,
                 'message' => 'Register Successfully',
@@ -171,8 +168,9 @@ class RegisterController extends Controller
                 ]);
 
                 $response = $client->sms->send([
+                    'from' => 'Vatan',
                     'to' => $call_number,
-                    'txt' => 'Ваш код потверждения' . $randomNumber
+                    'txt' => 'Ваш код потверждения' .' '. $randomNumber
                 ]);
             } catch (Exception $e) {
                 User::where('id', $user->id)->delete();
@@ -245,10 +243,5 @@ class RegisterController extends Controller
                 'message' =>  'Kisat prat tvyalner Mi uxarki Mane Jan'
             ],422);
         }
-
-
-
-
-
         }
 }

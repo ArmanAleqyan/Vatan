@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\RessetPassword;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RessetpasswordMail;
 use Validator;
+use GreenSMS\GreenSMS;
 
 
 class ForgotController extends Controller
@@ -30,9 +32,6 @@ class ForgotController extends Controller
             ]);
         }
     }
-
-
-
     /**
      * @OA\Post(
      * path="api/code-sending",
@@ -63,18 +62,14 @@ class ForgotController extends Controller
         if ($request->email) {
             $email_exist = User::where(['email' => $request->email,])->get();
             if (!$email_exist->isEmpty()) {
-
                 $randomNumber = random_int(100000, 999999);
                 $user_id = $email_exist[0]->id;
-
-
                 $details = [
-                    'title' => 'Mail from Vatan',
+                    'name' => $email_exist[0]['name'],
                     'code' => $randomNumber,
-                    'body' => 'This is for forggot password'
                 ];
 
-//            Mail::to($request->email)->send(new RessetpasswordMail($details));
+            Mail::to($request->email)->send(new RessetpasswordMail($details));
 
                 $code = RessetPassword::create([
                     "user_id" => $user_id,
@@ -86,51 +81,46 @@ class ForgotController extends Controller
                     'code' => $randomNumber,
                 ], 200);
 
+            }else{
+                return response()->json([
+                    'status' => false,
+                    'message' =>  'Senc Emailov User Goyutyun chuni  '
+                ],422);
             }
-//            if (!$email_exist->isEmpty()) {
-//
-//                $randomNumber = random_int(100000, 999999);
-//                $user_id = $email_exist[0]->id;
-//
-//                $details = [
-//                    'title' => 'Mail from Vatan',
-//                    'code' => $randomNumber,
-//                    'body' => 'This is for forggot password'
-//                ];
-//
-////            Mail::to($request->email)->send(new RessetpasswordMail($details));
-//
-//                $code = RessetPassword::create([
-//                    "user_id" => $user_id,
-//                    "random_int" => $randomNumber,
-//                ]);
-//                return response()->json([
-//                    'success' => true,
-//                    'message' => 'code os sended to your email'
-//                ], 200);
-//
-//            }
         }
         if ($request->number) {
             $email_exist = User::where(['number' => $request->number,])->get();
             if (!$email_exist->isEmpty()) {
-
                 $randomNumber = random_int(100000, 999999);
                 $user_id = $email_exist[0]->id;
-
-
-                $details = [
-                    'title' => 'Mail from Vatan',
-                    'code' => $randomNumber,
-                    'body' => 'This is for forggot password'
-                ];
-
-//                Mail::to($request->email)->send(new RessetpasswordMail($details));
-
                 $code = RessetPassword::create([
                     "user_id" => $user_id,
                     "random_int" => $randomNumber,
                 ]);
+                $number = $request->number;
+                $call_number = preg_replace('/[^0-9]/', '', $number);
+                try {
+                    $client = new GreenSMS([
+                        'user' => 'sadn',
+                        'pass' => 'Dgdhh378qq',
+                    ]);
+                    $response = $client->sms->send([
+                        'from' => 'Vatan',
+                        'to' => $call_number,
+                        'txt' => 'Ваш код потверждения' .' '. $randomNumber
+                    ]);
+                    User::where('number', $request->number)->where('verify_code', '!=', 1)->update([
+                        'verify_code' =>  $randomNumber
+                    ]);
+                } catch (Exception $e) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Error in Green Smms',
+                    ]);
+                }
+
+
+
                 return response()->json([
                     'success' => true,
                     'message' => 'code os sended to your number',

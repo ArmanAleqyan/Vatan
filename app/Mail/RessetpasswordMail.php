@@ -32,7 +32,7 @@ class RessetpasswordMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Mail from .com')->view('mails.ressetpasswordmail');
+        return $this->subject('Код потверждения')->view('mails.ressetpasswordmail');
     }
 
 }
