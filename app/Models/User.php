@@ -42,6 +42,11 @@ class User extends Authenticatable
         'date_of_birth' => 'datetime',
     ];
 
+    public function UserGroup()
+    {
+        return $this->hasMany(Group::class);
+    }
+
     public function role()
     {
         return $this->belongsTo(Role::class);

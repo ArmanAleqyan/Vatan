@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Post;
+use App\Models\Friend;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -138,10 +140,81 @@ class UserController extends Controller
     public function singlePageUser($id){
         $user = User::where('id', $id)->get();
 
+        $post = Post::where('user_id',$id)->with('images','user','comment', 'comment.commmentlikeAuthUser',
+            'comment.comentreply','comment.comentreply.user','comment.comentreply.commentsreplylikeAuthUser',
+            'comment.comentreply.comentreplyanswer',
+            'comment.comentreply.comentreplyanswer.user'
+        )
+            ->withCount('postlikes', 'comment')
+            ->with([
+                'comment' => function ($query) {
+                    $query->withCount('commmentlike')->withCount('comentreply');
+                },
+                'comment.comentreply' => function ($query) {
+                    $query->withCount('commentsreplylike')->withCount('comentreplyanswer');
+                }
+                ,
+                'comment.comentreply.comentreplyanswer' => function ($query) {
+                    $query->withCount('replyanswerlike');
+                },
+
+            ])
+            ->orderBy('id', 'desc')
+            ->simplepaginate(15);
+
+        $friend = Friend::where('sender_id',auth()->user()->id)->where('receiver_id', $id)
+            ->orWhere('receiver_id', auth()->user()->id)->where('sender_id', $id)->get();
+
 
         return response()->json([
            'status' => true,
-           'data' => $user
+           'data' => $user,
+            'post' => $post,
+            'friend' => $friend
         ],200);
     }
+
+
+    public function UpdatePhotoAndBagraundPhoto(Request $request){
+
+        if(isset($request->avatar)){
+            $avatar = $request->file('avatar');
+            $destinationPath = 'uploads';
+            $originalFile = time() . $avatar->getClientOriginalName();
+            $avatar->move($destinationPath, $originalFile);
+            $avatar = $originalFile;
+            User::where('id', auth()->user()->id)->update([
+                'avatar' => $avatar,
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'photo updated',
+                'photo' => $avatar
+            ]);
+        }
+       elseif(isset($request->backraundPhoto)){
+            $avatar = $request->file('backraundPhoto');
+            $destinationPath = 'uploads';
+            $originalFile = time() . $avatar->getClientOriginalName();
+            $avatar->move($destinationPath, $originalFile);
+            $avatar = $originalFile;
+            User::where('id', auth()->user()->id)->update([
+                'backraundPhoto' => $avatar,
+            ]);
+            return response()->json([
+                'status' => true,
+                'message' => 'backraund updated',
+                'photo' => $avatar
+            ]);
+        }else{
+            return  response([
+                'status' => false,
+                'message' =>  'inches uxarkel  vor mihatel uzumes updtae anes  normal tvyal uxarki kam  backraundPhoto kam avatar'
+            ], 422);
+        }
+    }
+
 }
+
+

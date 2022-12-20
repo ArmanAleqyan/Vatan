@@ -259,7 +259,7 @@ class FriendsController extends Controller
     public function deleteFriend(Request $request)
     {
         $cacnelRequest = Friend::where('receiver_id', auth()->user()->id)
-            ->where('sender_id', $request->sender_id)->delete();
+            ->where('sender_id', $request->sender_id)->orwhere('receiver_id', $request->sender_id)->where('sender_id', auth()->user()->id)->delete();
 
         if ($cacnelRequest) {
             return response()->json([
@@ -305,11 +305,9 @@ class FriendsController extends Controller
             ->orWhere('receiver_id', auth()->user()->id)
             ->with(['sender', 'receiver'])
             ->get();
+
         if (!$user->isEmpty()) {
-
-
             foreach ($user as $value) {
-
                 $users = [];
                 if ($value['sender']->id != auth()->user()->id) {
                     $users = [
@@ -339,9 +337,32 @@ class FriendsController extends Controller
                     ->whereBetween('mount', array($today
                         ->addDays(-5)->day, $today
                         ->addDays(5)->day))->get();
+
                 if (!$UsersData->isEmpty()) {
                     $beetwen[] = $UsersData;
 
+
+                    foreach ($UsersData as $userTime) {
+                        $int = (int)$userTime['mount'];
+
+                        $sum = $int - $today->day;
+
+                        if (!$UsersData->isEmpty()){
+                            $howMany[] = [
+                                'user_id' => $userTime['id'],
+                                'username' => $userTime['name'],
+                                'between days' => $sum
+                            ];
+                        }else{
+                            $howMany = [];
+                        };
+
+                    }
+
+
+                }else{
+                    $beetwen = [];
+                    $howMany = [];
                 }
 
 
@@ -350,21 +371,25 @@ class FriendsController extends Controller
 
                     $sum = $int - $today->day;
 
-                    if (!$UsersData->isEmpty()) ;
-                    $howMany[] = [
-                        'user_id' => $userTime['id'],
-                        'username' => $userTime['name'],
-                        'between days' => $sum
-                    ];
+                    if (!$UsersData->isEmpty()){
+                        $howMany[] = [
+                            'user_id' => $userTime['id'],
+                            'username' => $userTime['name'],
+                            'between days' => $sum
+                        ];
+                    }else{
+                        $howMany = [];
+                    };
+
                 }
             }
             return response()->json([
                 'success' => true,
                 'message' => 'success',
-                'data' => [
-                    $beetwen,
-                    $howMany
-                ],
+//                'data' => [
+                 'beetwen'=>   $beetwen,
+                   'howmany' =>  $howMany
+//                ],
             ]);
         } else {
             return response()->json([

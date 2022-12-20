@@ -21,4 +21,16 @@ class Group extends Model
     {
         return $this->hasMany(Groupmember::class);
     }
+
+    public function receivergroup()
+    {
+        return $this->belongsto(User::class, 'receiver_id');
+    }
+
+
+
+    public function UserGroup()
+    {
+        return $this->belongsto(User::class, 'user_id');
+    }
 }

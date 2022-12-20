@@ -15,6 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('backraundPhoto')->nullable();
             $table->string('name')->nullable();
             $table->string('surname')->nullable();
             $table->string('number')->unique()->nullable();

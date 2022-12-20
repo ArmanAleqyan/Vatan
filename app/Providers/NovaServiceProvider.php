@@ -12,6 +12,7 @@ use App\Nova\User;
 use App\Nova\Post;
 use App\Nova\Comment;
 use App\Nova\Comentreply;
+use App\Nova\Group;
 use Illuminate\Http\Request;
 use Laravel\Nova\Nova\Dashboards\Main;
 use Laravel\Nova\Menu\Menu;
@@ -46,14 +47,6 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 
 
         Nova::mainMenu(function (Request $request) {
-
-
-
-
-
-
-
-
             return [
 
                 MenuSection::make('Пользватели', [
@@ -62,6 +55,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 
                 MenuSection::make('Посты', [
                     MenuItem::resource(Post::class),
+                ])->icon('post')->collapsable(),
+                MenuSection::make('Группы', [
+                    MenuItem::resource(Group::class),
                 ])->icon('post')->collapsable(),
 //
 //                MenuSection::make('Комментарии', [

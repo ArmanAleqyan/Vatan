@@ -31,7 +31,7 @@ class PostController extends Controller
     public function allpost(Request $request){
 
         if(isset($request->group_id)){
-            $post = Post::wheer('group_id', $request->group_id)->with('images','user','comment', 'comment.commmentlikeAuthUser',
+            $post = Post::wheer('group_id', $request->group_id)->with('images','user','comment','PostLike', 'comment.commmentlikeAuthUser',
                 'comment.comentreply','comment.comentreply.user','comment.comentreply.commentsreplylikeAuthUser',
                 'comment.comentreply.comentreplyanswer',
                 'comment.comentreply.comentreplyanswer.user'
@@ -52,7 +52,7 @@ class PostController extends Controller
                 ->orderBy('id', 'desc')
                 ->simplepaginate(15);
         }else{
-            $post = Post::with('images','user','comment', 'comment.commmentlikeAuthUser',
+            $post = Post::with('images','user','comment', 'PostLike', 'comment.commmentlikeAuthUser',
                 'comment.comentreply','comment.comentreply.user','comment.comentreply.commentsreplylikeAuthUser',
                 'comment.comentreply.comentreplyanswer',
                 'comment.comentreply.comentreplyanswer.user'
@@ -70,8 +70,7 @@ class PostController extends Controller
                         $query->withCount('replyanswerlike');
                     },
 
-                ])
-                ->orderBy('id', 'desc')
+                ])->orderBy('id', 'desc')
                 ->simplepaginate(15);
         }
 

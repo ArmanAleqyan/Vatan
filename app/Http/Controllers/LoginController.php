@@ -134,19 +134,16 @@ class LoginController extends Controller
         }
         $user_code = $request->verified_code;
 
-        if(isset($request->phone)){
+        if(isset($request->number)){
             $users = User::where('verify_code', '=', $user_code)->where('number', $request->number)->first();
         }elseif($request->email){
             $users = User::where('verify_code', '=', $user_code)->where('email', $request->email)->first();
         }else{
-
             return response()->json([
                'status' => false,
                'message' =>  'Mane jan es kisat prat tvyalneri het es inch anem ))'
             ],422);
-
         }
-
         if ($users != null) {
             $user_id = $users->id;
             $token =   $users->createToken('API Token')->accessToken;

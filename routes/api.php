@@ -53,6 +53,8 @@ Route::delete('users-delete/{id?}', [HiddenAccountController::class, 'destroy'])
 Route::post('SendCodeTwo',[RegisterController::class, 'SendCodeTwo'])->name('SendCodeTwo');
 
 Route::group(['middleware' => ['auth:api']], function () {
+
+    Route::post('UpdatePhotoAndBagraundPhoto', [UserController::class, 'UpdatePhotoAndBagraundPhoto']);
     Route::post('change-number', [ProfileController::class, 'addNumber']);
     Route::post('update-number', [ProfileController::class, 'UpdateNumber']);
     Route::get('/rightsidechat', [ChatController::class, 'RightSiteUsers']);
