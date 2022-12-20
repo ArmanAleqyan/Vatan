@@ -19,6 +19,8 @@
         "laravel/passport": "^11.2",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "maatwebsite/laravel-nova-excel": "^1.3",
+        "psr/simple-cache": "^2.0",
         "pusher/pusher-php-server": "^7.2",
         "stevebauman/location": "^6.5",
         "wdelfuego/nova4-customizable-footer": "^1.0"
