@@ -78,7 +78,7 @@ class RegisterController extends Controller
         $randomNumber = random_int(100000, 999999);
         if ($request->email) {
             $rules = array(
-                'email' => 'required|min:3|max:64|unique:users',
+                'email' => 'required|min:3|max:64|unique:users|email',
                 'name' => 'required|min:3|max:64',
                 'surname' => 'required|min:3|max:64',
                 'password' => 'required|min:6|max:64|confirmed',
