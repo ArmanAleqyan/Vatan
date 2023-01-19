@@ -9,6 +9,7 @@ use GreenSMS\GreenSMS;
 use Validator;
 
 
+
 class ProfileController extends Controller
 {
     /**
@@ -43,35 +44,50 @@ class ProfileController extends Controller
         $call_number = preg_replace('/[^0-9]/', '', $request->number);
 
         $randomNumber = random_int(100000, 999999);
-        $credentails = [
-            'number' => $request->number,
-            'user_id' => auth()->user()->id,
-            'random_int' => $randomNumber
-        ];
 
-        $CreateNumber = Changenumber::create($credentails);
+        $request['number'] = $call_number;
 
-        if ($CreateNumber) {
-//            $client = new GreenSMS([
-//                'user' => 'sadn',
-//                'pass' => 'Dgdhh378qq',
-//            ]);
-//
-//            $response = $client->sms->send([
-//                'to' => $call_number,
-//                'txt' => 'Here is your message for delivery ' . $randomNumber
-//            ]);
+        $rules = array(
+            'number' => 'required|max:64|unique:users',
+        );
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+        try {
+            $client = new GreenSMS([
+                'user' => 'sadn',
+                'pass' => 'Dgdhh378qq',
+            ]);
+            Changenumber::where('user_id', auth()->user()->id)->delete();
+            $credentails = [
+                'number' => $call_number,
+                'user_id' => auth()->user()->id,
+                'random_int' => $randomNumber
+            ];
+
+            $CreateNumber = Changenumber::create($credentails);
+
+
+            $response = $client->sms->send([
+                'from' => 'vatan',
+                'to' => $call_number,
+                'txt' => 'Ваш код потверждения ' .' '. $randomNumber
+            ]);
             return response()->json([
                 'success' => true,
                 'message' => 'number change code sent to your phone',
                 'verify'=>$randomNumber
             ], 200);
-        } else {
+        }catch (\Exception $e){
             return response()->json([
-                'success' => false,
-                'message' => 'something was wrong'
-            ], 422);
+               'status' => false,
+               'message' => 'Green Error'
+            ]);
         }
+
+
+
     }
 
     /**
@@ -106,7 +122,7 @@ class ProfileController extends Controller
         $code = $request->random_int;
         $user_id = $request->user_id;
 
-        $user_number = Changenumber::where('random_int', $code)->get();
+        $user_number = Changenumber::where('random_int', $code)->where('user_id', $user_id)->get();
 
         if (!$user_number->isEmpty()) {
             $number = User::where('id', $user_id)->update([

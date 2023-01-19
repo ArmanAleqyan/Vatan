@@ -40,8 +40,14 @@ class AddNumberController extends Controller
 
     public function sendnumber(Request $request)
     {
+
+
+        $call_number = preg_replace('/[^0-9]/', '', $request->number);
+
+        $request['number'] = $call_number;
+
         $rules = array(
-            'number' => 'min:3|max:64|unique:users',
+            'number' => 'min:11|max:64|unique:users|required',
         );
 
         $validator = Validator::make($request->all(), $rules);
@@ -55,10 +61,11 @@ class AddNumberController extends Controller
                 'message' => 'you have number',
             ], 422);
         } else {
-
             $call_number = preg_replace('/[^0-9]/', '', $request->number);
-
             $randomNumber = random_int(100000, 999999);
+
+            Changenumber::where('user_id', auth()->user()->id)->delete();
+            
             $credentails = [
                 'number' => $call_number,
                 'user_id' => auth()->user()->id,
@@ -68,20 +75,30 @@ class AddNumberController extends Controller
             $CreateEmail = Changenumber::create($credentails);
 
             if ($CreateEmail) {
-//                $client = new GreenSMS([
-//                    'user' => 'sadn',
-//                    'pass' => 'Dgdhh378qq',
-//                ]);
-//
-//                $response = $client->sms->send([
-//                    'to' => $call_number,
-//                    'txt' => 'Here is your message for delivery' . $randomNumber
-//                ]);
-                return response()->json([
-                    'success' => true,
-                    'message' => 'code successfully send in your number',
-                    'varify' => $randomNumber
-                ], 200);
+                $client = new GreenSMS([
+                    'user' => 'sadn',
+                    'pass' => 'Dgdhh378qq',
+                ]);
+
+                try{
+                    $response = $client->sms->send([
+                        'from' =>  'vatan',
+                        'to' => $call_number,
+                        'txt' => 'Ваш код  потверждения' .' '. $randomNumber
+                    ]);
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'code successfully send in your number',
+                        'varify' => $randomNumber
+                    ], 200);
+                }catch (\Exception $e){
+                    return response()->json([
+                       'status' => false,
+                       'message' => 'Green error',
+                       'greenError' => $e,
+                    ]);
+                }
+
             } else {
                 return response()->json([
                     'success' => false,
@@ -125,8 +142,10 @@ class AddNumberController extends Controller
         $user_id = $request->user_id;
 
         $user_number = Changenumber::where('random_int', $code)->get();
+
         if (!$user_number->isEmpty()) {
             $user = User::where('id', auth()->user()->id)->get();
+//            Changenumber::where('random_int', $code)->delete();
             $number = User::where('id', auth()->user()->id)->update(['number' => $user_number[0]->number]);
 
             if ($number) {

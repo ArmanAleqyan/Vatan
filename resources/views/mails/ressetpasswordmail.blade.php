@@ -1,18 +1,9 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-</head>
-<body>
+<div style="margin: auto">
+<h1 style="display: flex; justify-content: center"> Вас приветствует социальная сеть Vatan.</h1>
 
-<h1>{{ $details['title'] }}</h1>
-<h3>{{ $details['code'] }}</h3>
-<p>{{ $details['body'] }}</p>
+<img src="{{asset('uploads/Chaguch.png')}}" style="width: 200px; display: flex; justify-content: center; margin: auto">
+<p >Здравствуйте {{$details['name']}}, </p>
+<p style="margin: auto" >Вы запросили Код потверждения .</p>
+<p>  Ваш код подтверждения  {{$details['code']}} </p>
+</div>
 
-<p>Thank you</p>
-
-</body>
-</html>

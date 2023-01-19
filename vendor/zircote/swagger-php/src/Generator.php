@@ -80,13 +80,14 @@ class Generator
         $this->setNamespaces(self::DEFAULT_NAMESPACES);
 
         // kinda config stack to stay BC...
+        // @deprecated Can be removed once doctrine/annotations 2.0 becomes mandatory
         $this->configStack = new class() {
             protected $generator;
 
             public function push(Generator $generator): void
             {
                 $this->generator = $generator;
-                if (class_exists(AnnotationRegistry::class, true)) {
+                if (class_exists(AnnotationRegistry::class, true) && method_exists(AnnotationRegistry::class, 'registerLoader')) {
                     // keeping track of &this->generator allows to 'disable' the loader after we are done;
                     // no unload, unfortunately :/
                     $gref = &$this->generator;
@@ -298,10 +299,25 @@ class Generator
         return $this;
     }
 
-    public function addProcessor(callable $processor): Generator
+    /**
+     * @param class-string|null $before
+     */
+    public function addProcessor(callable $processor, ?string $before = null): Generator
     {
         $processors = $this->getProcessors();
-        $processors[] = $processor;
+        if (!$before) {
+            $processors[] = $processor;
+        } else {
+            $tmp = [];
+            foreach ($processors as $current) {
+                if ($current instanceof $before) {
+                    $tmp[] = $processor;
+                }
+                $tmp[] = $current;
+            }
+            $processors = $tmp;
+        }
+
         $this->setProcessors($processors);
 
         return $this;

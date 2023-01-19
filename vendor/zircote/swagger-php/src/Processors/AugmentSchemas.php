@@ -8,6 +8,7 @@ namespace OpenApi\Processors;
 
 use OpenApi\Analysis;
 use OpenApi\Annotations as OA;
+use OpenApi\Context;
 use OpenApi\Generator;
 
 /**
@@ -22,8 +23,10 @@ class AugmentSchemas
         /** @var OA\Schema[] $schemas */
         $schemas = $analysis->getAnnotationsOfType(OA\Schema::class);
 
-        // Use the class names for @OA\Schema()
         foreach ($schemas as $schema) {
+            if (!$schema->isRoot(OA\Schema::class)) {
+                continue;
+            }
             if (Generator::isDefault($schema->schema)) {
                 if ($schema->_context->is('class')) {
                     $schema->schema = $schema->_context->class;
@@ -54,29 +57,6 @@ class AugmentSchemas
                         if ($annotation->_context->nested) {
                             // we shouldn't merge property into nested schemas
                             continue;
-                        }
-
-                        if (!Generator::isDefault($annotation->allOf)) {
-                            $schema = null;
-                            foreach ($annotation->allOf as $nestedSchema) {
-                                if (!Generator::isDefault($nestedSchema->ref)) {
-                                    continue;
-                                }
-
-                                $schema = $nestedSchema;
-                            }
-
-                            if ($schema === null) {
-                                $schema = new OA\Schema([
-                                    '_context' => $annotation->_context,
-                                    '_aux' => true,
-                                ]);
-                                $analysis->addAnnotation($schema, $schema->_context);
-                                $annotation->allOf[] = $schema;
-                            }
-
-                            $schema->merge([$property], true);
-                            break;
                         }
 
                         $annotation->merge([$property], true);
@@ -121,8 +101,7 @@ class AugmentSchemas
                 if (!$allOfPropertiesSchema) {
                     $allOfPropertiesSchema = new OA\Schema([
                         'properties' => [],
-                        '_context' => $schema->_context,
-                        '_aux' => true,
+                        '_context' => new Context(['generated' => true], $schema->_context),
                     ]);
                     $analysis->addAnnotation($allOfPropertiesSchema, $allOfPropertiesSchema->_context);
                     $schema->allOf[] = $allOfPropertiesSchema;

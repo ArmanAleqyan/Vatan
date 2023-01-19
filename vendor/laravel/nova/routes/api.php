@@ -58,6 +58,7 @@ use Laravel\Nova\Http\Controllers\TrixAttachmentController;
 use Laravel\Nova\Http\Controllers\UpdateFieldController;
 use Laravel\Nova\Http\Controllers\UpdatePivotFieldController;
 
+
 // Scripts & Styles...
 Route::get('/scripts/{script}', ScriptController::class)->middleware(CheckResponseForModifications::class);
 Route::get('/styles/{style}', StyleController::class)->middleware(CheckResponseForModifications::class);

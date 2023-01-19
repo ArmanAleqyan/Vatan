@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Chat;
 use App\Events\ChatNotification;
+use Carbon\Carbon;
 
 
 class ChatController extends Controller
@@ -50,22 +51,72 @@ class ChatController extends Controller
         } else {
             $room_id = $get_chat->room_id;
         }
-        $fileNames = array_keys($request->allFiles());
-        $data = $request->except($fileNames);
-        $fileNames = array_keys($request->allFiles());
-        if (count($fileNames)) {
+
+
+        $fileNames = $request->file;
+
+
+        if (isset($fileNames)) {
+            $time = time();
             foreach ($fileNames as $fileName) {
-                $image = $request->file($fileName);
-                $destinationPath = 'public/uploads';
-                $originalFile = time() . $image->getClientOriginalName();
+                $destinationPath = 'uploads';
+                $originalFile = $time++ . $fileName->getClientOriginalName();
+                $fileName->move($destinationPath, $originalFile);
+                $file = $originalFile;
+
                 $data = [
                     'sender_id' => auth()->user()->id,
                     'receiver_id' => $request->receiver_id,
                     'messages' => $request->messages,
                     'notification' => 0,
                     'room_id' => $room_id,
-                    'file' => $originalFile,
+                    'file' => $file,
                 ];
+
+
+
+                $chat = Chat::create([
+                        'sender_id' => auth()->user()->id,
+                        'receiver_id' => $request->receiver_id,
+                        'messages' => $request->messages,
+                        'file' => $file,
+                        'notification' => 0,
+                        'room_id' => $room_id,
+                        'created_at' => Carbon::now()
+                    ]
+
+
+                );
+
+                $getCount = Chat::where('sender_id', auth()->user()->id)->where('receiver_id',$request->receiver_id)->sum('review');
+                $lattestMessage = Chat::where('sender_id', auth()->user()->id)->where('receiver_id',$request->receiver_id)->latest()->first();
+
+
+                $lattestMessage['notification'] = $lattestMessage->created_at->diffForHumans();
+
+
+
+
+
+                if ($chat) {
+                    $chat_data = Chat::where("receiver_id", $request->receiver_id)->where("sender_id", auth()->user()->id)->get();
+                    foreach ($chat_data as $chat_datum)
+                        if ($chat_datum->receiver_id == auth()->id()) {
+                            $chat_datum->receiver_id = $chat_data->sender_id;
+                            $chat_datum->sender_id = auth()->id();
+                        }
+                    $user = auth()->user();
+                    $receiverUser = User::where('id', $chat_datum->receiver_id)->get();
+                    event(new ChatNotification($chat, $receiverUser, auth()->user(),$getCount,$lattestMessage->created_at->diffForHumans()));
+
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'something was wrong'
+                    ], 422);
+                }
+
+
             }
         } else {
             $data = [
@@ -76,8 +127,22 @@ class ChatController extends Controller
                 'room_id' => $room_id,
             ];
         }
-        $chat = Chat::create($data);
 
+        
+        $chat = Chat::create([
+            'sender_id' => auth()->user()->id,
+            'receiver_id' => $request->receiver_id,
+            'messages' => $request->messages,
+            'notification' => 0,
+            'room_id' => $room_id,
+                'created_at' => Carbon::now()
+        ]
+
+
+        );
+        $getCount = Chat::where('sender_id', auth()->user()->id)->where('receiver_id',$request->receiver_id)->sum('review');
+        $lattestMessage = Chat::where('sender_id', auth()->user()->id)->where('receiver_id',$request->receiver_id)->latest()->first();
+        $lattestMessage['notification'] = $lattestMessage->created_at->diffForHumans();
         if ($chat) {
             $chat_data = Chat::where("receiver_id", $request->receiver_id)->where("sender_id", auth()->user()->id)->get();
             foreach ($chat_data as $chat_datum)
@@ -87,15 +152,12 @@ class ChatController extends Controller
                 }
             $user = auth()->user();
             $receiverUser = User::where('id', $chat_datum->receiver_id)->get();
-            event(new ChatNotification($chat, $receiverUser, auth()->user()));
+            event(new ChatNotification($chat, $receiverUser, auth()->user(),$getCount,$lattestMessage->created_at->diffForHumans()));
             return response()->json([
                 "success" => true,
                 "message" => "your message has been successfully sent",
                 "data" => [
                     'message' =>  'message created'
-//                    "message" => $chat,
-//                    "sender" => $user,
-//                    "receiver" => $receiverUser,
                 ]
             ]);
         } else {
@@ -154,12 +216,6 @@ class ChatController extends Controller
             $receiver_id = auth()->id() == $item['forusers']['id'] ? $item['user']['id'] : $item['forusers']['id'];
             $user_image = auth()->id() == $item['forusers']['id'] ? $item['user']['avatar'] : $item['forusers']['avatar'];
             $user_surname = auth()->id() == $item['forusers']['id'] ? $item['user']['surname'] : $item['forusers']['surname'];
-
-//            $user_name = $request->auth_user_id == $item['forusers']['id'] ? $item['user']['name'] : $item['forusers']['name'];
-//            $receiver_id = $request->auth_user_id == $item['forusers']['id'] ? $item['user']['id'] : $item['forusers']['id'];
-//            $user_image =$request->auth_user_id == $item['forusers']['id'] ? $item['user']['avatar'] : $item['forusers']['avatar'];
-//            $user_surname = $request->auth_user_id == $item['forusers']['id'] ? $item['user']['surname'] : $item['forusers']['surname'];
-
 
             $image = $item['file'];
             $review = $review_count->sum('review');

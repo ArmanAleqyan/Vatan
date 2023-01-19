@@ -41,7 +41,7 @@ class AddEmailController extends Controller
     {
 
         $rules = array(
-            'email' => 'min:3|max:64|unique:users',
+            'email' => 'max:64|unique:users|email',
         );
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -55,6 +55,7 @@ class AddEmailController extends Controller
             ], 422);
         } else {
             $randomNumber = random_int(100000, 999999);
+            Changeemail::where('user_id', auth()->user()->id)->delete();
             $credentails = [
                 'email' => $request->email,
                 'user_id' => auth()->user()->id,
@@ -74,7 +75,7 @@ class AddEmailController extends Controller
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'email change code sent to your phone ',
+                    'message' => 'email change code sent to your phone',
                     'verify' => $randomNumber
                 ], 200);
             } else {

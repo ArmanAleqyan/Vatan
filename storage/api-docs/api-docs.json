@@ -1164,6 +1164,39 @@
                 }
             }
         },
+        "api/SinglePageholiday/id": {
+            "post": {
+                "tags": [
+                    "SinglePageholiday"
+                ],
+                "summary": "SinglePageholiday",
+                "description": "SinglePageholiday",
+                "operationId": "SinglePageholiday",
+                "requestBody": {
+                    "description": "SinglePageholiday",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "get users birthday",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "api/create-group": {
             "post": {
                 "tags": [
@@ -1968,6 +2001,12 @@
                                 "properties": {
                                     "verified_code": {
                                         "type": "integer"
+                                    },
+                                    "number": {
+                                        "type": "integer"
+                                    },
+                                    "email": {
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"
@@ -2011,6 +2050,128 @@
                 "responses": {
                     "200": {
                         "description": "User photo and video",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/AllFile": {
+            "post": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "AllFile",
+                "description": "AllFile",
+                "operationId": "AllFile",
+                "requestBody": {
+                    "description": "AllFile",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/EditPost": {
+            "post": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "EditPost",
+                "description": "EditPost",
+                "operationId": "EditPost",
+                "requestBody": {
+                    "description": "EditPost",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "description": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "some description"
+                                    },
+                                    "post_id": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "DeletePhoto[]": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1 2"
+                                    },
+                                    "NewPhoto[]": {
+                                        "type": "string",
+                                        "format": "file",
+                                        "example": "asd"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/DeletePost/post_id=2": {
+            "get": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "DeletePost",
+                "description": "DeletePost",
+                "operationId": "DeletePost",
+                "requestBody": {
+                    "description": "EditPost",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
                         "content": {
                             "application/json": {
                                 "schema": {}

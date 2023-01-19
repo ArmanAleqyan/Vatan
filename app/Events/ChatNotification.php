@@ -17,17 +17,21 @@ class ChatNotification implements ShouldBroadcast
     public $chat;
     public $receiverUser;
     public $user;
+    public $getCount;
+    public $lattestMessage;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($chat, $receiverUser, $user)
+    public function __construct($chat, $receiverUser, $user,$getCount,$lattestMessage)
     {
         $this->user = $user;
         $this->chat = $chat;
         $this->receiverUser = $receiverUser;
+        $this->getCount= $getCount;
+        $this->lattestMessage= $lattestMessage;
     }
 
     /**

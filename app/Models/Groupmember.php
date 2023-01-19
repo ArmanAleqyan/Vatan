@@ -23,7 +23,7 @@ class Groupmember extends Model
         return $this->belongsTo(User::class, 'receiver_id');
     }
 
-    public function group()
+    public function groupmembers()
     {
         return $this->belongsTo(Group::class,'group_id');
     }

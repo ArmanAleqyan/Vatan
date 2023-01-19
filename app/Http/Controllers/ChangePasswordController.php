@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Validator;
 
 class ChangePasswordController extends Controller
 {
@@ -37,6 +38,8 @@ class ChangePasswordController extends Controller
 
     public function changePassword(Request $request)
     {
+
+
         $newpassword = $request->newpassword;
         $oldpassword = $request->oldpassword;
         $user = User::where('id', auth()->user()->id)->first();
@@ -93,10 +96,15 @@ class ChangePasswordController extends Controller
     public function ChangeUsername(Request $request)
     {
 
-
+        $rules = array(
+            'username' => 'required|max:64|unique:users',
+        );
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
         $username = $request->username;
         if (isset($username)) {
-
                 $changeUsername = User::where('id', auth()->user()->id)->update(['username' => $username]);
             if ($changeUsername) {
                 return response()->json([

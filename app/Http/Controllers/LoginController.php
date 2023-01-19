@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use GreenSMS\GreenSMS;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendMail;
+
 use Validator;
 
 class LoginController extends Controller
@@ -48,22 +53,35 @@ class LoginController extends Controller
         if ($validator->fails()) {
             return $validator->errors();
         }
-
-
+        $randomNumber = random_int(100000, 999999);
         if ($request->email && $request->email!= null) {
-
             $getUser = User::where('email', $request->email)->first();
-
             if($getUser != null){
-                if($getUser->verify_code != 1){
+                if($getUser->deleted_at != null){
                     return response()->json([
                        'status' => false,
-                       'message' => 'no veryfi user'
+                       'message' =>  'Acaunt is deleted'
+                    ]);
+                }
+
+            }
+            if (Auth::attempt($request->only('email','password'))) {
+                if(auth()->user()->verify_code != 1){
+                    $details = [
+                        'email' => $getUser->name,
+                        'verification_at' => $randomNumber,
+                    ];
+
+                    User::where('email', $request->email)->update([
+                        'verify_code' => $randomNumber
+                    ]);
+                    Mail::to($getUser->email)->send(new SendMail($details));
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'no veryfi user',
+                        'code' => $randomNumber
                     ], 422);
                 }
-            }
-
-            if (Auth::attempt($request->only('email','password'))) {
                 $token = auth()->user()->createToken('API Token')->accessToken;
                 User::where('id', auth()->user()->id)->update(['last_seen' => 'online']);
                 return response(['user' => auth()->user(), 'token' => $token], 200);
@@ -71,24 +89,48 @@ class LoginController extends Controller
                 return response(['error_message' => 'Incorrect Details. Please try again']);
             }
         } else {
-            $getUser = User::where('number', $request->number)->first();
-            if($getUser != null){
-                if($getUser->verify_code != 1){
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'no veryfi user'
-                    ], 422);
-                }
-            }
+            $call_number = preg_replace('/[^0-9]/', '', $request->number);
+            $getUser = User::where('number', $call_number)->first();
+
                  $call_number = preg_replace('/[^0-9]/', '', $request->number);
             $request['number'] = $call_number;
             $loginrt = Auth::attempt($request->only('number','password'));
 
+
+
             if ($loginrt == true ) {
+                if($getUser != null){
+                    if(\auth()->user()->verify_code != 1){
+                        User::where('number', $call_number)->update([
+                            'verify_code' => $randomNumber
+                        ]);
+                        try {
+                            $client = new GreenSMS([
+                                'user' => 'sadn',
+                                'pass' => 'Dgdhh378qq',
+                            ]);
+
+                            $response = $client->sms->send([
+                                'from' =>  'vatan',
+                                'to' => $call_number,
+                                'txt' => 'Ваш код потверждения' .' '. $randomNumber
+                            ]);
+                        } catch (Exception $e) {
+                            return response()->json([
+                                'status' => false,
+                                'message' => 'Error in Green Smms',
+                            ]);
+                        }
+                        return response()->json([
+                            'status' => false,
+                            'message' => 'no veryfi user',
+                            'code' => $randomNumber
+                        ], 422);
+                    }
+                }
                 $token = auth()->user()->createToken('API Token')->accessToken;
                 return response(['user' => auth()->user(), 'token' => $token], 200);
             } else {
-
                 return response(['error_message' => 'Incorrect Details. Please try again']);
             }
         }
@@ -134,19 +176,17 @@ class LoginController extends Controller
         }
         $user_code = $request->verified_code;
 
-        if(isset($request->phone)){
+        if(isset($request->number)){
             $users = User::where('verify_code', '=', $user_code)->where('number', $request->number)->first();
         }elseif($request->email){
             $users = User::where('verify_code', '=', $user_code)->where('email', $request->email)->first();
         }else{
-
             return response()->json([
                'status' => false,
-               'message' =>  'Mane jan es kisat prat tvyalneri het es inch anem ))'
+//               'message' =>  'Mane jan es kisat prat tvyalneri het es inch anem ))'
+                'message' =>  'Wrong Data'
             ],422);
-
         }
-
         if ($users != null) {
             $user_id = $users->id;
             $token =   $users->createToken('API Token')->accessToken;
@@ -162,7 +202,8 @@ class LoginController extends Controller
     }else{
             return response()->json([
                 'success' => false,
-                'message' => 'Cod@ sxala Mane jan'
+//                'message' => 'Cod@ sxala Mane jan'
+                  'message' => 'Wrong Code'
             ], 422);
         }
 

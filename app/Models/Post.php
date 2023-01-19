@@ -11,7 +11,10 @@ class Post extends Model
 
     protected $guarded = [];
 
-
+    public function PostLike()
+    {
+        return $this->hasMany(Postlikes::class);
+    }
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -31,6 +34,12 @@ class Post extends Model
     public function commentLike()
     {
         return $this->hasMany(Commentslike::class);
+    }
+
+
+    public function PostLikeAuthUser()
+    {
+        return $this->hasmany(Postlikes::class)->where('user_id', auth()->user()->id);
     }
 
 

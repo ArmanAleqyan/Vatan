@@ -99,14 +99,14 @@ class ReplyAnsverController extends Controller
         $user = auth()->user();
 
 
-        DB::beginTransaction();
+//        DB::beginTransaction();
         
         $notificationPost = Comentreply::where('id', $request->reply_id)->with('user')
             ->first();
 
         $create = Replyanswer::create($CommentReply);
 
-        DB::commit();
+//        DB::commit();
 
         if ($create) {
             event(new ReplyAnswerNotification($notificationPost, $user));

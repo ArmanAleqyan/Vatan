@@ -13,9 +13,28 @@ class Postlikes extends Model
 
     protected $guarded = [];
 
+
+    public function PostLike()
+    {
+        return $this->belongsto(Post::class)->auth()->user()->id;
+    }
+
     public function post()
     {
         return $this->belongsTo(Post::class);
     }
+
+
+    public function commentLikeAuthUser()
+    {
+        return $this->hasMany(Commentslike::class)->auth()->user()->id;
+    }
+
+    public function PostLikeAuthUser()
+    {
+        return $this->BelongsTO(Post::class);
+    }
+
+
 
 }

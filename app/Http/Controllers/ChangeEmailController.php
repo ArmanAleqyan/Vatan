@@ -40,7 +40,7 @@ class ChangeEmailController extends Controller
     {
 
         $rules=array(
-            'email' => 'required|unique:users',
+            'email' => 'required|unique:users|email',
 
         );
         $validator=Validator::make($request->all(),$rules);
@@ -49,8 +49,8 @@ class ChangeEmailController extends Controller
             return $validator->errors();
         }
 
-
         $randomNumber = random_int(100000, 999999);
+        Changeemail::where('user_id', auth()->user()->id)->delete();
         $credentails = [
             'email' => $request->email,
             'user_id' => auth()->user()->id,
@@ -119,6 +119,7 @@ class ChangeEmailController extends Controller
             $number = User::where('id', $user_id)->update([
                 'email' => $user_email[0]->email
             ]);
+
             $delete = Changeemail::where(['user_id' => $user_id])->delete();
 
             if ($delete) {

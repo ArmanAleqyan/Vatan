@@ -93,7 +93,7 @@ class CommentReplyController extends Controller
 
         $user = auth()->user();
 
-        DB::beginTransaction();
+//         DB::beginTransaction();
 
         $notificationPost = Comment::where('id', $request->comment_id)->with('user')
             ->first();
@@ -101,7 +101,7 @@ class CommentReplyController extends Controller
         $create = Comentreply::create($CommentReply);
 
 
-        DB::commit();
+//        DB::commit();
 
         if ($create) {
             event(new CommentReplyNotification($notificationPost,$user));

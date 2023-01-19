@@ -67,7 +67,7 @@ class Post extends Resource
 
             ////////////// POST TABLUM  CHUNEIR  IMAGE  COLUMN  DRA HAMAREL ERROR ER GCUM
 //            Image::make('image')->disk('public'),
-            Text::make('Описание', 'description')
+            Text::make( 'Описание', 'description')
                 ->sortable()
                 ->rules('required', 'max:255'),
 

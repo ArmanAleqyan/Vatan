@@ -24,6 +24,10 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\ChatController;
 
+use App\Http\Controllers\Api\VatanServiceController;
+
+use App\Http\Middleware\NoActiveUser;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -47,37 +51,69 @@ Route::post('verify', [LoginController::class, 'verify'])->name('verify');
 Route::post('/code-sending', [ForgotController::class, 'send'])->name('code-sending');
 Route::post('/restore-password', [ForgotController::class, 'CodeSend']);
 Route::post('/update-password', [ForgotController::class, 'updatePassword']);
-Route::delete('users-delete/{id?}', [HiddenAccountController::class, 'destroy']);
+Route::delete('users-delete/{id?}/{pass}', [HiddenAccountController::class, 'destroy']);
 
 
 Route::post('SendCodeTwo',[RegisterController::class, 'SendCodeTwo'])->name('SendCodeTwo');
 
 Route::group(['middleware' => ['auth:api']], function () {
-    Route::post('change-number', [ProfileController::class, 'addNumber']);
-    Route::post('update-number', [ProfileController::class, 'UpdateNumber']);
-    Route::get('/rightsidechat', [ChatController::class, 'RightSiteUsers']);
-
-    Route::post('change-email', [ChangeEmailController::class, 'addEmail']);
-    Route::post('update-email', [ChangeEmailController::class, 'UpdateEmail']);
-
-    Route::post('send-email', [AddEmailController::class, 'sendemail']);
-    Route::post('add-email', [AddEmailController::class, 'addemail']);
-
-    Route::post('send-number', [AddNumberController::class, 'sendnumber']);
-    Route::post('add-number', [AddNumberController::class, 'addnumber']);
-
-    Route::post('change-password', [ChangePasswordController::class, 'ChangePassword']);
-    Route::post('change-username', [ChangePasswordController::class, 'ChangeUsername']);
-
-    Route::post('hidden-account', [HiddenAccountController::class, 'hiddenAccount']);
-
-    Route::post('post', [PostController::class, 'store']);
-
-    Route::get('post', [PostController::class, 'index']);
-
 
     Route::post('allpost', [PostController::class, 'allpost' ]);
     Route::get('singlePageUser/user_id={id}', [UserController::class,'singlePageUser']);
+
+    Route::get('user-logout', [UserController::class, 'logout']);
+
+    Route::get('group-data/{id?}', [GroupMembersController::class, 'index']);
+
+//Admin
+
+//    Moderator
+    Route::post('admin-update-posts', [GroupController::class, 'updatePosts']);
+    Route::post('admin-delete-posts', [GroupController::class, 'deletePosts']);
+    Route::post('moderator-update-posts', [GroupController::class, 'ModeratotupdatePosts']);
+    Route::post('moderator-delete-posts', [GroupController::class, 'ModeratordeletePosts']);
+    Route::post('update-group-name', [GroupController::class, 'UpdateGroup']);
+    Route::get('delete-group', [GroupController::class, 'deleteGroup']);
+    Route::post('delete-moderator', [GroupController::class, 'DeleteModerator']);
+
+//    Media
+    Route::post('users-media', [MediaController::class, 'MyMedia']);
+    Route::post('send-friend', [PostController::class, 'store']);
+    Route::post('AllFile', [PostController::class, 'AllFile']);
+
+//    Chat
+    Route::post('/chat', [ChatController::class, 'store']);
+    Route::get('/chat/{receiver_id}', [ChatController::class, 'getUsersData'])->name('chat');
+
+    Route::get('user-data', [UserController::class, 'index']);
+    Route::get('profile-user', [UserController::class, 'profile']);
+    Route::get('some-user/{id?}', [UserController::class, 'OtherProfile']);
+    Route::get('all-friends', [FriendsController::class, 'AllFriends']);
+    Route::get('/rightsidechat', [ChatController::class, 'RightSiteUsers']);
+    Route::get('AllService', [VatanServiceController::class, 'AllService']);
+    Route::get('createOrder', [VatanServiceController::class, 'createOrder']);
+
+
+
+    Route::post('UpdatePhotoAndBagraundPhoto', [UserController::class, 'UpdatePhotoAndBagraundPhoto']);
+    Route::post('change-number', [ProfileController::class, 'addNumber']);
+    Route::post('update-number', [ProfileController::class, 'UpdateNumber']);
+
+    Route::post('change-email', [ChangeEmailController::class, 'addEmail']);
+    Route::post('update-email', [ChangeEmailController::class, 'UpdateEmail']);
+    Route::post('send-email', [AddEmailController::class, 'sendemail']);
+    Route::post('add-email', [AddEmailController::class, 'addemail']);
+    Route::post('send-number', [AddNumberController::class, 'sendnumber']);
+    Route::post('add-number', [AddNumberController::class, 'addnumber']);
+    Route::post('change-password', [ChangePasswordController::class, 'ChangePassword']);
+    Route::post('change-username', [ChangePasswordController::class, 'ChangeUsername']);
+    Route::post('hidden-account', [HiddenAccountController::class, 'hiddenAccount']);
+    Route::post('post', [PostController::class, 'store']);
+    Route::get('post', [PostController::class, 'index']);
+    Route::get('postSinglePage/post_id={id}', [PostController::class, 'postSinglePage']);
+    Route::post('EditPost', [PostController::class, 'EditPost']);
+    Route::get('DeletePost/post_id={id}', [PostController::class, 'DeletePost']);
+
 
 
     Route::post('comment', [CommentController::class, 'store']);
@@ -101,54 +137,54 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('friends-birth', [FriendsController::class, 'friendsBirth']);
     Route::post('friends-posts', [PostController::class, 'friendsPosts']);
 
+    Route::post('FriendsDay', [FriendsController::class, 'FriendsDay'])->name('FriendsDay');
+
+//        Route::post('UpdatePhotoAndBagraundPhoto', [UserController::class,'UpdatePhotoAndBagraundPhoto']);
+
+    Route::get('SinglePageholiday/{id}', [FriendsController::class, 'SinglePageholiday']);
+
     Route::post('send-family-request', [FamilyController::class, 'sendRequest']);
     Route::post('confirm-family-request', [FamilyController::class, 'confirmFamilyRequest']);
     Route::post('cancel-family-request', [FamilyController::class, 'cancelFamilyRequest']);
     Route::post('delete-family-request', [FamilyController::class, 'deleteFamily']);
 
-    Route::get('user-logout', [UserController::class, 'logout']);
     Route::post('change-online-status', [UserController::class, 'changeStatus']);
 
-//Admin
     Route::post('add-group', [GroupMembersController::class, 'store']);
     Route::get('add-group', [GroupController::class, 'index']);
     Route::post('confirm-group-request', [GroupMembersController::class, 'confirmRequest']);
     Route::post('cancel-group-request', [GroupMembersController::class, 'cancelRequest']);
     Route::post('leave-the-group', [GroupMembersController::class, 'leaveGroup']);
-    Route::get('group-data/{id?}', [GroupMembersController::class, 'index']);
     Route::get('admin-delete-user/{id?}', [GroupController::class, 'AdminDeleteUsers']);
     Route::post('create-group', [GroupController::class, 'store']);
     Route::post('create-moderator', [GroupController::class, 'ModeratorCreate']);
     Route::get('your-group', [GroupController::class, 'YourGroup']);
 
-//    Moderator
-    Route::post('admin-update-posts', [GroupController::class, 'updatePosts']);
-    Route::post('admin-delete-posts', [GroupController::class, 'deletePosts']);
-    Route::post('moderator-update-posts', [GroupController::class, 'ModeratotupdatePosts']);
-    Route::post('moderator-delete-posts', [GroupController::class, 'ModeratordeletePosts']);
-    Route::post('update-group-name', [GroupController::class, 'UpdateGroup']);
-    Route::get('delete-group', [GroupController::class, 'deleteGroup']);
-    Route::post('delete-moderator', [GroupController::class, 'DeleteModerator']);
+    Route::post('SearchUser', [UserController::class, 'SearchUser']);
 
-//    Media
-    Route::post('users-media', [MediaController::class, 'MyMedia']);
-    Route::post('send-friend', [PostController::class, 'store']);
 
-//    Chat
-    Route::post('/chat', [ChatController::class, 'store']);
 
-    Route::get('/chat/{receiver_id}', [ChatController::class, 'getUsersData'])->name('chat');
+//      Stex  Kmiana  Vcharman hamakargic heto
+//
+//    Route::middleware([NoActiveUser::class])->group(function(){
+//
+//
+//
+//
+//    });
+//
+//
+//
+//
 
-    Route::get('user-data', [UserController::class, 'index']);
-    Route::get('profile-user', [UserController::class, 'profile']);
-    Route::get('some-user/{id?}', [UserController::class, 'OtherProfile']);
-    Route::get('all-friends', [FriendsController::class, 'AllFriends']);
 
 });
 
 
 
 Route::get('status/{id?}', [UserController::class, 'userOnlineStatus']);
+
+
 
 
 

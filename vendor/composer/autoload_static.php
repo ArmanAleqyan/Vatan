@@ -13,8 +13,8 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
-        '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
+        '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
@@ -66,6 +66,7 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         ),
         'V' => 
         array (
+            'Voronkovich\\SberbankAcquiring\\' => 30,
             'Valitron\\' => 9,
         ),
         'T' => 
@@ -138,6 +139,8 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         ),
         'O' => 
         array (
+            'Outl1ne\\NovaTranslationsLoader\\' => 31,
+            'Outl1ne\\MultiselectField\\' => 25,
             'OpenSpout\\' => 10,
             'OpenApi\\' => 8,
         ),
@@ -145,6 +148,7 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         array (
             'Nyholm\\Psr7\\' => 12,
             'NunoMaduro\\Collision\\' => 21,
+            'NovaKit\\NovaPackagesTool\\' => 25,
         ),
         'M' => 
         array (
@@ -273,6 +277,10 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'Wdelfuego\\Nova4\\CustomizableFooter\\' => 
         array (
             0 => __DIR__ . '/..' . '/wdelfuego/nova4-customizable-footer/src',
+        ),
+        'Voronkovich\\SberbankAcquiring\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/voronkovich/sberbank-acquiring-client/src',
         ),
         'Valitron\\' => 
         array (
@@ -503,6 +511,14 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         array (
             0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
         ),
+        'Outl1ne\\NovaTranslationsLoader\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/outl1ne/nova-translations-loader/src',
+        ),
+        'Outl1ne\\MultiselectField\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/outl1ne/nova-multiselect-field/src',
+        ),
         'OpenSpout\\' => 
         array (
             0 => __DIR__ . '/..' . '/openspout/openspout/src',
@@ -518,6 +534,10 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'NunoMaduro\\Collision\\' => 
         array (
             0 => __DIR__ . '/..' . '/nunomaduro/collision/src',
+        ),
+        'NovaKit\\NovaPackagesTool\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nova-kit/nova-packages-tool/src',
         ),
         'MyCLabs\\Enum\\' => 
         array (
@@ -816,6 +836,8 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\AddEmailController' => __DIR__ . '/../..' . '/app/Http/Controllers/AddEmailController.php',
         'App\\Http\\Controllers\\AddNumberController' => __DIR__ . '/../..' . '/app/Http/Controllers/AddNumberController.php',
+        'App\\Http\\Controllers\\Admin\\ChatController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ChatController.php',
+        'App\\Http\\Controllers\\Api\\VatanServiceController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/VatanServiceController.php',
         'App\\Http\\Controllers\\ChangeEmailController' => __DIR__ . '/../..' . '/app/Http/Controllers/ChangeEmailController.php',
         'App\\Http\\Controllers\\ChangePasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/ChangePasswordController.php',
         'App\\Http\\Controllers\\ChatController' => __DIR__ . '/../..' . '/app/Http/Controllers/ChatController.php',
@@ -842,6 +864,7 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\Cors' => __DIR__ . '/../..' . '/app/Http/Middleware/Cors.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
+        'App\\Http\\Middleware\\NoActiveUser' => __DIR__ . '/../..' . '/app/Http/Middleware/NoActiveUser.php',
         'App\\Http\\Middleware\\NoAuthUser' => __DIR__ . '/../..' . '/app/Http/Middleware/NoAuthUser.php',
         'App\\Http\\Middleware\\PreventRequestsDuringMaintenance' => __DIR__ . '/../..' . '/app/Http/Middleware/PreventRequestsDuringMaintenance.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
@@ -853,6 +876,7 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'App\\Http\\Resources\\UserResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserResource.php',
         'App\\Mail\\RessetpasswordMail' => __DIR__ . '/../..' . '/app/Mail/RessetpasswordMail.php',
         'App\\Mail\\SendMail' => __DIR__ . '/../..' . '/app/Mail/SendMail.php',
+        'App\\Models\\CallCount' => __DIR__ . '/../..' . '/app/Models/CallCount.php',
         'App\\Models\\Changeemail' => __DIR__ . '/../..' . '/app/Models/Changeemail.php',
         'App\\Models\\Changenumber' => __DIR__ . '/../..' . '/app/Models/Changenumber.php',
         'App\\Models\\Chat' => __DIR__ . '/../..' . '/app/Models/Chat.php',
@@ -863,24 +887,38 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'App\\Models\\Friend' => __DIR__ . '/../..' . '/app/Models/Friend.php',
         'App\\Models\\Group' => __DIR__ . '/../..' . '/app/Models/Group.php',
         'App\\Models\\Groupmember' => __DIR__ . '/../..' . '/app/Models/Groupmember.php',
+        'App\\Models\\Holiday' => __DIR__ . '/../..' . '/app/Models/Holiday.php',
         'App\\Models\\Image' => __DIR__ . '/../..' . '/app/Models/Image.php',
         'App\\Models\\NewsAndSales' => __DIR__ . '/../..' . '/app/Models/NewsAndSales.php',
         'App\\Models\\Notification' => __DIR__ . '/../..' . '/app/Models/Notification.php',
         'App\\Models\\Post' => __DIR__ . '/../..' . '/app/Models/Post.php',
         'App\\Models\\Postlikes' => __DIR__ . '/../..' . '/app/Models/Postlikes.php',
+        'App\\Models\\RegisterPrice' => __DIR__ . '/../..' . '/app/Models/RegisterPrice.php',
         'App\\Models\\Replyanswer' => __DIR__ . '/../..' . '/app/Models/Replyanswer.php',
         'App\\Models\\Replyanswerlike' => __DIR__ . '/../..' . '/app/Models/Replyanswerlike.php',
         'App\\Models\\RessetPassword' => __DIR__ . '/../..' . '/app/Models/RessetPassword.php',
         'App\\Models\\Role' => __DIR__ . '/../..' . '/app/Models/Role.php',
+        'App\\Models\\Tranzaction' => __DIR__ . '/../..' . '/app/Models/Tranzaction.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
+        'App\\Models\\VatanService' => __DIR__ . '/../..' . '/app/Models/VatanService.php',
+        'App\\Models\\VatanServiceDocument' => __DIR__ . '/../..' . '/app/Models/VatanServiceDocument.php',
+        'App\\Models\\VatanServiceDocumentList' => __DIR__ . '/../..' . '/app/Models/VatanServiceDocumentList.php',
         'App\\Nova\\ComentReaply' => __DIR__ . '/../..' . '/app/Nova/ComentReaply.php',
         'App\\Nova\\ComentReaplyAnswer' => __DIR__ . '/../..' . '/app/Nova/ComentReaplyAnswer.php',
         'App\\Nova\\Comment' => __DIR__ . '/../..' . '/app/Nova/Comment.php',
         'App\\Nova\\Dashboards\\Main' => __DIR__ . '/../..' . '/app/Nova/Dashboards/Main.php',
+        'App\\Nova\\Group' => __DIR__ . '/../..' . '/app/Nova/Group.php',
+        'App\\Nova\\GroupMembers' => __DIR__ . '/../..' . '/app/Nova/GroupMembers.php',
+        'App\\Nova\\GroupPost' => __DIR__ . '/../..' . '/app/Nova/GroupPost.php',
+        'App\\Nova\\Holiday' => __DIR__ . '/../..' . '/app/Nova/Holiday.php',
         'App\\Nova\\Image' => __DIR__ . '/../..' . '/app/Nova/Image.php',
         'App\\Nova\\Post' => __DIR__ . '/../..' . '/app/Nova/Post.php',
+        'App\\Nova\\RegisterPrice' => __DIR__ . '/../..' . '/app/Nova/RegisterPrice.php',
         'App\\Nova\\Resource' => __DIR__ . '/../..' . '/app/Nova/Resource.php',
         'App\\Nova\\User' => __DIR__ . '/../..' . '/app/Nova/User.php',
+        'App\\Nova\\VatanService' => __DIR__ . '/../..' . '/app/Nova/VatanService.php',
+        'App\\Nova\\VatanServiceDocument' => __DIR__ . '/../..' . '/app/Nova/VatanServiceDocument.php',
+        'App\\Nova\\VatanServiceDocumentList' => __DIR__ . '/../..' . '/app/Nova/VatanServiceDocumentList.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
@@ -5224,6 +5262,7 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'Nette\\Utils\\UnknownImageFileException' => __DIR__ . '/..' . '/nette/utils/src/Utils/exceptions.php',
         'Nette\\Utils\\Validators' => __DIR__ . '/..' . '/nette/utils/src/Utils/Validators.php',
         'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
+        'NovaKit\\NovaPackagesTool\\LaravelServiceProvider' => __DIR__ . '/..' . '/nova-kit/nova-packages-tool/src/LaravelServiceProvider.php',
         'NumberFormatter' => __DIR__ . '/..' . '/symfony/polyfill-intl-icu/Resources/stubs/NumberFormatter.php',
         'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider' => __DIR__ . '/..' . '/nunomaduro/collision/src/Adapters/Laravel/CollisionServiceProvider.php',
         'NunoMaduro\\Collision\\Adapters\\Laravel\\Commands\\TestCommand' => __DIR__ . '/..' . '/nunomaduro/collision/src/Adapters/Laravel/Commands/TestCommand.php',
@@ -5282,6 +5321,7 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'OpenApi\\Annotations\\Attachable' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Attachable.php',
         'OpenApi\\Annotations\\Components' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Components.php',
         'OpenApi\\Annotations\\Contact' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Contact.php',
+        'OpenApi\\Annotations\\CookieParameter' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/CookieParameter.php',
         'OpenApi\\Annotations\\Delete' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Delete.php',
         'OpenApi\\Annotations\\Discriminator' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Discriminator.php',
         'OpenApi\\Annotations\\Examples' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Examples.php',
@@ -5290,6 +5330,7 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'OpenApi\\Annotations\\Get' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Get.php',
         'OpenApi\\Annotations\\Head' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Head.php',
         'OpenApi\\Annotations\\Header' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Header.php',
+        'OpenApi\\Annotations\\HeaderParameter' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/HeaderParameter.php',
         'OpenApi\\Annotations\\Info' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Info.php',
         'OpenApi\\Annotations\\Items' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Items.php',
         'OpenApi\\Annotations\\JsonContent' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/JsonContent.php',
@@ -5306,6 +5347,7 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'OpenApi\\Annotations\\Post' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Post.php',
         'OpenApi\\Annotations\\Property' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Property.php',
         'OpenApi\\Annotations\\Put' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Put.php',
+        'OpenApi\\Annotations\\QueryParameter' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/QueryParameter.php',
         'OpenApi\\Annotations\\RequestBody' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/RequestBody.php',
         'OpenApi\\Annotations\\Response' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Response.php',
         'OpenApi\\Annotations\\Schema' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Schema.php',
@@ -5320,6 +5362,7 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'OpenApi\\Attributes\\Attachable' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Attachable.php',
         'OpenApi\\Attributes\\Components' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Components.php',
         'OpenApi\\Attributes\\Contact' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Contact.php',
+        'OpenApi\\Attributes\\CookieParameter' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/CookieParameter.php',
         'OpenApi\\Attributes\\Delete' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Delete.php',
         'OpenApi\\Attributes\\Discriminator' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Discriminator.php',
         'OpenApi\\Attributes\\Examples' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Examples.php',
@@ -5328,6 +5371,7 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'OpenApi\\Attributes\\Get' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Get.php',
         'OpenApi\\Attributes\\Head' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Head.php',
         'OpenApi\\Attributes\\Header' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Header.php',
+        'OpenApi\\Attributes\\HeaderParameter' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/HeaderParameter.php',
         'OpenApi\\Attributes\\Info' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Info.php',
         'OpenApi\\Attributes\\Items' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Items.php',
         'OpenApi\\Attributes\\JsonContent' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/JsonContent.php',
@@ -5345,6 +5389,7 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'OpenApi\\Attributes\\Post' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Post.php',
         'OpenApi\\Attributes\\Property' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Property.php',
         'OpenApi\\Attributes\\Put' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Put.php',
+        'OpenApi\\Attributes\\QueryParameter' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/QueryParameter.php',
         'OpenApi\\Attributes\\RequestBody' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/RequestBody.php',
         'OpenApi\\Attributes\\Response' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Response.php',
         'OpenApi\\Attributes\\Schema' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Schema.php',
@@ -5368,7 +5413,7 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'OpenApi\\Processors\\CleanUnusedComponents' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/CleanUnusedComponents.php',
         'OpenApi\\Processors\\Concerns\\CollectorTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/Concerns/CollectorTrait.php',
         'OpenApi\\Processors\\Concerns\\DocblockTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/Concerns/DocblockTrait.php',
-        'OpenApi\\Processors\\Concerns\\MergeTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/Concerns/MergeTrait.php',
+        'OpenApi\\Processors\\Concerns\\MergePropertiesTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/Concerns/MergePropertiesTrait.php',
         'OpenApi\\Processors\\Concerns\\TypesTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/Concerns/TypesTrait.php',
         'OpenApi\\Processors\\DocBlockDescriptions' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/DocBlockDescriptions.php',
         'OpenApi\\Processors\\ExpandClasses' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/ExpandClasses.php',
@@ -5528,6 +5573,10 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'OpenSpout\\Writer\\XLSX\\Manager\\WorkbookManager' => __DIR__ . '/..' . '/openspout/openspout/src/Writer/XLSX/Manager/WorkbookManager.php',
         'OpenSpout\\Writer\\XLSX\\Manager\\WorksheetManager' => __DIR__ . '/..' . '/openspout/openspout/src/Writer/XLSX/Manager/WorksheetManager.php',
         'OpenSpout\\Writer\\XLSX\\Writer' => __DIR__ . '/..' . '/openspout/openspout/src/Writer/XLSX/Writer.php',
+        'Outl1ne\\MultiselectField\\FieldServiceProvider' => __DIR__ . '/..' . '/outl1ne/nova-multiselect-field/src/FieldServiceProvider.php',
+        'Outl1ne\\MultiselectField\\Multiselect' => __DIR__ . '/..' . '/outl1ne/nova-multiselect-field/src/Multiselect.php',
+        'Outl1ne\\MultiselectField\\Traits\\MultiselectBelongsToSupport' => __DIR__ . '/..' . '/outl1ne/nova-multiselect-field/src/Traits/MultiselectBelongsToSupport.php',
+        'Outl1ne\\NovaTranslationsLoader\\LoadsNovaTranslations' => __DIR__ . '/..' . '/outl1ne/nova-translations-loader/src/LoadsNovaTranslations.php',
         'PHPUnit\\Exception' => __DIR__ . '/..' . '/phpunit/phpunit/src/Exception.php',
         'PHPUnit\\Framework\\ActualValueIsNotAnObjectException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Exception/ActualValueIsNotAnObjectException.php',
         'PHPUnit\\Framework\\Assert' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert.php',
@@ -8411,6 +8460,19 @@ class ComposerStaticInit7d034b9ed73c57a5fd75bf84c5fb3b77
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'Valitron\\Validator' => __DIR__ . '/..' . '/vlucas/valitron/src/Valitron/Validator.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
+        'Voronkovich\\SberbankAcquiring\\Client' => __DIR__ . '/..' . '/voronkovich/sberbank-acquiring-client/src/Client.php',
+        'Voronkovich\\SberbankAcquiring\\Currency' => __DIR__ . '/..' . '/voronkovich/sberbank-acquiring-client/src/Currency.php',
+        'Voronkovich\\SberbankAcquiring\\Exception\\ActionException' => __DIR__ . '/..' . '/voronkovich/sberbank-acquiring-client/src/Exception/ActionException.php',
+        'Voronkovich\\SberbankAcquiring\\Exception\\BadResponseException' => __DIR__ . '/..' . '/voronkovich/sberbank-acquiring-client/src/Exception/BadResponseException.php',
+        'Voronkovich\\SberbankAcquiring\\Exception\\NetworkException' => __DIR__ . '/..' . '/voronkovich/sberbank-acquiring-client/src/Exception/NetworkException.php',
+        'Voronkovich\\SberbankAcquiring\\Exception\\ResponseParsingException' => __DIR__ . '/..' . '/voronkovich/sberbank-acquiring-client/src/Exception/ResponseParsingException.php',
+        'Voronkovich\\SberbankAcquiring\\Exception\\SberbankAcquiringException' => __DIR__ . '/..' . '/voronkovich/sberbank-acquiring-client/src/Exception/SberbankAcquiringException.php',
+        'Voronkovich\\SberbankAcquiring\\HttpClient\\CurlClient' => __DIR__ . '/..' . '/voronkovich/sberbank-acquiring-client/src/HttpClient/CurlClient.php',
+        'Voronkovich\\SberbankAcquiring\\HttpClient\\GuzzleAdapter' => __DIR__ . '/..' . '/voronkovich/sberbank-acquiring-client/src/HttpClient/GuzzleAdapter.php',
+        'Voronkovich\\SberbankAcquiring\\HttpClient\\HttpClientInterface' => __DIR__ . '/..' . '/voronkovich/sberbank-acquiring-client/src/HttpClient/HttpClientInterface.php',
+        'Voronkovich\\SberbankAcquiring\\HttpClient\\Psr18Adapter' => __DIR__ . '/..' . '/voronkovich/sberbank-acquiring-client/src/HttpClient/Psr18Adapter.php',
+        'Voronkovich\\SberbankAcquiring\\HttpClient\\SymfonyAdapter' => __DIR__ . '/..' . '/voronkovich/sberbank-acquiring-client/src/HttpClient/SymfonyAdapter.php',
+        'Voronkovich\\SberbankAcquiring\\OrderStatus' => __DIR__ . '/..' . '/voronkovich/sberbank-acquiring-client/src/OrderStatus.php',
         'Wdelfuego\\Nova4\\CustomizableFooter\\Footer' => __DIR__ . '/..' . '/wdelfuego/nova4-customizable-footer/src/Footer.php',
         'Wdelfuego\\Nova4\\CustomizableFooter\\ServiceProvider' => __DIR__ . '/..' . '/wdelfuego/nova4-customizable-footer/src/ServiceProvider.php',
         'Webmozart\\Assert\\Assert' => __DIR__ . '/..' . '/webmozart/assert/src/Assert.php',

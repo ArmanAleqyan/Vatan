@@ -12,12 +12,18 @@ use App\Nova\User;
 use App\Nova\Post;
 use App\Nova\Comment;
 use App\Nova\Comentreply;
+use App\Nova\Group;
+use App\Nova\VatanService;
+use App\Nova\RegisterPrice;
+use App\Nova\Holiday;
+use App\Nova\VatanServiceDocumentList;
 use Illuminate\Http\Request;
 use Laravel\Nova\Nova\Dashboards\Main;
 use Laravel\Nova\Menu\Menu;
 use Laravel\Nova\Menu\MenuItem;
 use Laravel\Nova\Menu\MenuSection;
 use Laravel\Nova\Nova;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\NovaApplicationServiceProvider;
 
 
@@ -46,14 +52,12 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 
 
         Nova::mainMenu(function (Request $request) {
-
-
-
-
-
-
-
-
+            $get = \App\Models\Chat::where('receiver_id', 1)->sum('review');
+            if($get > 0){
+                $gets = $get;
+            }else{
+                $gets = '';
+            }
             return [
 
                 MenuSection::make('Пользватели', [
@@ -63,7 +67,29 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 MenuSection::make('Посты', [
                     MenuItem::resource(Post::class),
                 ])->icon('post')->collapsable(),
+
+                MenuSection::make('Группы', [
+                    MenuItem::resource(Group::class),
+                ])->icon('post')->collapsable(),
+
+                MenuSection::make('Услуги', [
+                    MenuItem::resource(VatanService::class),
+                    MenuItem::resource(RegisterPrice::class),
+                    MenuItem::resource(VatanServiceDocumentList::class),
+
+                ])->icon('post')->collapsable(),
+                MenuSection::make('Праздники', [
+                    MenuItem::resource(Holiday::class),
+
+                ])->icon('post')->collapsable(),
+
+
+                MenuItem::externalLink('Переписки'.' ' . ' '.$gets,  env('APP_URL').'/getAdminMessage'),
+
+
+
 //
+
 //                MenuSection::make('Комментарии', [
 //                    MenuItem::resource(Comment::class),
 //                ])->icon('comments')->collapsable(),

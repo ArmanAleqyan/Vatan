@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Post;
+use Validator;
+use App\Models\Friend;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +13,42 @@ use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
+
+
+
+    public function SearchUser(Request $request){
+        $rules = array(
+            'search' => 'required',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+
+//     $user =    User::where('name', 'Like', '%'.$request->search)
+//         ->orwhere('surname', 'Like', '%'.$request->search)
+//         ->orwhere('patronymic', 'Like', '%'.$request->search)
+//            ->orwhere('username', 'Like', '%'.$request->search)->get();
+
+         $user =    User::where('name', $request->search)
+            ->orwhere('surname', $request->search)
+            ->orwhere('patronymic', $request->search)
+            ->orwhere('username', $request->search)->get();
+
+        $group = Group::where('name', $request->search)->get();
+
+     return response()->json([
+        'status' => true,
+        'user' =>  $user,
+         'group' => $group
+     ],200);
+    }
+
+
+
+
     public function index()
     {
         $user = auth()->user();
@@ -103,12 +142,37 @@ class UserController extends Controller
 
     public function profile()
     {
+
         $auth = User::where('id', auth()->user()->id)->with('post.comment')->get();
+
+         $post = Post::where('user_id', auth()->user()->id)->where('deleted_at', '=', null)->with('images','user','comment', 'comment.user', 'PostLike', 'PostLikeAuthUser','comment.commmentlikeAuthUser',
+            'comment.comentreply','comment.comentreply.user','comment.comentreply.commentsreplylikeAuthUser',
+            'comment.comentreply.comentreplyanswer',
+            'comment.comentreply.comentreplyanswer.user'
+        )->whererelation('user', 'id', '!=', null)
+            ->withCount('postlikes', 'comment')
+            ->with([
+                'comment' => function ($query) {
+                    $query->withCount('commmentlike')->withCount('comentreply');
+                },
+                'comment.comentreply' => function ($query) {
+                    $query->withCount('commentsreplylike')->withCount('comentreplyanswer');
+                }
+                ,
+                'comment.comentreply.comentreplyanswer' => function ($query) {
+                    $query->withCount('replyanswerlike');
+                },
+            ])->where('group_id', null)->orderBy('id', 'desc')
+            ->simplepaginate(15);
+
+
+
         if ($auth) {
             return response()->json([
                 'status' => true,
                 'message' => 'user profile',
-                'data' => $auth
+                'data' => $auth,
+                'post' => $post
             ], 200);
         } else
             return response()->json([
@@ -138,10 +202,96 @@ class UserController extends Controller
     public function singlePageUser($id){
         $user = User::where('id', $id)->get();
 
+        $post = Post::where('user_id',$id)->where('deleted_at',null)->with('images','user','comment', 'comment.commmentlikeAuthUser',
+            'comment.comentreply','comment.comentreply.user','comment.comentreply.commentsreplylikeAuthUser',
+            'comment.comentreply.comentreplyanswer',
+            'comment.comentreply.comentreplyanswer.user'
+        )
+            ->withCount('postlikes', 'comment')
+            ->with([
+                'comment' => function ($query) {
+                    $query->withCount('commmentlike')->withCount('comentreply');
+                },
+                'comment.comentreply' => function ($query) {
+                    $query->withCount('commentsreplylike')->withCount('comentreplyanswer');
+                }
+                ,
+                'comment.comentreply.comentreplyanswer' => function ($query) {
+                    $query->withCount('replyanswerlike');
+                },
+
+            ])
+            ->orderBy('id', 'desc')
+            ->simplepaginate(15);
+
+        $friend = Friend::where('sender_id',auth()->user()->id)->where('receiver_id', $id)
+            ->orWhere('receiver_id', auth()->user()->id)->where('sender_id', $id)->get();
+
 
         return response()->json([
            'status' => true,
-           'data' => $user
+           'data' => $user,
+            'post' => $post,
+            'friend' => $friend
         ],200);
     }
+
+
+    public function UpdatePhotoAndBagraundPhoto(Request $request){
+
+
+        if(isset($request->avatar)){
+            try{
+                $avatar = $request->file('avatar');
+                $destinationPath = 'uploads';
+                $originalFile = time() . $avatar->getClientOriginalName();
+                $avatar->move($destinationPath, $originalFile);
+                $avatar = $originalFile;
+            }catch (\Exception $e){
+                return response()->json([
+                   'status' => false,
+                   'message' =>  'Big data max 30MB'
+                ]);
+            }
+            User::where('id', auth()->user()->id)->update([
+                'avatar' => $avatar,
+            ]);
+            return response()->json([
+                'status' => true,
+                'message' => 'photo updated',
+                'photo' => $avatar
+            ]);
+        }
+       elseif(isset($request->backraundPhoto)){
+            try{
+                $avatar = $request->file('backraundPhoto');
+                $destinationPath = 'uploads';
+                $originalFile = time() . $avatar->getClientOriginalName();
+                $avatar->move($destinationPath, $originalFile);
+                $avatar = $originalFile;
+            }catch (\Exception $e){
+                return response()->json([
+                    'status' => false,
+                    'message' =>  'Big data max 30MB'
+                ]);
+            }
+
+            User::where('id', auth()->user()->id)->update([
+                'backraundPhoto' => $avatar,
+            ]);
+            return response()->json([
+                'status' => true,
+                'message' => 'backraund updated',
+                'photo' => $avatar
+            ]);
+        }else{
+            return  response([
+                'status' => false,
+                'message' =>  'wrong details'
+            ], 422);
+        }
+    }
+
 }
+
+

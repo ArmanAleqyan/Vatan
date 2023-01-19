@@ -78,16 +78,25 @@ class HiddenAccountController extends Controller
      * )
      */
 
-    public function destroy(Request $request, $id)
+
+
+
+    public function destroy(Request $request,$id, $pass)
     {
-        $user = User::where('id', $id)->first();
-        if ($user === null) {
+
+
+
+
+        $userert = User::where('id', '=', $id)->first();
+
+
+        if ($userert == null) {
             return response()->json([
                 'success' => false,
-                'message' => 'this account deleted'
+                'message' => 'wrong user id'
             ], 422);
         } else {
-            $hash_check = Hash::check($request->password, $user->password);
+            $hash_check = Hash::check($pass, $userert->password);
             if ($hash_check == true) {
                 $user_account = User::where('id', $id)->delete();
                 return response()->json([
@@ -98,7 +107,7 @@ class HiddenAccountController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'wrong password'
-                ]);
+                ],422);
             }
         }
     }

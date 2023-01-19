@@ -6,6 +6,7 @@ use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use App\Models\Friend;
+use App\Models\Holiday;
 use App\Models\Notification;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -98,7 +99,7 @@ class FriendsController extends Controller
             'status' => 'unconfirm'
         ];
 
-        DB::beginTransaction();
+//        DB::beginTransaction();
 
         $requesCount = Friend::where('receiver_id', $request->receiver_id)
             ->where('sender_id', auth()->user()->id)->get();
@@ -114,7 +115,7 @@ class FriendsController extends Controller
         $notificationFriends = Friend::where('receiver_id', $request->receiver_id)->with('receiver')
             ->get();
 
-        DB::commit();
+//        DB::commit();
 
         if ($addFriends) {
             return response()->json([
@@ -259,7 +260,7 @@ class FriendsController extends Controller
     public function deleteFriend(Request $request)
     {
         $cacnelRequest = Friend::where('receiver_id', auth()->user()->id)
-            ->where('sender_id', $request->sender_id)->delete();
+            ->where('sender_id', $request->sender_id)->orwhere('receiver_id', $request->sender_id)->where('sender_id', auth()->user()->id)->delete();
 
         if ($cacnelRequest) {
             return response()->json([
@@ -299,78 +300,89 @@ class FriendsController extends Controller
      */
 
 
-    public function friendsBirth(Request $request)
-    {
-        $user = Friend::where('sender_id', auth()->user()->id)
-            ->orWhere('receiver_id', auth()->user()->id)
-            ->with(['sender', 'receiver'])
-            ->get();
-        if (!$user->isEmpty()) {
 
+    public function friendsBirth(Request $request){
 
-            foreach ($user as $value) {
+        $data = Friend::where('receiver_id', auth()->user()->id)
+            ->where('status', 'true')
+            ->orwhere('sender_id', auth()->user()->id)
+            ->where('status', 'true')
+            ->get(['sender_id', 'receiver_id']);
 
-                $users = [];
-                if ($value['sender']->id != auth()->user()->id) {
-                    $users = [
-                        'id' => $value['sender']->id
-                    ];
-
-                }
-                if ($value['receiver']->id != auth()->user()->id) {
-                    $users = [
-                        'id' => $value['receiver']->id
-                    ];
-                }
-                $today = Carbon::now();
-                $date = today();
-
-                $userBirth = User::where('id', $users)
-                    ->whereMonth('date_of_birth', $today->month)
-                    ->whereDay('date_of_birth', $today->day)
-                    ->get();
-
-                if (!$userBirth->isEmpty()) {
-                    $usersbirthday[] = $userBirth;
-                }
-
-                $UsersData = User::where('id', $users)
-                    ->where('day', $today->month)
-                    ->whereBetween('mount', array($today
-                        ->addDays(-5)->day, $today
-                        ->addDays(5)->day))->get();
-                if (!$UsersData->isEmpty()) {
-                    $beetwen[] = $UsersData;
-
-                }
-
-
-                foreach ($UsersData as $userTime) {
-                    $int = (int)$userTime['mount'];
-
-                    $sum = $int - $today->day;
-
-                    if (!$UsersData->isEmpty()) ;
-                    $howMany[] = [
-                        'user_id' => $userTime['id'],
-                        'username' => $userTime['name'],
-                        'between days' => $sum
-                    ];
+        if(!$data->isEmpty()){
+            foreach ($data as $friend){
+                if($friend['sender_id'] == \auth()->user()->id){
+                    $datas[] = $friend['receiver_id'];
+                }else{
+                    $datas[] = $friend['sender_id'];
                 }
             }
-            return response()->json([
-                'success' => true,
-                'message' => 'success',
-                'data' => [
-                    $beetwen,
-                    $howMany
-                ],
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'you donthave friends'
-            ], 404);
         }
+        $today = Carbon::now();
+        $today2 = Carbon::now();
+        $getUser = User::whereIn('id', $datas)->where('month' , $today->month)
+            ->whereBetween('day',
+                array(
+                    $today->day, $today2
+            ->addDays(5)->day))->orderBY('day')->get();
+
+        $Date = Carbon::now()->format('Y');
+
+
+
+        $holiday = Holiday::where('month',$today->month )->whereBetween('day', array($today
+            ->day, $today2
+            ->addDays(5)->day))->orderBY('day')->get();
+
+        foreach ($holiday as $item) {
+            if($item->month < 10){
+
+                $month = '0'.$item->month;
+            }else{
+                $month = $item->month;
+            }
+            $test = Carbon::parse($Date.$month.$item->day);
+            $item['date'] = $test;
+        }
+
+
+        return response()->json([
+           'status' => true,
+           'users' => $getUser,
+            'holiday' => $holiday
+        ],200);
+    }
+
+    /**
+     * @OA\Post(
+     * path="api/SinglePageholiday/id",
+     * summary="SinglePageholiday",
+     * description="SinglePageholiday",
+     * operationId="SinglePageholiday",
+     * tags={"SinglePageholiday"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="SinglePageholiday",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="get users birthday",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+    public function SinglePageholiday($id){
+        $holiday = Holiday::where('id', $id)->get();
+
+        return response()->json([
+           'status' => true,
+           'data' =>  $holiday
+        ],200);
     }
 }

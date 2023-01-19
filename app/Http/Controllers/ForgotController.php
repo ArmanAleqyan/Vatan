@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\RessetPassword;
+use App\Models\CallCount;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RessetpasswordMail;
 use Validator;
+use GreenSMS\GreenSMS;
 
 
 class ForgotController extends Controller
@@ -30,9 +34,6 @@ class ForgotController extends Controller
             ]);
         }
     }
-
-
-
     /**
      * @OA\Post(
      * path="api/code-sending",
@@ -60,77 +61,140 @@ class ForgotController extends Controller
 
     public function send(Request $request)
     {
+
+        
+        if($request->email == null && $request->number == null ){
+            return response()->json([
+               'status' => false,
+               'message' => 'Required Email or Number'
+            ],422);
+        }
+
+
         if ($request->email) {
             $email_exist = User::where(['email' => $request->email,])->get();
+
+
+
             if (!$email_exist->isEmpty()) {
+
+                $Carbon = Carbon::now();
+                $Carbon2 = Carbon::now();
+                $callCount = CallCount::where('email', $request->email)->where('type', 'codesend')
+                    ->whereBetween('created_at' , [$Carbon->addMinutes(-10), $Carbon2])
+                    ->count();
+
+//                if($callCount <= 3){
+//                    CallCount::create([
+//                        'email' => $request->email,
+//                        'type' => 'codesend'
+//                    ]);
+//                }else{
+//                    return response()->json([
+//                        'status' => false,
+//                        'message' => 'your email is blocked 10 minutes'
+//                    ]);
+//                }
+
 
                 $randomNumber = random_int(100000, 999999);
                 $user_id = $email_exist[0]->id;
-
-
                 $details = [
-                    'title' => 'Mail from Vatan',
+                    'name' => $email_exist[0]['name'],
                     'code' => $randomNumber,
-                    'body' => 'This is for forggot password'
                 ];
 
-//            Mail::to($request->email)->send(new RessetpasswordMail($details));
+            Mail::to($request->email)->send(new RessetpasswordMail($details));
 
-                $code = RessetPassword::create([
-                    "user_id" => $user_id,
-                    "random_int" => $randomNumber,
-                ]);
+                $getRes = RessetPassword::where('user_id', $user_id)->first();
+
+                if($getRes == null){
+                    $code = RessetPassword::create([
+                        "user_id" => $user_id,
+                        "random_int" => $randomNumber,
+                    ]);
+                }else{
+                    RessetPassword::where('user_id', $user_id)->update([
+                        "random_int" => $randomNumber,
+                    ]);
+                }
+
+
                 return response()->json([
                     'success' => true,
                     'message' => 'code os sended to your email',
                     'code' => $randomNumber,
                 ], 200);
 
+            }else{
+                return response()->json([
+                    'status' => false,
+                    'message' =>  'Senc Emailov User Goyutyun chuni  '
+                ],422);
             }
-//            if (!$email_exist->isEmpty()) {
-//
-//                $randomNumber = random_int(100000, 999999);
-//                $user_id = $email_exist[0]->id;
-//
-//                $details = [
-//                    'title' => 'Mail from Vatan',
-//                    'code' => $randomNumber,
-//                    'body' => 'This is for forggot password'
-//                ];
-//
-////            Mail::to($request->email)->send(new RessetpasswordMail($details));
-//
-//                $code = RessetPassword::create([
-//                    "user_id" => $user_id,
-//                    "random_int" => $randomNumber,
-//                ]);
-//                return response()->json([
-//                    'success' => true,
-//                    'message' => 'code os sended to your email'
-//                ], 200);
-//
-//            }
         }
         if ($request->number) {
             $email_exist = User::where(['number' => $request->number,])->get();
             if (!$email_exist->isEmpty()) {
-
                 $randomNumber = random_int(100000, 999999);
                 $user_id = $email_exist[0]->id;
 
+                $getRes =RessetPassword::where('user_id', $user_id)->first();
 
-                $details = [
-                    'title' => 'Mail from Vatan',
-                    'code' => $randomNumber,
-                    'body' => 'This is for forggot password'
-                ];
+                if($getRes == null){
+                    $code = RessetPassword::create([
+                        "user_id" => $user_id,
+                        "random_int" => $randomNumber,
+                    ]);
+                }else{
+                    RessetPassword::where( "user_id" , $user_id)->update([
+                        "random_int" => $randomNumber,
+                    ]);
+                }
 
-//                Mail::to($request->email)->send(new RessetpasswordMail($details));
 
-                $code = RessetPassword::create([
-                    "user_id" => $user_id,
-                    "random_int" => $randomNumber,
-                ]);
+                $number = $request->number;
+                $call_number = preg_replace('/[^0-9]/', '', $number);
+                $Carbon = Carbon::now();
+                $Carbon2 = Carbon::now();
+                $callCount = CallCount::where('number', $call_number)->where('type', 'codesend')
+                    ->whereBetween('created_at' , [$Carbon->addMinutes(-10), $Carbon2])
+                    ->count();
+//                if($callCount <= 3){
+//                    CallCount::create([
+//                        'number' => $call_number,
+//                        'type' => 'codesend'
+//                    ]);
+//                }else{
+//                    return response()->json([
+//                        'status' => false,
+//                        'message' => 'your number is blocked 10 minutes'
+//                    ]);
+//                }
+
+
+                try {
+                    $client = new GreenSMS([
+                        'user' => 'sadn',
+                        'pass' => 'Dgdhh378qq',
+                    ]);
+                    $response = $client->sms->send([
+                        'from' => 'vatan',
+                        'to' => $call_number,
+                        'txt' => 'Ваш код потверждения' .' '. $randomNumber
+                    ]);
+                    User::where('number', $request->number)->where('verify_code', '!=', 1)->update([
+                        'verify_code' =>  $randomNumber
+                    ]);
+                } catch (Exception $e) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Error in Green Smms',
+                    ]);
+                }
+
+
+
                 return response()->json([
                     'success' => true,
                     'message' => 'code os sended to your number',
@@ -220,7 +284,9 @@ class ForgotController extends Controller
 
     public function updatePassword(Request $request)
     {
+
         $rules = array(
+            'user_id' => 'required',
             'password' => 'min:6|max:254',
         );
         $validator = Validator::make($request->all(), $rules);
@@ -240,12 +306,6 @@ class ForgotController extends Controller
                     'status' => true,
                     'message' => 'Ваш пароль успешно изменен!'
             ]);
-
-
-//            return response()->json([
-//                'status' => false,
-//                'message' => 'Произошла ошибка!',
-
-//        }
+            
     }
 }

@@ -89,7 +89,7 @@ class GroupMembersController extends Controller
             'group_id' => $request->group_id,
         ];
 
-        DB::beginTransaction();
+//        DB::beginTransaction();
 
         $requesCount = Groupmember::where('receiver_id', $request->receiver_id)
             ->where('group_id', $request->group_id)->get();
@@ -105,7 +105,7 @@ class GroupMembersController extends Controller
         $notificationMembers = Groupmember::where('receiver_id', $request->receiver_id)->with('receiver')
             ->get();
 
-        DB::commit();
+//        DB::commit();
 
         if ($addMembers) {
             return response()->json([

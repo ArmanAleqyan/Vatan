@@ -18,6 +18,7 @@ return new class extends Migration {
 //            $table->integer('user_id');
             $table->longText('description')->nullable();
             $table->string('status')->nullable();
+            $table->softDeletes('deleted_at')->nullable();
             $table->timestamps();
         });
     }
