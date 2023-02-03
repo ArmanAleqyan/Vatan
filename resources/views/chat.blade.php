@@ -1737,7 +1737,9 @@
         // console.log(DataArray.length)
         let DataArrayLenght = DataArray.length;
         var numFiles = $('input[type="file"]')[0].files.length;
+
         let formData = new FormData();
+
         if (message != '' || numFiles > 0) {
             $('#comment').val('');
             for (var i = 0; i < DataArrayLenght; i++) {
@@ -2054,7 +2056,7 @@
             let allUndefined = DataArray;
             let myArray = DataArray;
             let filteredArray = myArray.filter(item => item !== undefined);
-            let allLenght = numFiles +filteredArray.length;
+            let allLenght = numFiles + filteredArray.length;
 
             if (filteredArray.length > 10 || numFiles > 10 || allLenght > 10) {
                 alert('Выберете  менше  10 фаилов')

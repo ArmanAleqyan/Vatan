@@ -6,9 +6,13 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Group;
 use App\Models\Post;
+use App\Models\Friend;
 use App\Models\Groupmember;
 use Illuminate\Support\Facades\Gate;
 use App\Events\GroupRequestEvent;
+use Validator;
+
+use App\Models\GroupUser;
 
 
 class GroupController extends Controller
@@ -17,24 +21,33 @@ class GroupController extends Controller
     {
         $data = Groupmember::where('receiver_id', auth()->user()->id)
             ->where('user_status', 'unconfirm')
-            ->with('sender')
+            ->with('sender','groupmembers')->orderBy('id', 'Desc')
             ->get();
 
-        $userData = [];
 
-        foreach ($data as $datum) {
-            $int = (int)$datum['sender_id'];
-
-            $userss = User::where('id', $int)->get();
-            $userData[] = $userss;
+        if(!$data ->isempty()){
+            foreach ($data as $item){
+                $array[] = [
+                    'user_id' =>$item->sender->id,
+                    'user_name' =>  $item->sender->name,
+                    'user_surname' =>  $item->sender->surname,
+                    'request_id' => $item->id,
+                    'group_name' =>$item->groupmembers->name,
+                    'group_image' => $item->groupmembers->image,
+                    'group_id' => $item->groupmembers->id
+                ];
+            }
+        }else{
+            $array = [];
         }
-        event(new GroupRequestEvent($userData));
+
+
 
         if ($data) {
             return response()->json([
                 'success' => true,
                 'message' => 'sent you a request',
-                'data' => $data,
+                'NewData' => $array
             ], 200);
         } else {
             return response()->json([
@@ -46,14 +59,16 @@ class GroupController extends Controller
 
     public function YourGroup(Request $request)
     {
+        $MyGroup = Group::where('user_id', auth()->user()->id)->get();
         $user = Groupmember::where('receiver_id', auth()->user()->id)
             ->where('user_status', 'true')
             ->with('group')
             ->get();
-//        dd($user);
-//        $groupData = Group::where()
 
-        if ($user->isEmpty()) {
+        $group = GroupUser::where('user_id', auth()->user()->id)->with('Group')->get();
+
+
+        if ($user->isEmpty() && $MyGroup->isEmpty()) {
             return response()->json([
                 'success' => false,
                 'message' => 'you dont have a group'
@@ -61,7 +76,9 @@ class GroupController extends Controller
         } else {
             return response()->json([
                 'success' => true,
-                'data' => $user
+                'OtherGroup' => $user,
+                'NewOtherGroup' => $group,
+                'MyGroup' => $MyGroup
             ]);
         }
     }
@@ -80,6 +97,9 @@ class GroupController extends Controller
      *               required={"true"},
      *               @OA\Property(property="name", type="string",format="text", example="some"),
      *               @OA\Property(property="image", type="file",format="file", example="1"),
+     *               @OA\Property(property="Users[]", type="string",format="string", example="1"),
+     *               @OA\Property(property="HideGroup", type="string",format="string", example="True Or False"),
+     *               @OA\Property(property="CreatedAt", type="string",format="string", example="True Or False"),
      *
      *    ),
      * ),
@@ -94,8 +114,19 @@ class GroupController extends Controller
 
     public function store(Request $request)
     {
-        $image = $request->file('image');
+        $rules = array(
+            'image' => 'required|image',
+            'name' => 'required|max:254',
+            'HideGroup' => 'required',
+            'CreatedAt' => 'required',
 
+        );
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        $image = $request->file('image');
         if ($image) {
             $destinationPath = 'uploads';
             $user_image = time() . $image->getClientOriginalName();
@@ -108,13 +139,30 @@ class GroupController extends Controller
             'name' => $request->name,
             'user_id' => auth()->user()->id,
             'image' => $user_image,
+            'CreatedAt' => $request->CreatedAt,
+            'HideGroup' => $request->HideGroup,
         ];
 
+
+
         $data = Group::create($createGroups);
+
+        if (isset($request->Users )){
+            foreach ($request->Users as $user) {
+                Groupmember::create([
+                    'sender_id' => auth()->user()->id,
+                    'receiver_id' => $user,
+                    'group_id' => $data->id,
+                    'status' => 'open',
+                    'user_status' => 'unconfirm'
+                ]);
+            }
+        }
         if ($data) {
             return response()->json([
                 'success' => true,
-                'message' => 'group successfully created'
+                'message' => 'group successfully created',
+                'group_id' => $data->id
             ], 200);
         } else {
             return response()->json([
@@ -122,6 +170,156 @@ class GroupController extends Controller
                 'message' => 'something was wrong'
             ], 422);
         }
+    }
+
+
+    /**
+     * @OA\Post(
+     * path="api/AddMyAnswerInLoginGroup",
+     * summary="AddMyAnswerInLoginGroup",
+     * description="AddMyAnswerInLoginGroup",
+     * operationId="AddMyAnswerInLoginGroup",
+     * tags={"Groups"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Moderator created successfully",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="GroupInviteId", type="integer",format="GroupInviteId", example=1),
+     *               @OA\Property(property="Answer", type="Answer",format="Answer", example="true or false"),
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Moderator created successfully",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+    public function AddMyAnswerInLoginGroup(Request $request){
+        $rules = array(
+            'GroupInviteId' => 'required',
+            'Answer' => 'required',
+        );
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+        $invirte_id = $request->GroupInviteId;
+        if($request->Answer == true){
+            $groupMember =  Groupmember::where('id', $invirte_id)->first();
+            if($groupMember == null){
+                return response()->json([
+                   'status' => false,
+                   'message' => 'wrong InviteId'
+                ],422);
+            }else{
+                GroupUser::create([
+                   'user_id' => auth()->user()->id,
+                    'group_id' => $groupMember->group_id,
+                    'status' => 'user'
+                ]);
+                Groupmember::where('id', $invirte_id)->delete();
+                return response()->json([
+                   'status' => true,
+                   'message' => 'Added In group'
+                ],200);
+            }
+
+        }elseif($request->Answer == false){
+            Groupmember::where('id', $invirte_id)->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User cancaled Request'
+            ],200);
+        }else{
+            return response()->json([
+               'status' => false,
+               'message' => 'Answer No true Or False'
+            ],422);
+        }
+    }
+
+
+    /**
+     * @OA\Post(
+     * path="api/GetUserFromInviteGroup",
+     * summary="GetUserFromInviteGroup",
+     * description="GetUserFromInviteGroup",
+     * operationId="GetUserFromInviteGroup",
+     * tags={"Groups"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Moderator created successfully",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="groupId", type="integer",format="groupId", example=1),
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="GetUserFromInviteGroup",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+    public  function GetUserFromInviteGroup(Request $request){
+        $groupId = $request->groupId;
+
+
+
+        $data = Friend::where('receiver_id', auth()->user()->id)->where('status', 'true')
+            ->OrWhere('sender_id',auth()->user()->id)->where('status', 'true')->get(['sender_id','receiver_id']);
+
+     if(!$data->isEMpty()){
+         foreach ($data as $user ){
+             if($user->sender_id == auth()->user()->id){
+                 $userArray[] = $user->receiver_id;
+             }else{
+                 $userArray[] = $user->sender_id;
+             }
+         }
+     }else{
+         $userArray = [];
+     }
+
+
+        $getGroupUser = GroupUser::where('group_id', $groupId)->wherein('user_id', $userArray)->get('user_id');
+
+
+        if(!$getGroupUser->isEMpty()){
+            foreach ($getGroupUser as $getGroupUser2 ){
+                    $userArray2[] = $getGroupUser2->user_id;
+            }
+        }else{
+            $userArray2 = [];
+        }
+
+
+
+
+
+
+        $user = User::with(['receivergroup' => function ($query) use ($groupId){
+            $query->where('group_id',$groupId);
+        } ])->wherenotin('id', $userArray2)->wherein('id', $userArray)->OrderBy('name','asc')->get();
+
+
+
+        return response()->json([
+           'status' => true,
+           'data' => $user
+        ],200);
+
+
+
     }
 
     /**

@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Passport\HasApiTokens;
-use PHPUnit\TextUI\XmlConfiguration\Group;
+
 
 class User extends Authenticatable
 {
@@ -41,6 +41,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'date_of_birth' => 'datetime',
     ];
+
+    public function UserDoc()
+    {
+        return $this->hasMany(UserDocument::class);
+    }
+
 
     public function UserGroup()
     {
@@ -116,6 +122,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Chat::class, 'sender_id');
     }
+
+    public function UserGroupReal()
+    {
+        return $this->Hasmany(GroupUser::class, 'user_id');
+    }
+
 
 
 }

@@ -16,6 +16,9 @@ use App\Events\FriendRequestEvent;
 
 class FriendsController extends Controller
 {
+
+
+
     public function index()
     {
         $data = Friend::where('receiver_id', auth()->user()->id)
@@ -23,21 +26,21 @@ class FriendsController extends Controller
             ->with('sender')
             ->get();
 
-        $userData = [];
+//        $userData = [];
+//
+//        foreach ($data as $datum) {
+//            $int = (int)$datum['sender_id'];
+//
+//            $userss = User::where('id', $int)->get();
+////            $userData[] = $userss;
+//        }
 
-        foreach ($data as $datum) {
-            $int = (int)$datum['sender_id'];
-
-            $userss = User::where('id', $int)->get();
-//            $userData[] = $userss;
-        }
-
-        event(new FriendRequestEvent($userss));
+//        event(new FriendRequestEvent($userss));
         if ($data) {
             return response()->json([
                 'success' => true,
                 'message' => 'sent you a request',
-                'data' => $userss,
+                'data' => $data,
             ], 200);
         } else {
             return response()->json([
@@ -49,12 +52,26 @@ class FriendsController extends Controller
 
     public function AllFriends()
     {
-        $data = Friend::where('receiver_id', auth()->user()->id)->where('status', 'true')->with('sender')->get();
+        $data = Friend::where('receiver_id', auth()->user()->id)->where('status', 'true')
+            ->OrWhere('sender_id',auth()->user()->id)->where('status', 'true')->get(['sender_id','receiver_id']);
+
+        foreach ($data as $user ){
+                if($user->sender_id == auth()->user()->id){
+                    $userArray[] = $user->receiver_id;
+                }else{
+                    $userArray[] = $user->sender_id;
+                }
+            }
+
+
+
+        $getUser = User::whereIn('id', $userArray)->OrderBy('name','asc')->get();
+
         if ($data) {
             return response()->json([
                 'success' => true,
                 'message' => 'your friends',
-                'data' => $data,
+                'data' => $getUser,
             ], 200);
         } else {
             return response()->json([
@@ -215,8 +232,11 @@ class FriendsController extends Controller
 
     public function cancelRequest(Request $request)
     {
+//        $cacnelRequest = Friend::where('receiver_id', auth()->user()->id)
+//            ->where('sender_id', $request->sender_id)->update(['status' => 'false']);
+
         $cacnelRequest = Friend::where('receiver_id', auth()->user()->id)
-            ->where('sender_id', $request->sender_id)->update(['status' => 'false']);
+            ->where('sender_id', $request->sender_id)->delete();
 
         if ($cacnelRequest) {
             return response()->json([
@@ -277,6 +297,39 @@ class FriendsController extends Controller
 
     /**
      * @OA\Post(
+     * path="api/deleteMyFriendRequest",
+     * summary="deleteMyFriendRequest",
+     * description="deleteMyFriendRequest",
+     * operationId="deleteMyFriendRequest",
+     * tags={"Friends"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="user removed from friends list",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="receiver_id", type="integer",format="text", example="1"),
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="user removed from friends list",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+    public function deleteMyFriendRequest(Request $request){
+        Friend::where('sender_id', auth()->user()->id)->where('receiver_id', $request->receiver_id)->delete();
+        return response()->json([
+           'status' => true,
+           'message' => 'Friend Request Deleted'
+        ],200);
+    }
+
+    /**
+     * @OA\Post(
      * path="api/friends-birth",
      * summary="get users birthday",
      * description="get users birthday",
@@ -317,6 +370,8 @@ class FriendsController extends Controller
                     $datas[] = $friend['sender_id'];
                 }
             }
+        }else{
+            $datas = [];
         }
         $today = Carbon::now();
         $today2 = Carbon::now();

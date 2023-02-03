@@ -9,13 +9,24 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Post;
 use App\Models\Group;
+use App\Models\GroupUser;
 use App\Models\Friend;
 use App\Models\Notification;
 use App\Models\Image;
 use App\Events\PostNotification;
-
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Image as RTY;
 use Validator;
+
+use FFMpeg\FFMpeg;
+use FFMpeg\Coordinate\Dimension;
+use FFMpeg\Format\Video\X264;
+
+use Cloudinary\Uploader;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use FFMpeg\FFProbe;
+
 
 class PostController extends Controller
 {
@@ -84,6 +95,8 @@ class PostController extends Controller
                     $query->withCount('replyanswerlike');
                 },
             ])->orderBy('id', 'desc')->get();
+
+
 
       if($data->isEmpty()){
           return response()->json([
@@ -155,9 +168,15 @@ class PostController extends Controller
             ],422);
         }
 
+
+        
+
        $post =  Post::where('id', $request->post_id)->update([
            'description' => $request->description
         ]);
+
+
+
         if(isset($request->DeletePhoto)){
 //            $postImageDelete = Image::whereIn('id', $request->DeletePhoto)->get('image');
 //            foreach ($postImageDelete as $del){
@@ -174,14 +193,64 @@ class PostController extends Controller
         if(isset($request->NewPhoto)){
             $time = time();
             foreach ($request->NewPhoto as $photo){
-                $destinationPath = 'uploads';
-                $originalFile = $time++ . $photo->getClientOriginalName();
-                $photo->move($destinationPath, $originalFile);
-                $files = $originalFile;
-                Image::create([
-                    'post_id' => $request->post_id,
-                    'image' => $files
-                ]);
+
+                $TypeImg =$photo->getClientMimeType();
+                if($TypeImg == 'image/jpeg' || $TypeImg == 'image/jpg' || $TypeImg == 'image/gif' || $TypeImg == 'image/png'  || $TypeImg == 'image/bmp'){
+                    $image = $photo;
+                    if($image->getSize() > 1000000){
+                        $input['imagename'] = $time++.'.'.$image->getClientOriginalExtension();
+                        $destinationPath = public_path('/uploads');
+                        $img = RTY::make($image->getRealPath());
+                        $width =   getimagesize($photo)[0] / 3;
+                        $height =   getimagesize($photo)[1] / 3;
+                        $img->resize($width, $height, function ($constraint) {
+                            $constraint->aspectRatio();
+                        })->save($destinationPath.'/'.$input['imagename']);
+
+                        $files =      Image::create([
+                            'post_id' => $post->id,
+                            'image' => $img->basename
+                        ]);
+                    }else{
+                        $destinationPath = 'uploads';
+                        $originalFile = $time++ . $photo->getClientOriginalName();
+                        $photo->move($destinationPath, $originalFile);
+                        $files = $originalFile;
+                        Image::create([
+                            'post_id' => $request->post_id,
+                            'image' => $files
+                        ]);
+                    }
+                }        elseif ($TypeImg == 'video/mp4' || $TypeImg ==  'video/MP4'|| $TypeImg == 'video/AVI' || $TypeImg == 'video/MOV' ||$TypeImg == 'video/quicktime'){
+                    $destinationPath = 'uploads/NewVideo';
+                    $originalFile =  time(). $photo->getClientOriginalName();
+                    $photo->storeas($destinationPath, $originalFile);
+                    $filesname = $originalFile;
+
+                    $files =      Image::create([
+                        'post_id' => $post->id,
+                        'image' => $filesname
+                    ]);
+
+
+//                    exec("ffmpeg -i /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/NewVideo/$filesname -vf 'scale=trunc(iw/4)*2:trunc(ih/4)*2' -c:v libx265 -crf 28  /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/$filesname");
+//                    exec("ffmpeg -i /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/NewVideo/$filesname -b:v 360k -bufsize 360k /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/$filesname");
+                    exec("ffmpeg -i /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/NewVideo/$filesname  /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/$filesname");
+                    $image_path = "uploads/NewVideo/".$filesname;  // Value is not URL but directory file path
+                    if(file_exists($image_path)){
+                        unlink($image_path);
+                    }
+                }else{
+                    $destinationPath = 'uploads';
+                    $originalFile =  $time++. $photo->getClientOriginalName();
+                    $photo->storeas($destinationPath, $originalFile);
+                    $files = $originalFile;
+
+                    $files =      Image::create([
+                        'post_id' => $post->id,
+                        'image' => $files
+                    ]);
+                }
             }
         }
        return response()->json([
@@ -299,6 +368,23 @@ class PostController extends Controller
                 ])
                 ->orderBy('id', 'desc')
                 ->simplepaginate(15);
+
+            $group = Group::where('id', $request->group_id)->get();
+
+           $groupUserCount =   GroupUser::with('User')->where('group_id', $request->group_id)->get();
+           $groupUserRole =   GroupUser::where('group_id', $request->group_id)->where('user_id', auth()->user()->id)->first('status');
+
+
+
+
+            return response()->json([
+                'status' => true,
+                'post' => $post,
+                'group' => $group,
+                'count' => $groupUserCount->count(),
+                'users' =>  $groupUserCount,
+                'role' => $groupUserRole
+            ],200);
         }else{
             $post = Post::whereIn('user_id', $datas)->with('images','user','comment', 'comment.user', 'PostLike', 'PostLikeAuthUser','comment.commmentlikeAuthUser',
                 'comment.comentreply','comment.comentreply.user','comment.comentreply.commentsreplylikeAuthUser',
@@ -384,6 +470,7 @@ class PostController extends Controller
     {
 
 
+
         if($request->description == null && $request->file == null){
             return response()->json([
                'status' => false,
@@ -400,15 +487,77 @@ class PostController extends Controller
                 'group_id' => $request->group_id
             ]);
             $file = $request->file('file');
-            foreach ($file as $files){ 
-                $destinationPath = 'uploads';
-                $originalFile =  $time++. $files->getClientOriginalName();
-                $files->storeas($destinationPath, $originalFile);
-                $files = $originalFile;
-                $files =      Image::create([
-                    'post_id' => $post->id,
-                    'image' => $files
-                ]);
+
+            foreach ($file as $files){
+                    $TypeImg =$files->getClientMimeType();
+                if($TypeImg == 'image/jpeg' || $TypeImg == 'image/jpg' || $TypeImg == 'image/gif' || $TypeImg == 'image/png'  || $TypeImg == 'image/bmp'){
+                    $image = $files;
+             if($image->getSize() > 1000000){
+                 $input['imagename'] = $time++.'.'.$image->getClientOriginalExtension();
+                 $destinationPath = public_path('/uploads');
+                 $img = RTY::make($image->getRealPath());
+                 $width =   getimagesize($files)[0] / 3;
+                 $height =   getimagesize($files)[1] / 3;
+                 $img->resize($width, $height, function ($constraint) {
+                     $constraint->aspectRatio();
+                 })->save($destinationPath.'/'.$input['imagename']);
+
+                 $files =      Image::create([
+                     'post_id' => $post->id,
+                     'image' => $img->basename
+                 ]);
+             }
+             else{
+                 $destinationPath = 'uploads';
+                 $originalFile =  $time++. $files->getClientOriginalName();
+                 $files->storeas($destinationPath, $originalFile);
+                 $files = $originalFile;
+
+
+                 $files =      Image::create([
+                     'post_id' => $post->id,
+                     'image' => $files
+                 ]);
+             }
+
+         }
+                elseif ($TypeImg == 'video/mp4' || $TypeImg ==  'video/MP4'|| $TypeImg == 'video/AVI' || $TypeImg == 'video/MOV' ||$TypeImg == 'video/quicktime'){
+                    $destinationPath = 'uploads/NewVideo';
+                    $originalFile =  time(). $files->getClientOriginalName();
+                    $files->storeas($destinationPath, $originalFile);
+                    $filesname = $originalFile;
+
+                    $files =      Image::create([
+                        'post_id' => $post->id,
+                        'image' => $filesname
+                    ]);
+
+
+//                    exec("ffmpeg -i /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/NewVideo/$filesname -vf 'scale=trunc(iw/4)*2:trunc(ih/4)*2' -c:v libx265 -crf 28  /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/$filesname");
+//                    exec("ffmpeg -i /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/NewVideo/$filesname -b:v 360k -bufsize 360k /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/$filesname");
+                    exec("ffmpeg -i /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/NewVideo/$filesname  /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/$filesname");
+                    $image_path = "uploads/NewVideo/".$filesname;  // Value is not URL but directory file path
+                    if(file_exists($image_path)){
+                        unlink($image_path);
+                    }
+                } else{
+             $destinationPath = 'uploads';
+             $originalFile =  $time++. $files->getClientOriginalName();
+             $files->storeas($destinationPath, $originalFile);
+             $files = $originalFile;
+
+             $files =      Image::create([
+                 'post_id' => $post->id,
+                 'image' => $files
+             ]);
+         }
+
+
+//                ffmpeg -i 1674810250lake_aerial_view_drone_flight_view_943.mp4 -b:v 144k -bufsize 144k output.mp4
+
+
+
+
             }
 
             return response()->json([

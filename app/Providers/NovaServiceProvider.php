@@ -9,6 +9,7 @@ use App\Nova\Release;
 use App\Nova\Series;
 use Wdelfuego\Nova4\CustomizableFooter\Footer;
 use App\Nova\User;
+use App\Nova\UserDocument;
 use App\Nova\Post;
 use App\Nova\Comment;
 use App\Nova\Comentreply;
@@ -43,10 +44,11 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 
 
         parent::boot();
-
-
         Nova::withoutNotificationCenter();
-    
+        Nova::script('myScript', public_path('AdminScript.js'));
+
+
+
         Nova::style('asd', asset('NovaCss.css'));
         Footer::set('<p class="text-center">Vatan </p>');
 
@@ -58,10 +60,16 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             }else{
                 $gets = '';
             }
+
+
+
+
             return [
+
 
                 MenuSection::make('Пользватели', [
                     MenuItem::resource(User::class),
+                    MenuItem::resource(UserDocument::class),
                 ])->icon('user')->collapsable(),
 
                 MenuSection::make('Посты', [
@@ -76,8 +84,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(VatanService::class),
                     MenuItem::resource(RegisterPrice::class),
                     MenuItem::resource(VatanServiceDocumentList::class),
-
                 ])->icon('post')->collapsable(),
+
                 MenuSection::make('Праздники', [
                     MenuItem::resource(Holiday::class),
 
@@ -100,6 +108,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             ];
         });
     }
+
+
 
     /**
      * Register the Nova routes.
@@ -125,9 +135,6 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     protected function gate()
     {
-
-
-
         Gate::define('viewNova', function ($user) {
             return in_array($user->email, [
 
@@ -164,6 +171,6 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     public function register()
     {
-        //
+
     }
 }

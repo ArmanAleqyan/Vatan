@@ -28,7 +28,7 @@ class User extends Resource
      *
      * @var string
      */
-    public static $title = 'name';
+    public static $title = 'username';
 
     /**
      * The columns that should be searched.
@@ -91,8 +91,9 @@ class User extends Resource
                 ->onlyOnForms()
                 ->creationRules('required', Rules\Password::defaults())
                 ->updateRules('nullable', Rules\Password::defaults()),
-            
-            HasMany::make('Post')
+            HasMany::make('Документы','UserDoc','App\Nova\UserDocument'),
+            HasMany::make('Post'),
+
 
         ];
     }

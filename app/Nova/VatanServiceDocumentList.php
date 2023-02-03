@@ -48,7 +48,7 @@ class VatanServiceDocumentList extends Resource
     public function fields(NovaRequest $request)
     {
         return [
-        Text::make('Названия','name')
+               Text::make('Названия','name')
         ];
     }
 

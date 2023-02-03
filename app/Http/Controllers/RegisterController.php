@@ -98,10 +98,11 @@ class RegisterController extends Controller
                     'patronymic' => $request->patronymic,
                     'city' => $request->city,
 //                    'username' => $request->username,
-                    'date_of_birth' => $dateStr,
+//                    'date_of_birth' => $dateStr,
                     'day' => $dateArray['day'],
                     'month' => $dateArray['month'],
                 ]);
+
 
 
 

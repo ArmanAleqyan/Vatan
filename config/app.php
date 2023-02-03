@@ -161,6 +161,12 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+//        'Intervention\Image\ImageServiceProvider',
+//        Pbmedia\LaravelFFMpeg\FFMpegServiceProvider::class,
+        ProtoneMedia\LaravelFFMpeg\Support\ServiceProvider::class,
+        CloudinaryLabs\CloudinaryLaravel\CloudinaryServiceProvider::class,
+        ProtoneMedia\LaravelFFMpeg\Support\ServiceProvider::class,
+
         
 
 
@@ -194,6 +200,11 @@ return [
     */
 
     'aliases' => [
+//        'FFMpeg' => Pbmedia\LaravelFFMpeg\FFMpegFacade::class,
+//
+//        'Image' => 'Intervention\Image\Facades\Image',
+        'Cloudinary' => CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::class,
+        'FFMpeg' => ProtoneMedia\LaravelFFMpeg\Support\FFMpeg::class,
 
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,

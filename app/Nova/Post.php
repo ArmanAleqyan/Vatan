@@ -63,10 +63,7 @@ class Post extends Resource
     public function fields(NovaRequest $request)
     {
         return [
-//            ID::make()->sortable(),
 
-            ////////////// POST TABLUM  CHUNEIR  IMAGE  COLUMN  DRA HAMAREL ERROR ER GCUM
-//            Image::make('image')->disk('public'),
             Text::make( 'Описание', 'description')
                 ->sortable()
                 ->rules('required', 'max:255'),

@@ -105,7 +105,7 @@ class Holiday extends Resource
                 '12' => '12',
             ])->required() ->rules('required', 'max:255')->sortable(),
             Textarea::make('Описание','description')->required() ->rules('required'),
-            Image::make('Фотография','photo')->disk('public')
+            Image::make('Фотография','photo')->rules('required')->disk('public')
         ];
     }
 

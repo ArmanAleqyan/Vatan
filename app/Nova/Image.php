@@ -5,6 +5,7 @@ namespace App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image as ghjk;
+use Laravel\Nova\Fields\File;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Image extends Resource
@@ -31,7 +32,7 @@ class Image extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'image';
 
     /**
      * The columns that should be searched.
@@ -39,7 +40,7 @@ class Image extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'image',
     ];
 
     /**
@@ -51,9 +52,7 @@ class Image extends Resource
     public function fields(NovaRequest $request)
     {
         return [
-//            ID::make()->sortable(),
-
-            ghjk::make('image')->disk('public'),
+            ghjk::make('image')->disk('public')->acceptedTypes('image/*', 'video/*'),
 
         ];
     }

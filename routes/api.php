@@ -75,6 +75,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('update-group-name', [GroupController::class, 'UpdateGroup']);
     Route::get('delete-group', [GroupController::class, 'deleteGroup']);
     Route::post('delete-moderator', [GroupController::class, 'DeleteModerator']);
+    Route::post('GetUserFromInviteGroup', [GroupController::class, 'GetUserFromInviteGroup']);
 
 //    Media
     Route::post('users-media', [MediaController::class, 'MyMedia']);
@@ -130,12 +131,16 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('reply-answer-likes', [PostLikesController::class, 'replyanswerStore']);
 
     Route::get('add-friends', [FriendsController::class, 'index']);
+
     Route::post('add-friends', [FriendsController::class, 'store']);
+    Route::post('deleteMyFriendRequest', [FriendsController::class, 'deleteMyFriendRequest']);
     Route::post('confirm-request', [FriendsController::class, 'confirmRequest']);
     Route::put('cancel-request', [FriendsController::class, 'cancelRequest']);
     Route::post('delete-friend', [FriendsController::class, 'deleteFriend']);
     Route::post('friends-birth', [FriendsController::class, 'friendsBirth']);
     Route::post('friends-posts', [PostController::class, 'friendsPosts']);
+
+
 
     Route::post('FriendsDay', [FriendsController::class, 'FriendsDay'])->name('FriendsDay');
 
@@ -158,9 +163,14 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('admin-delete-user/{id?}', [GroupController::class, 'AdminDeleteUsers']);
     Route::post('create-group', [GroupController::class, 'store']);
     Route::post('create-moderator', [GroupController::class, 'ModeratorCreate']);
+    Route::post('AddMyAnswerInLoginGroup', [GroupController::class, 'AddMyAnswerInLoginGroup']);
     Route::get('your-group', [GroupController::class, 'YourGroup']);
 
     Route::post('SearchUser', [UserController::class, 'SearchUser']);
+
+
+    Route::post('CreateNewDocument', [UserController::class,'CreateNewDocument' ]);
+    Route::get('GetMyDocuments', [UserController::class,'GetMyDocuments' ]);
 
 
 

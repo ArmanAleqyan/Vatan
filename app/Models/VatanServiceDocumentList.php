@@ -14,4 +14,9 @@ class VatanServiceDocumentList extends Model
     {
         return $this->Hasmany(VatanService::class);
     }
+
+    public function user_documents()
+    {
+        return $this->hasMany(UserDocument::class);
+    }
 }

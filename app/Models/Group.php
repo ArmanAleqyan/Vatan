@@ -33,4 +33,10 @@ class Group extends Model
     {
         return $this->belongsto(User::class, 'user_id');
     }
+
+    public function UserGroupReal()
+    {
+        return $this->belongsToMany(User::class, 'group_users', 'group_id','user_id');
+
+    }
 }

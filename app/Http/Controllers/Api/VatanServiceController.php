@@ -33,8 +33,7 @@ class VatanServiceController extends Controller
 
     public function createOrder(Request $request){
 
-                $client = new Client(['userName' => 't7733381896-api', 'password' => 'giJpZdtF' , 'apiUri' => Client::API_URI_TEST,'currency' => Currency::RUB]);
-
+        $client = new Client(['userName' => 't7733381896-api', 'password' => 'giJpZdtF' , 'apiUri' => Client::API_URI_TEST,'currency' => Currency::RUB]);
         $orderId     = time();
         $orderAmount = 1000;
         $returnUrl   = 'http://mycoolshop.local/payment-success';
