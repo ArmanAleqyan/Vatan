@@ -165,10 +165,15 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('create-moderator', [GroupController::class, 'ModeratorCreate']);
     Route::post('AddMyAnswerInLoginGroup', [GroupController::class, 'AddMyAnswerInLoginGroup']);
     Route::get('your-group', [GroupController::class, 'YourGroup']);
+    Route::post('LogoutInGroup', [GroupController::class,'LogoutInGroup']);
+    Route::post('LoginInGroupRequest', [GroupController::class,'LoginInGroupRequest']);
+    Route::post('GetGroupLoginRequest', [GroupController::class,'GetGroupLoginRequest']);
+    Route::post('SuccessGroupLogin', [GroupController::class,'SuccessGroupLogin']);
+
+    Route::post('groupSettings', [GroupController::class, 'groupSettings']);
+
 
     Route::post('SearchUser', [UserController::class, 'SearchUser']);
-
-
     Route::post('CreateNewDocument', [UserController::class,'CreateNewDocument' ]);
     Route::get('GetMyDocuments', [UserController::class,'GetMyDocuments' ]);
 

@@ -55,6 +55,8 @@ class FriendsController extends Controller
         $data = Friend::where('receiver_id', auth()->user()->id)->where('status', 'true')
             ->OrWhere('sender_id',auth()->user()->id)->where('status', 'true')->get(['sender_id','receiver_id']);
 
+
+
         foreach ($data as $user ){
                 if($user->sender_id == auth()->user()->id){
                     $userArray[] = $user->receiver_id;
@@ -62,6 +64,9 @@ class FriendsController extends Controller
                     $userArray[] = $user->sender_id;
                 }
             }
+        if($data->isEMpty()){
+            $userArray = [];
+        }
 
 
 

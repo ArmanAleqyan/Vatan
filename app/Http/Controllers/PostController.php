@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Post;
+use App\Models\LoginInGroupRequest;
 use App\Models\Group;
 use App\Models\GroupUser;
 use App\Models\Friend;
@@ -351,7 +352,8 @@ class PostController extends Controller
             $post = Post::where('group_id', $request->group_id)->where('deleted_at', null)->with('images','user','comment','PostLike', 'comment.commmentlikeAuthUser',
                 'comment.comentreply','comment.comentreply.user','comment.comentreply.commentsreplylikeAuthUser',
                 'comment.comentreply.comentreplyanswer',
-                'comment.comentreply.comentreplyanswer.user'
+                'comment.comentreply.comentreplyanswer.user',
+                'comment.comentreply.comentreplyanswer.replyanswerlikeAuthUser'
             )->withCount('postlikes', 'comment')->whererelation('user', 'id', '!=', null)
                 ->with([
                     'comment' => function ($query) {
@@ -371,25 +373,36 @@ class PostController extends Controller
 
             $group = Group::where('id', $request->group_id)->get();
 
-           $groupUserCount =   GroupUser::with('User')->where('group_id', $request->group_id)->get();
+           $groupUserCount =   GroupUser::with('User')->where('group_id', $request->group_id)->where('status', '!=','BlackList')->get();
+           $groupBlackList =   GroupUser::with('User')->where('group_id', $request->group_id)->where('status', '=','BlackList')->get();
            $groupUserRole =   GroupUser::where('group_id', $request->group_id)->where('user_id', auth()->user()->id)->first('status');
-
-
-
-
+            $GroupLoginRequest = null;
+           if($groupUserRole == null){
+               if($group[0]->user_id == auth()->user()->id){
+                   $groupUserRole = 'GeneralAdmin';
+               }else{
+                   $groupUserRole = 'NoMember';
+                   $GroupLoginRequest = LoginInGroupRequest::with('LoginInGroupRequest')->where('sender_id', auth()->user()->id)->where('group_id', $request->group_id)->orderBy('id', 'desc')->get();
+               }
+           }else{
+               $groupUserRole = $groupUserRole->status;
+           }
             return response()->json([
                 'status' => true,
                 'post' => $post,
                 'group' => $group,
                 'count' => $groupUserCount->count(),
                 'users' =>  $groupUserCount,
-                'role' => $groupUserRole
+                'role' => $groupUserRole,
+                'BlackList' => $groupBlackList,
+                'GroupLoginRequest' =>$GroupLoginRequest
             ],200);
         }else{
             $post = Post::whereIn('user_id', $datas)->with('images','user','comment', 'comment.user', 'PostLike', 'PostLikeAuthUser','comment.commmentlikeAuthUser',
                 'comment.comentreply','comment.comentreply.user','comment.comentreply.commentsreplylikeAuthUser',
                 'comment.comentreply.comentreplyanswer',
-                'comment.comentreply.comentreplyanswer.user'
+                'comment.comentreply.comentreplyanswer.user',
+                'comment.comentreply.comentreplyanswer.replyanswerlikeAuthUser'
             )->where('deleted_at', null)->whererelation('user', 'id', '!=', null)
                 ->withCount('postlikes', 'comment')
                 ->with([

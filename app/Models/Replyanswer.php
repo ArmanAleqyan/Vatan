@@ -30,4 +30,9 @@ class Replyanswer extends Model
     {
         return $this->hasMany(Replyanswerlike::class, 'comment_id');
     }
+
+    public function replyanswerlikeAuthUser()
+    {
+        return $this->hasMany(Replyanswerlike::class, 'comment_id')->where('user_id',auth()->user()->id);
+    }
 }

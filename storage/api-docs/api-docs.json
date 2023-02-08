@@ -1238,6 +1238,302 @@
                 }
             }
         },
+        "api/SuccessGroupLogin": {
+            "post": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "SuccessGroupLogin",
+                "description": "SuccessGroupLogin",
+                "operationId": "SuccessGroupLogin",
+                "requestBody": {
+                    "description": "SuccessGroupLogin",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "request_id": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "TrueOrFalse": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "True Or False"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "SuccessGroupLogin",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/GetGroupLoginRequest": {
+            "post": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "GetGroupLoginRequest",
+                "description": "GetGroupLoginRequest",
+                "operationId": "GetGroupLoginRequest",
+                "requestBody": {
+                    "description": "GetGroupLoginRequest",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "group_id": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "LoginInGroupRequest",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/LoginInGroupRequest": {
+            "post": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "LoginInGroupRequest",
+                "description": "LoginInGroupRequest",
+                "operationId": "LoginInGroupRequest",
+                "requestBody": {
+                    "description": "LoginInGroupRequest",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "group_id": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "LoginInGroupRequest",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/groupSettings": {
+            "post": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "groupSettings",
+                "description": "groupSettings",
+                "operationId": "groupSettings",
+                "requestBody": {
+                    "description": "groupSettings",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "group_id": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "name"
+                                    },
+                                    "commentStatus": {
+                                        "type": "string",
+                                        "format": "commentStatus",
+                                        "example": "True Or False"
+                                    },
+                                    "audioStatus": {
+                                        "type": "string",
+                                        "format": "audioStatus",
+                                        "example": "True Or False"
+                                    },
+                                    "VideoStatus": {
+                                        "type": "string",
+                                        "format": "VideoStatus",
+                                        "example": "True Or False"
+                                    },
+                                    "HideGroup": {
+                                        "type": "string",
+                                        "format": "HideGroup",
+                                        "example": "True Or False"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "groupSettings",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/BlackListStatusInGroupAndDelete": {
+            "post": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "BlackListStatusInGroupAndDelete",
+                "description": "BlackListStatusInGroupAndDelete",
+                "operationId": "BlackListStatusInGroupAndDelete",
+                "requestBody": {
+                    "description": "groupSettings",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "group_id": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "user_id": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "delete": {
+                                        "type": "string",
+                                        "format": "delete",
+                                        "example": "true or false"
+                                    },
+                                    "addBlackList": {
+                                        "type": "string",
+                                        "format": "addBlackList",
+                                        "example": "true or false"
+                                    },
+                                    "deleteBlackList": {
+                                        "type": "string",
+                                        "format": "addBlackList",
+                                        "example": "true or false"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "BlackListStatusInGroupAndDelete",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/LogoutInGroup": {
+            "post": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "LogoutInGroup",
+                "description": "LogoutInGroup",
+                "operationId": "LogoutInGroup",
+                "requestBody": {
+                    "description": "LogoutInGroup",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "group_id": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "LogoutInGroup",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "api/create-group": {
             "post": {
                 "tags": [

@@ -101,6 +101,7 @@ class CommentReplyController extends Controller
         $create = Comentreply::create($CommentReply);
 
 
+
 //        DB::commit();
 
         if ($create) {

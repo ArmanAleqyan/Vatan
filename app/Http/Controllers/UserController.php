@@ -218,7 +218,7 @@ class UserController extends Controller
             if ($checkStatus) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'status changed online successfully'
+                    'message' => 'status changed offline successfully'
                 ], 200);
             } else {
                 return response()->json([
@@ -231,7 +231,7 @@ class UserController extends Controller
             if ($checkStatus) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'status changed offline successfully'
+                    'message' => 'status changed online successfully'
                 ], 200);
             }
         }

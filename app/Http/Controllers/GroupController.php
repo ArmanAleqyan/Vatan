@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Group;
+use App\Models\LoginInGroupRequest;
 use App\Models\Post;
 use App\Models\Friend;
 use App\Models\Groupmember;
@@ -17,6 +18,392 @@ use App\Models\GroupUser;
 
 class GroupController extends Controller
 {
+
+    /**
+     * @OA\Post(
+     * path="api/SuccessGroupLogin",
+     * summary="SuccessGroupLogin",
+     * description="SuccessGroupLogin",
+     * operationId="SuccessGroupLogin",
+     * tags={"Groups"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="SuccessGroupLogin",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="request_id", type="string",format="text", example="1"),
+     *               @OA\Property(property="TrueOrFalse", type="string",format="text", example="True Or False"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="SuccessGroupLogin",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+    public function SuccessGroupLogin(Request $request){
+        $rules = array(
+            'TrueOrFalse' => 'required',
+            'request_id' => 'required',
+        );
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+        $get =  LoginInGroupRequest::where('id', $request->request_id)->first();
+
+            if($get == null){
+                    return response()->json([
+                       'status' => false,
+                       'message' =>  'Wrong request_id'
+                    ],422);
+            }else{
+                if($request->TrueOrFalse == false){
+                    LoginInGroupRequest::where('id', $request->request_id) ->delete();
+                    return response()->json([
+                       'status' => true,
+                       'message' => 'Request Deleted'
+                    ],200);
+                }elseif ($request->TrueOrFalse == true){
+                    GroupUser::create([
+                       'user_id' => $get->sender_id,
+                       'group_id' => $get->group_id,
+                       'status' => 'user'
+                    ]);
+
+
+                    return response()->json([
+                       'status' => true,
+                       'message' => 'User Added in Group'
+                    ],200);
+                }
+            }
+
+    }
+
+    /**
+     * @OA\Post(
+     * path="api/GetGroupLoginRequest",
+     * summary="GetGroupLoginRequest",
+     * description="GetGroupLoginRequest",
+     * operationId="GetGroupLoginRequest",
+     * tags={"Groups"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="GetGroupLoginRequest",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="group_id", type="string",format="text", example="1"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="LoginInGroupRequest",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+    public function GetGroupLoginRequest(Request $request){
+        $rules = array(
+            'group_id' => 'required',
+        );
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        $get =  LoginInGroupRequest::with('LoginInGroupRequest')->where('group_id', $request->group_id)->orderBy('id', 'desc')->get();
+        return response()->json([
+           'status' => true,
+           'data' => $get
+        ],200);
+    }
+
+    /**
+     * @OA\Post(
+     * path="api/LoginInGroupRequest",
+     * summary="LoginInGroupRequest",
+     * description="LoginInGroupRequest",
+     * operationId="LoginInGroupRequest",
+     * tags={"Groups"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="LoginInGroupRequest",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="group_id", type="string",format="text", example="1"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="LoginInGroupRequest",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+    public function LoginInGroupRequest(Request $request){
+        $rules = array(
+            'group_id' => 'required',
+        );
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        $get = Group::where('id', $request->group_id)->first();
+
+        if($get == null){
+            return response()->json([
+               'status' => false,
+               'message' => 'wrong Group Id'
+            ],422);
+        }
+        if($get->HideGroup == false){
+            GroupUser::create([
+                 'group_id' => $request->group_id,
+                 'user_id' => auth()->user()->id,
+                 'status' => 'user'
+            ]);
+            return response()->json([
+               'status' => true,
+               'message' => 'User Logined in group'
+            ],200);
+        }
+
+        $getGroup = LoginInGroupRequest::where(['sender_id' => auth()->user()->id,
+            'group_id' => $request->group_id])->get();
+
+        if(!$getGroup->isEMpty()){
+            $getGroup = LoginInGroupRequest::where([    'sender_id' => auth()->user()->id,
+                'group_id' => $request->group_id])->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'request Deleted'
+            ],200);
+        }
+
+        else{
+            LoginInGroupRequest::create([
+                'sender_id' => auth()->user()->id,
+                'group_id' => $request->group_id
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Request Created'
+            ],200);
+        }
+
+
+
+    }
+
+
+    /**
+     * @OA\Post(
+     * path="api/groupSettings",
+     * summary="groupSettings",
+     * description="groupSettings",
+     * operationId="groupSettings",
+     * tags={"Groups"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="groupSettings",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="group_id", type="string",format="text", example="1"),
+     *               @OA\Property(property="name", type="string",format="text", example="name"),
+     *               @OA\Property(property="commentStatus", type="string",format="commentStatus", example="True Or False"),
+     *               @OA\Property(property="audioStatus", type="string",format="audioStatus", example="True Or False"),
+     *               @OA\Property(property="VideoStatus", type="string",format="VideoStatus", example="True Or False"),
+     *               @OA\Property(property="HideGroup", type="string",format="HideGroup", example="True Or False"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="groupSettings",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+
+    public function groupSettings(Request $request){
+        $rules = array(
+            'group_id' => 'required',
+        );
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        $group =Group::where('id', $request->group_id);
+
+        if(isset($request->name)){
+            $group->update([
+                'name' => $request->name
+            ]);
+        }
+
+        if(isset($request->commentStatus)){
+
+            $group->update([
+                'commentStatus' => $request->commentStatus,
+            ]);
+        }
+
+        if (isset($request->audioStatus)){
+            $group->update([
+                'audioStatus' => $request->audioStatus,
+            ]);
+        }
+
+        if(isset($request->VideoStatus)){
+            $group->update([
+                'VideoStatus' => $request->VideoStatus
+            ]);
+        }
+
+        if(isset($request->HideGroup)){
+            $group->update([
+                'HideGroup' => $request->HideGroup
+            ]);
+        }
+
+
+
+
+
+
+
+        return response()->json([
+           'status' => true,
+           'message' => 'Group Updated'
+        ]);
+    }
+
+
+    /**
+     * @OA\Post(
+     * path="api/BlackListStatusInGroupAndDelete",
+     * summary="BlackListStatusInGroupAndDelete",
+     * description="BlackListStatusInGroupAndDelete",
+     * operationId="BlackListStatusInGroupAndDelete",
+     * tags={"Groups"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="groupSettings",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="group_id", type="string",format="text", example="1"),
+     *               @OA\Property(property="user_id", type="string",format="text", example="1"),
+     *               @OA\Property(property="delete", type="string",format="delete", example="true or false"),
+     *               @OA\Property(property="addBlackList", type="string",format="addBlackList", example="true or false"),
+     *               @OA\Property(property="deleteBlackList", type="string",format="addBlackList", example="true or false"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="BlackListStatusInGroupAndDelete",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+    public function BlackListStatusInGroupAndDelete(Request $request){
+        $rules = array(
+            'group_id' => 'required',
+            'user_id' => 'required'
+        );
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        $user =  GroupUser::where('user_id',$request->user_id)->where('group_id', $request->group_id);
+
+
+        if(isset($request->delete)&& $request->delete == true){
+            $user->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'user Deleted'
+            ],200);
+        }
+
+        if(isset($request->addBlackList) && $request->addBlackList == true){
+            $user->update([
+                'status' => 'BlackList'
+            ]);
+            return response()->json([
+                'status' => true,
+                'message' => 'user added Black List'
+            ],200);
+        }
+        if(isset($request->deleteBlackList) && $request->deleteBlackList == true){
+            $user->update([
+                'status' => 'user'
+            ]);
+            return response()->json([
+                'status' => true,
+                'message' => 'user deleted Black List'
+            ],200);
+        }
+
+    }
+
+    /**
+     * @OA\Post(
+     * path="api/LogoutInGroup",
+     * summary="LogoutInGroup",
+     * description="LogoutInGroup",
+     * operationId="LogoutInGroup",
+     * tags={"Groups"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="LogoutInGroup",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="group_id", type="string",format="text", example="1"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="LogoutInGroup",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+
+    public function LogoutInGroup(Request $request){
+        $rules = array(
+            'group_id' => 'required',
+        );
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+        GroupUser::where('group_id', $request->group_id)->where('user_id', auth()->user()->id)->delete();
+
+
+        return response()->json([
+           'status' => true,
+           'message' => 'User Logouted is Group'
+        ],200);
+    }
+
     public function index()
     {
         $data = Groupmember::where('receiver_id', auth()->user()->id)
@@ -125,7 +512,6 @@ class GroupController extends Controller
         if ($validator->fails()) {
             return $validator->errors();
         }
-
         $image = $request->file('image');
         if ($image) {
             $destinationPath = 'uploads';
@@ -142,11 +528,7 @@ class GroupController extends Controller
             'CreatedAt' => $request->CreatedAt,
             'HideGroup' => $request->HideGroup,
         ];
-
-
-
         $data = Group::create($createGroups);
-
         if (isset($request->Users )){
             foreach ($request->Users as $user) {
                 Groupmember::create([
@@ -158,6 +540,12 @@ class GroupController extends Controller
                 ]);
             }
         }
+
+        GroupUser::create([
+           'group_id' => $data->id,
+           'user_id' => auth()->user()->id,
+            'status' => 'GeneralAdmin'
+        ]);
         if ($data) {
             return response()->json([
                 'success' => true,
@@ -272,9 +660,6 @@ class GroupController extends Controller
 
     public  function GetUserFromInviteGroup(Request $request){
         $groupId = $request->groupId;
-
-
-
         $data = Friend::where('receiver_id', auth()->user()->id)->where('status', 'true')
             ->OrWhere('sender_id',auth()->user()->id)->where('status', 'true')->get(['sender_id','receiver_id']);
 
@@ -301,12 +686,6 @@ class GroupController extends Controller
         }else{
             $userArray2 = [];
         }
-
-
-
-
-
-
         $user = User::with(['receivergroup' => function ($query) use ($groupId){
             $query->where('group_id',$groupId);
         } ])->wherenotin('id', $userArray2)->wherein('id', $userArray)->OrderBy('name','asc')->get();
