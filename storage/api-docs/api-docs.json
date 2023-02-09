@@ -1682,6 +1682,139 @@
                 }
             }
         },
+        "api/GetGroupFromFriendMember": {
+            "post": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "GetGroupFromFriendMember",
+                "description": "GetGroupFromFriendMember",
+                "operationId": "GetGroupFromFriendMember",
+                "requestBody": {
+                    "description": "Moderator created successfully",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "format": "user_id",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "GetGroupFromFriendMember",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/AddInviteGetGroupFromFriendMember": {
+            "post": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "AddInviteGetGroupFromFriendMember",
+                "description": "AddInviteGetGroupFromFriendMember",
+                "operationId": "AddInviteGetGroupFromFriendMember",
+                "requestBody": {
+                    "description": "Moderator created successfully",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "format": "user_id",
+                                        "example": 1
+                                    },
+                                    "groups_id[]": {
+                                        "type": "integer",
+                                        "format": "groups_id[]",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "AddInviteGetGroupFromFriendMember",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/AddInviteGetGroupFromFriends": {
+            "post": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "AddInviteGetGroupFromFriends",
+                "description": "AddInviteGetGroupFromFriends",
+                "operationId": "AddInviteGetGroupFromFriends",
+                "requestBody": {
+                    "description": "Moderator created successfully",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "true"
+                                ],
+                                "properties": {
+                                    "Users[]": {
+                                        "type": "integer",
+                                        "format": "Users",
+                                        "example": 1
+                                    },
+                                    "group_id": {
+                                        "type": "integer",
+                                        "format": "group_id",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "AddInviteGetGroupFromFriends",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "api/create-moderator": {
             "post": {
                 "tags": [

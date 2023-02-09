@@ -529,6 +529,8 @@ class GroupController extends Controller
             'HideGroup' => $request->HideGroup,
         ];
         $data = Group::create($createGroups);
+
+
         if (isset($request->Users )){
             foreach ($request->Users as $user) {
                 Groupmember::create([
@@ -697,9 +699,134 @@ class GroupController extends Controller
            'data' => $user
         ],200);
 
+    }
 
+    /**
+     * @OA\Post(
+     * path="api/GetGroupFromFriendMember",
+     * summary="GetGroupFromFriendMember",
+     * description="GetGroupFromFriendMember",
+     * operationId="GetGroupFromFriendMember",
+     * tags={"Groups"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Moderator created successfully",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="user_id", type="integer",format="user_id", example=1),
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="GetGroupFromFriendMember",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+
+    public function GetGroupFromFriendMember(Request $request){
+        $getGroupsId = GroupUser::where('user_id', auth()->user()->id)->where('user_id', '!=', $request->user_id)->get('group_id')->toarray();
+        $groupMembers = Groupmember::where('receiver_id', $request->user_id)->get('group_id')->toarray();
+        $groupLogin = LoginInGroupRequest::where('sender_id', $request->user_id)->get('group_id')->toarray();
+        $getGroups = Group::whereNOtIn('id', $groupMembers)->whereNotIn('id',$groupLogin)->whereIn('id', $getGroupsId)->where('user_id', '!=',$request->user_id)->get();
+
+        return response()->json([
+           'status' => true,
+           'data' => $getGroups
+        ],200);
 
     }
+    /**
+     * @OA\Post(
+     * path="api/AddInviteGetGroupFromFriendMember",
+     * summary="AddInviteGetGroupFromFriendMember",
+     * description="AddInviteGetGroupFromFriendMember",
+     * operationId="AddInviteGetGroupFromFriendMember",
+     * tags={"Groups"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Moderator created successfully",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="user_id", type="integer",format="user_id", example=1),
+     *               @OA\Property(property="groups_id[]", type="integer",format="groups_id[]", example=1),
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="AddInviteGetGroupFromFriendMember",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+
+    public function AddInviteGetGroupFromFriend(Request $request){
+               $user_id = $request->user_id;
+            foreach ($request->groups_id as $group) {
+                Groupmember::create([
+                    'sender_id' => auth()->user()->id,
+                    'receiver_id' => $user_id,
+                    'group_id' => $group,
+                    'user_status' => 'unconfirm'
+                ]);
+            }
+            return response()->json([
+               'status' => true,
+               'message' => 'invite Created'
+            ], 200);
+    }
+
+    /**
+     * @OA\Post(
+     * path="api/AddInviteGetGroupFromFriends",
+     * summary="AddInviteGetGroupFromFriends",
+     * description="AddInviteGetGroupFromFriends",
+     * operationId="AddInviteGetGroupFromFriends",
+     * tags={"Groups"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Moderator created successfully",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="Users[]", type="integer",format="Users", example=1),
+     *               @OA\Property(property="group_id", type="integer",format="group_id", example=1),
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="AddInviteGetGroupFromFriends",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+
+    public function AddInviteGetGroupFromFriends(Request $request){
+
+        $group_id = $request->group_id;
+        foreach ($request->Users as $user_id) {
+            Groupmember::create([
+                'sender_id' => auth()->user()->id,
+                'receiver_id' => $user_id,
+                'group_id' => $group_id,
+                'user_status' => 'unconfirm'
+            ]);
+        }
+        return response()->json([
+            'status' => true,
+            'message' => 'invite Created'
+        ], 200);
+    }
+
+
 
     /**
      * @OA\Post(

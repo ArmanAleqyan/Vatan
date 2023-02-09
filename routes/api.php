@@ -171,6 +171,9 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('SuccessGroupLogin', [GroupController::class,'SuccessGroupLogin']);
 
     Route::post('groupSettings', [GroupController::class, 'groupSettings']);
+    Route::post('GetGroupFromFriendMember', [GroupController::class, 'GetGroupFromFriendMember']);
+    Route::post('AddInviteGetGroupFromFriend', [GroupController::class, 'AddInviteGetGroupFromFriend']);
+    Route::post('AddInviteGetGroupFromFriends', [GroupController::class, 'AddInviteGetGroupFromFriends']);
 
 
     Route::post('SearchUser', [UserController::class, 'SearchUser']);

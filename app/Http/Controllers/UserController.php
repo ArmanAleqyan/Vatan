@@ -361,7 +361,7 @@ class UserController extends Controller
                 },
             ])
             ->orderBy('id', 'desc')
-            ->get();
+            ->paginate(15);
 
         $friend = Friend::where('sender_id',auth()->user()->id)->where('receiver_id', $id)
             ->orWhere('receiver_id', auth()->user()->id)->where('sender_id', $id)->get();
