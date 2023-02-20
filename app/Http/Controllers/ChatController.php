@@ -289,15 +289,17 @@ class ChatController extends Controller
             ->get();
 
         $get_views = Chat::where('review', 1, 'room_id', $request->room_id, 'receiver_id', \auth()->id())
-            ->get();
+            ->update([
+                'review' => 0
+            ]);
 
-
-        $ids = [];
-        foreach ($get_views as $review_id) {
-            array_push($ids, $review_id->id);
-            $update_views = Chat::where(['id' => $review_id->id])
-                ->update(['review' => 0]);
-        }
+//
+//        $ids = [];
+//        foreach ($get_views as $review_id) {
+//            array_push($ids, $review_id->id);
+//            $update_views = Chat::where(['id' => $review_id->id])
+//                ->update(['review' => 0]);
+//        }
 
         $user = [];
         foreach ($data as $datum) {
@@ -305,26 +307,29 @@ class ChatController extends Controller
         }
 
         if (isset($data[0])) {
-
             if ($data[0]->receiver_id == auth()->user()->id) {
                 $reciver_id = $data[0]->sender_id;
             } else {
                 $reciver_id = $data[0]->receiver_id;
             }
 
+            $getuser2 = User::where('id',$receiver_id)->get();
+
             return response([
                 'success' => true,
                 'sender' => auth()->user(),
                 'message' => "chat between two users",
                 'data' => $data,
-                "receiver_user_data" => $user,
+                "receiver_user_data" =>$getuser2,
                 "receiver_id" => $reciver_id,
+
             ], 200);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'user with this not found'
-            ], 422);
         }
+//        else {
+//            return response()->json([
+//                'success' => false,
+//                'message' => 'user with this not found'
+//            ], 500);
+//        }
     }
 }

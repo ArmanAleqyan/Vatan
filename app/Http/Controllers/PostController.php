@@ -59,15 +59,15 @@ class PostController extends Controller
      */
     public function AllFile(Request $request){
         $get = Post::where('user_id', \auth()->user()->id)->where('deleted_at', null)->get('id');
+        if(!$get->isEmpty()){
             foreach ($get as $post){
                 $data[] = $post->id;
             }
-
-
             $getImage = Image::wherein('post_id', $data)->where('deleted_at', null)->orderBy('created_at','Desc')->get();
-
-
-            return response()->json([
+        }else{
+            $getImage = [];
+        }
+        return response()->json([
                'status' => true,
                'data' => $getImage
             ], 200);
@@ -75,6 +75,7 @@ class PostController extends Controller
     }
 
     public function postSinglePage($id){
+
 
 
 
@@ -97,6 +98,17 @@ class PostController extends Controller
                 },
             ])->orderBy('id', 'desc')->get();
 
+      if(isset($data)){
+          $group = GroupUser::where('user_id', auth()->user()->id)->where('group_id', $data[0]->group_id)->first();
+
+          if($group != null){
+              $role = $group;
+          }else{
+              $role = [];
+          }
+
+      }
+
 
 
       if($data->isEmpty()){
@@ -107,7 +119,8 @@ class PostController extends Controller
       }
         return response()->json([
            'status' => true,
-           'data' =>  $data
+           'data' =>  $data,
+            'role' => $role
         ],200);
     }
 
@@ -142,8 +155,6 @@ class PostController extends Controller
      */
 
     public function EditPost(Request $request){
-
-
         $rules = array(
             'post_id' => 'required',
         );
@@ -179,6 +190,10 @@ class PostController extends Controller
 
 
         if(isset($request->DeletePhoto)){
+                $postImageDelete = Image::whereIN('id', $request->DeletePhoto)->update([
+                    'deleted_at' => Carbon::now()
+                ]);
+//            }
 //            $postImageDelete = Image::whereIn('id', $request->DeletePhoto)->get('image');
 //            foreach ($postImageDelete as $del){
 ////                dump($del->image);
@@ -187,14 +202,13 @@ class PostController extends Controller
 ////                    unlink($image_path);
 ////                }
 //            }
-            $postImageDelete = Image::whereIn('id', $request->DeletePhoto)->update([
-                'deleted_at' => Carbon::now()
-            ]);
+//            $postImageDelete = Image::whereIn('id', $request->DeletePhoto)->update([
+//                'deleted_at' => Carbon::now()
+//            ]);
         }
         if(isset($request->NewPhoto)){
             $time = time();
             foreach ($request->NewPhoto as $photo){
-
                 $TypeImg =$photo->getClientMimeType();
                 if($TypeImg == 'image/jpeg' || $TypeImg == 'image/jpg' || $TypeImg == 'image/gif' || $TypeImg == 'image/png'  || $TypeImg == 'image/bmp'){
                     $image = $photo;
@@ -209,9 +223,10 @@ class PostController extends Controller
                         })->save($destinationPath.'/'.$input['imagename']);
 
                         $files =      Image::create([
-                            'post_id' => $post->id,
+                            'post_id' => $request->post_id,
                             'image' => $img->basename
                         ]);
+
                     }else{
                         $destinationPath = 'uploads';
                         $originalFile = $time++ . $photo->getClientOriginalName();
@@ -229,7 +244,7 @@ class PostController extends Controller
                     $filesname = $originalFile;
 
                     $files =      Image::create([
-                        'post_id' => $post->id,
+                        'post_id' =>  $request->post_id,
                         'image' => $filesname
                     ]);
 
@@ -248,7 +263,7 @@ class PostController extends Controller
                     $files = $originalFile;
 
                     $files =      Image::create([
-                        'post_id' => $post->id,
+                        'post_id' =>  $request->post_id,
                         'image' => $files
                     ]);
                 }
@@ -309,8 +324,6 @@ class PostController extends Controller
         $post = Post::where('id', $id)->update([
            'deleted_at' => Carbon::now()
         ]);
-
-
         return response()->json([
            'status' => true,
            'message' => 'Post Deleted'
@@ -349,6 +362,13 @@ class PostController extends Controller
 
 
         if(isset($request->group_id)){
+            $getFGroup = Group::where('id', $request->group_id)->first();
+            if($getFGroup == null || $getFGroup->deleted_at != null){
+                return response()->json([
+                   'status' => false,
+                   'message' => 'Wrong Group Id'
+                ],422);
+            }
             $post = Post::where('group_id', $request->group_id)->where('deleted_at', null)->with('images','user','comment','PostLike', 'comment.commmentlikeAuthUser',
                 'comment.comentreply','comment.comentreply.user','comment.comentreply.commentsreplylikeAuthUser',
                 'comment.comentreply.comentreplyanswer',
@@ -387,6 +407,31 @@ class PostController extends Controller
            }else{
                $groupUserRole = $groupUserRole->status;
            }
+
+            $dataInvite =  \App\Models\Groupmember::where('receiver_id', auth()->user()->id)
+                ->where('user_status', 'unconfirm')->where('group_id', $request->group_id)
+                ->with('sender','groupmembers')->orderBy('id', 'Desc')
+                ->get();
+
+
+            if(!$dataInvite ->isempty()){
+                foreach ($dataInvite as $item){
+                    $arrayInvite[] = [
+                        'user_id' =>$item->sender->id,
+                        'user_name' =>  $item->sender->name,
+                        'user_surname' =>  $item->sender->surname,
+                        'user_avatar' =>  $item->sender->avatar,
+                        'request_id' => $item->id,
+                        'group_name' =>$item->groupmembers->name,
+                        'group_image' => $item->groupmembers->image,
+                        'group_id' => $item->groupmembers->id,
+
+                    ];
+                }
+            }else{
+                $arrayInvite = [];
+            }
+
             return response()->json([
                 'status' => true,
                 'post' => $post,
@@ -395,7 +440,8 @@ class PostController extends Controller
                 'users' =>  $groupUserCount,
                 'role' => $groupUserRole,
                 'BlackList' => $groupBlackList,
-                'GroupLoginRequest' =>$GroupLoginRequest
+                'GroupLoginRequest' =>$GroupLoginRequest,
+                'Invite' =>$arrayInvite
             ],200);
         }else{
             $post = Post::whereIn('user_id', $datas)->with('images','user','comment', 'comment.user', 'PostLike', 'PostLikeAuthUser','comment.commmentlikeAuthUser',
@@ -506,7 +552,7 @@ class PostController extends Controller
                 if($TypeImg == 'image/jpeg' || $TypeImg == 'image/jpg' || $TypeImg == 'image/gif' || $TypeImg == 'image/png'  || $TypeImg == 'image/bmp'){
                     $image = $files;
              if($image->getSize() > 1000000){
-                 $input['imagename'] = $time++.'.'.$image->getClientOriginalExtension();
+                 $input['imagename'] = $time++.'.'.$image->guessExtension();
                  $destinationPath = public_path('/uploads');
                  $img = RTY::make($image->getRealPath());
                  $width =   getimagesize($files)[0] / 3;
@@ -522,7 +568,7 @@ class PostController extends Controller
              }
              else{
                  $destinationPath = 'uploads';
-                 $originalFile =  $time++. $files->getClientOriginalName();
+                 $originalFile =  $time++.'.' .$files->guessExtension();
                  $files->storeas($destinationPath, $originalFile);
                  $files = $originalFile;
 
@@ -534,11 +580,14 @@ class PostController extends Controller
              }
 
          }
-                elseif ($TypeImg == 'video/mp4' || $TypeImg ==  'video/MP4'|| $TypeImg == 'video/AVI' || $TypeImg == 'video/MOV' ||$TypeImg == 'video/quicktime'){
+                elseif ($TypeImg == 'video/mp4' || $TypeImg ==  'video/MP4'||  $TypeImg == 'video/AVI' || $TypeImg == 'video/MOV' ||$TypeImg == 'video/quicktime'){
+
+
                     $destinationPath = 'uploads/NewVideo';
-                    $originalFile =  time(). $files->getClientOriginalName();
+                    $originalFile =  time().'.'.$files->guessExtension() ;
                     $files->storeas($destinationPath, $originalFile);
                     $filesname = $originalFile;
+
 
                     $files =      Image::create([
                         'post_id' => $post->id,
@@ -555,7 +604,7 @@ class PostController extends Controller
                     }
                 } else{
              $destinationPath = 'uploads';
-             $originalFile =  $time++. $files->getClientOriginalName();
+             $originalFile =  $time++.'.'.$files->guessExtension();
              $files->storeas($destinationPath, $originalFile);
              $files = $originalFile;
 

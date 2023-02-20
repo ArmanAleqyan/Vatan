@@ -671,7 +671,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <div style="display: flex;margin-left: 93px;">
-    <a style="    display: flex;  justify-content: start;color: black; margin: 0" href="https://dev.vatan.su/nova/dashboards/main">Вернутса в Админ Панел</a>
+    <a style=" font-size: 17px;   display: flex;  justify-content: start;color: black; margin: 0" href="https://dev.vatan.su/nova/dashboards/main">Вернуться в админ панель</a>
 </div>
     <div class="container app">
 
@@ -2121,7 +2121,7 @@
 
 
 
-    Pusher.logToConsole = false;
+    Pusher.logToConsole = true;
     var pusher = new Pusher('82c41d8c09d510fed195', {
         cluster: 'ap2',
     });

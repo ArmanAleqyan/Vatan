@@ -7,6 +7,10 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+
+    protected $commands = [
+        \App\Console\Commands\PhotoDelete::class,
+    ];
     /**
      * Define the application's command schedule.
      *
@@ -15,6 +19,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('PhotoDelete:cron')
+            ->dailyAt('4:20');
         // $schedule->command('inspire')->hourly();
     }
 

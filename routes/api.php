@@ -169,16 +169,25 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('LoginInGroupRequest', [GroupController::class,'LoginInGroupRequest']);
     Route::post('GetGroupLoginRequest', [GroupController::class,'GetGroupLoginRequest']);
     Route::post('SuccessGroupLogin', [GroupController::class,'SuccessGroupLogin']);
+    
+    Route::post('AdminDeleteGroup', [GroupController::class,'AdminDeleteGroup']);
+
 
     Route::post('groupSettings', [GroupController::class, 'groupSettings']);
     Route::post('GetGroupFromFriendMember', [GroupController::class, 'GetGroupFromFriendMember']);
     Route::post('AddInviteGetGroupFromFriend', [GroupController::class, 'AddInviteGetGroupFromFriend']);
     Route::post('AddInviteGetGroupFromFriends', [GroupController::class, 'AddInviteGetGroupFromFriends']);
+    Route::post('BlackListStatusInGroupAndDelete', [GroupController::class, 'BlackListStatusInGroupAndDelete']);
+    Route::post('UserAddNewModeradorAnDelete',[GroupController::class, 'UserAddNewModeradorAnDelete']);
+
+    Route::post('DeleteUserInGroup', [GroupController::class, 'DeleteUserInGroup']);
+
 
 
     Route::post('SearchUser', [UserController::class, 'SearchUser']);
     Route::post('CreateNewDocument', [UserController::class,'CreateNewDocument' ]);
     Route::get('GetMyDocuments', [UserController::class,'GetMyDocuments' ]);
+    Route::get('GetCountsFromProject', [UserController::class,'GetCountsFromProject' ]);
 
 
 
@@ -201,6 +210,11 @@ Route::group(['middleware' => ['auth:api']], function () {
 
 
 Route::get('status/{id?}', [UserController::class, 'userOnlineStatus']);
+
+////////////////////////////////////////////////////////////////////////////////  Crons URL
+///
+
+Route::get('CronDeleteImageTable', [\App\Http\Controllers\Cron\ImageDeletController::class, 'CronDeleteImageTable']);
 
 
 

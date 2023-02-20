@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Post;
 use App\Models\Group;
+use App\Models\Groupmember;
 use App\Models\VatanServiceDocumentList;
 use App\Models\UserDocument;
 use Validator;
 use App\Models\Friend;
+use App\Models\GroupUser;
+use App\Models\Chat;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +21,50 @@ use Image as RTY;
 
 class UserController extends Controller
 {
+
+
+
+    /**
+     * @OA\Post(
+     * path="api/GetCountsFromProject",
+     * summary="GetCountsFromProject",
+     * description="GetCountsFromProject",
+     * operationId="GetCountsFromProject",
+     * tags={"Profile"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="User Send Email for add",
+     *    @OA\JsonContent(
+     *       required={"required"},
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Returned All Counts In Proect From Auth User",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+    public function GetCountsFromProject(){
+        $getGrop = Groupmember::where('receiver_id', auth()->user()->id)->count();
+        $getFriendRequest = Friend::where('receiver_id', auth()->user()->id)->where('status', 'unconfirm')->count();
+        $getChatCount = Chat::where('receiver_id', auth()->user()->id)->where('review', 1)->count();
+        $frienCount = Friend::where('receiver_id', auth()->user()->id)->where('status', true)->orwhere('sender_id', auth()->user()->id)->where('status', true)->count();
+        $group = GroupUser::where('user_id', auth()->user()->id)->count();
+
+
+        return response()->json([
+           'status' => true,
+           'GroupRequestCount' => $getGrop,
+           'FriendRequestCount' => $getFriendRequest,
+           'ChatCount' => $getChatCount,
+            'Friends' => $frienCount,
+            'Groups' =>$group
+        ],200);
+    }
+
 
     /**
      * @OA\Post(
@@ -145,7 +192,7 @@ class UserController extends Controller
             });
         }
 
-        $users = $users->get();
+        $users = $users->where('id','!=',1)->get();
 
 //     $user =    User::where('name', 'Like', '%'.$request->search)
 //         ->orwhere('surname', 'Like', '%'.$request->search)
@@ -157,7 +204,7 @@ class UserController extends Controller
 //            ->orwhere('patronymic', $request->search)
 //            ->orwhere('username', $request->search)->get();
 
-        $group = Group::where('name',  'like', "%{$request->search}%")->get();
+        $group = Group::where('name',  'like', "%{$request->search}%")->where('deleted_at', null)->get();
 
      return response()->json([
         'status' => true,
@@ -342,12 +389,12 @@ class UserController extends Controller
     public function singlePageUser($id){
         
         $user = User::where('id', $id)->get();
-        $post = Post::where('user_id',$id)->where('deleted_at',null)->where('group_id', null)->with('images','user','comment', 'comment.commmentlikeAuthUser',
+        $post = Post::where('user_id',$id)->where('deleted_at',null)->where('group_id', null)->with('images','user','comment','PostLike', 'comment.commmentlikeAuthUser',
             'comment.comentreply','comment.comentreply.user','comment.comentreply.commentsreplylikeAuthUser',
             'comment.comentreply.comentreplyanswer',
-            'comment.comentreply.comentreplyanswer.user'
-        )
-            ->withCount('postlikes', 'comment')
+            'comment.comentreply.comentreplyanswer.user',
+            'comment.comentreply.comentreplyanswer.replyanswerlikeAuthUser'
+        )->withCount('postlikes', 'comment')->whererelation('user', 'id', '!=', null)
             ->with([
                 'comment' => function ($query) {
                     $query->withCount('commmentlike')->withCount('comentreply');
@@ -359,6 +406,7 @@ class UserController extends Controller
                 'comment.comentreply.comentreplyanswer' => function ($query) {
                     $query->withCount('replyanswerlike');
                 },
+
             ])
             ->orderBy('id', 'desc')
             ->paginate(15);

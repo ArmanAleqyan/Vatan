@@ -22,7 +22,7 @@ class Post extends Model
 
     public function images()
     {
-        return $this->hasMany(Image::class);
+        return $this->hasMany(Image::class)->where('deleted_at', NULL);
     }
 
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Group;
 use App\Models\LoginInGroupRequest;
@@ -18,6 +19,86 @@ use App\Models\GroupUser;
 
 class GroupController extends Controller
 {
+
+    /**
+     * @OA\Post(
+     * path="api/AdminDeleteGroup",
+     * summary="AdminDeleteGroup",
+     * description="AdminDeleteGroup",
+     * operationId="AdminDeleteGroup",
+     * tags={"Groups"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="AdminDeleteGroup",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="group_id", type="string",format="text", example="1"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="DeleteUserInGroup",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+    public function AdminDeleteGroup(Request $request){
+        Group::where('id', $request->group_id)->update([
+           'deleted_at' => Carbon::now()
+        ]);
+
+        Post::where('group_id', $request->group_id)->update([
+           'deleted_at' => Carbon::now()
+        ]);
+
+
+        GroupUser::where('group_id',  $request->group_id)->delete();
+
+
+        return response()->json([
+           'status' => 'true',
+            'message' => 'Group Deleted'
+        ],200);
+    }
+
+    /**
+     * @OA\Post(
+     * path="api/DeleteUserInGroup",
+     * summary="DeleteUserInGroup",
+     * description="DeleteUserInGroup",
+     * operationId="DeleteUserInGroup",
+     * tags={"Groups"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="DeleteUserInGroup",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="user_id", type="string",format="user_id", example="1"),
+     *               @OA\Property(property="group_id", type="string",format="text", example="1"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="DeleteUserInGroup",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+
+    public function DeleteUserInGroup(Request $request){
+
+        GroupUser::where('user_id', $request->user_id)->where('group_id', $request->group_id)->delete();
+
+        return response()->json([
+           'status' => true,
+           'message' => 'user Deleted'
+        ],200);
+    }
+
 
     /**
      * @OA\Post(
@@ -68,6 +149,7 @@ class GroupController extends Controller
                        'message' => 'Request Deleted'
                     ],200);
                 }elseif ($request->TrueOrFalse == true){
+                    LoginInGroupRequest::where('id', $request->request_id) ->delete();
                     GroupUser::create([
                        'user_id' => $get->sender_id,
                        'group_id' => $get->group_id,
@@ -159,13 +241,15 @@ class GroupController extends Controller
 
         $get = Group::where('id', $request->group_id)->first();
 
+
         if($get == null){
             return response()->json([
                'status' => false,
                'message' => 'wrong Group Id'
             ],422);
         }
-        if($get->HideGroup == false){
+        if($get->HideGroup == 'true'){
+          
             GroupUser::create([
                  'group_id' => $request->group_id,
                  'user_id' => auth()->user()->id,
@@ -176,6 +260,7 @@ class GroupController extends Controller
                'message' => 'User Logined in group'
             ],200);
         }
+
 
         $getGroup = LoginInGroupRequest::where(['sender_id' => auth()->user()->id,
             'group_id' => $request->group_id])->get();
@@ -188,7 +273,6 @@ class GroupController extends Controller
                 'message' => 'request Deleted'
             ],200);
         }
-
         else{
             LoginInGroupRequest::create([
                 'sender_id' => auth()->user()->id,
@@ -364,6 +448,61 @@ class GroupController extends Controller
 
     /**
      * @OA\Post(
+     * path="api/UserAddNewModeradorAnDelete",
+     * summary="UserAddNewModeradorAnDelete",
+     * description="UserAddNewModeradorAnDelete",
+     * operationId="UserAddNewModeradorAnDelete",
+     * tags={"Groups"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="UserAddNewModeradorAnDelete",
+     *    @OA\JsonContent(
+     *               required={"true"},
+     *               @OA\Property(property="group_id", type="string",format="text", example="1"),
+     *               @OA\Property(property="user_id", type="string",format="text", example="1"),
+     *               @OA\Property(property="moderator", type="string",format="text", example="true or false"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="UserAddNewModeradorAnDelete",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+    public function UserAddNewModeradorAnDelete(Request $request){
+        $rules = array(
+            'group_id' => 'required',
+            'user_id' => 'required'
+        );
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+        if($request->moderator == 'true'){
+            GroupUser::where('user_id', $request->user_id)->where('group_id', $request->group_id)->update([
+                'status' => 'moderator'
+            ]);
+        }
+
+        if($request->moderator == 'false'){
+            GroupUser::where('user_id', $request->user_id)->where('group_id', $request->group_id)->update([
+                'status' => 'user'
+            ]);
+        }
+
+        return response()->json([
+           'status' => true,
+           'message' => 'user Added Moderator'
+        ],200);
+
+
+    }
+
+    /**
+     * @OA\Post(
      * path="api/LogoutInGroup",
      * summary="LogoutInGroup",
      * description="LogoutInGroup",
@@ -446,16 +585,16 @@ class GroupController extends Controller
 
     public function YourGroup(Request $request)
     {
-        $MyGroup = Group::where('user_id', auth()->user()->id)->get();
-        $user = Groupmember::where('receiver_id', auth()->user()->id)
-            ->where('user_status', 'true')
-            ->with('group')
-            ->get();
+//        $MyGroup = Group::where('user_id', auth()->user()->id)->where('deleted_at',  null)->get();
+//        $user = Groupmember::where('receiver_id', auth()->user()->id)
+//            ->where('user_status', 'true')
+//            ->with('group')
+//            ->get();
 
-        $group = GroupUser::where('user_id', auth()->user()->id)->with('Group')->get();
+        $group = GroupUser::where('user_id', auth()->user()->id)->with('Group')->whereRelation('Group','deleted_at', null )->get();
 
 
-        if ($user->isEmpty() && $MyGroup->isEmpty()) {
+        if ($group->isEMpty()) {
             return response()->json([
                 'success' => false,
                 'message' => 'you dont have a group'
@@ -463,9 +602,9 @@ class GroupController extends Controller
         } else {
             return response()->json([
                 'success' => true,
-                'OtherGroup' => $user,
-                'NewOtherGroup' => $group,
-                'MyGroup' => $MyGroup
+//                'OtherGroup' => $user,
+                'Group' => $group,
+//                'MyGroup' => $MyGroup
             ]);
         }
     }
@@ -661,6 +800,7 @@ class GroupController extends Controller
      */
 
     public  function GetUserFromInviteGroup(Request $request){
+
         $groupId = $request->groupId;
         $data = Friend::where('receiver_id', auth()->user()->id)->where('status', 'true')
             ->OrWhere('sender_id',auth()->user()->id)->where('status', 'true')->get(['sender_id','receiver_id']);
@@ -688,9 +828,17 @@ class GroupController extends Controller
         }else{
             $userArray2 = [];
         }
+
+        $groupMembers = Groupmember::whereIn('receiver_id',$userArray)->where('group_id', $groupId)->get('receiver_id')->toarray();
+        $GroupLoginrequest = LoginInGroupRequest::where('sender_id', $userArray )->where('group_id', $groupId)->get('sender_id')->toarray();
+
         $user = User::with(['receivergroup' => function ($query) use ($groupId){
             $query->where('group_id',$groupId);
-        } ])->wherenotin('id', $userArray2)->wherein('id', $userArray)->OrderBy('name','asc')->get();
+        } ])->wherenotin('id', $userArray2)
+            ->wherenotin('id', $groupMembers)
+            ->wherenotin('id', $GroupLoginrequest)
+            ->wherein('id', $userArray)
+            ->OrderBy('name','asc')->get();
 
 
 
@@ -731,7 +879,7 @@ class GroupController extends Controller
         $getGroupsId = GroupUser::where('user_id', auth()->user()->id)->where('user_id', '!=', $request->user_id)->get('group_id')->toarray();
         $groupMembers = Groupmember::where('receiver_id', $request->user_id)->get('group_id')->toarray();
         $groupLogin = LoginInGroupRequest::where('sender_id', $request->user_id)->get('group_id')->toarray();
-        $getGroups = Group::whereNOtIn('id', $groupMembers)->whereNotIn('id',$groupLogin)->whereIn('id', $getGroupsId)->where('user_id', '!=',$request->user_id)->get();
+        $getGroups = Group::whereNOtIn('id', $groupMembers)->where('deleted_at', null)->whereNotIn('id',$groupLogin)->whereIn('id', $getGroupsId)->where('user_id', '!=',$request->user_id)->get();
 
         return response()->json([
            'status' => true,
@@ -741,10 +889,10 @@ class GroupController extends Controller
     }
     /**
      * @OA\Post(
-     * path="api/AddInviteGetGroupFromFriendMember",
-     * summary="AddInviteGetGroupFromFriendMember",
-     * description="AddInviteGetGroupFromFriendMember",
-     * operationId="AddInviteGetGroupFromFriendMember",
+     * path="api/AddInviteGetGroupFromFriend",
+     * summary="AddInviteGetGroupFromFriend",
+     * description="AddInviteGetGroupFromFriend",
+     * operationId="AddInviteGetGroupFromFriend",
      * tags={"Groups"},
      * @OA\RequestBody(
      *    required=true,
@@ -758,7 +906,7 @@ class GroupController extends Controller
      * ),
      * @OA\Response(
      *    response=200,
-     *    description="AddInviteGetGroupFromFriendMember",
+     *    description="AddInviteGetGroupFromFriend",
      *    @OA\JsonContent(
      *        )
      *     )
@@ -812,7 +960,9 @@ class GroupController extends Controller
     public function AddInviteGetGroupFromFriends(Request $request){
 
         $group_id = $request->group_id;
+
         foreach ($request->Users as $user_id) {
+
             Groupmember::create([
                 'sender_id' => auth()->user()->id,
                 'receiver_id' => $user_id,
