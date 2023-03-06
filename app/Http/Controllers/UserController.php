@@ -26,6 +26,91 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
+     * path="api/change_token_valid",
+     * summary="change_token_valid",
+     * description="change_token_valid",
+     * operationId="change_token_valid",
+     * tags={"Profile"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Change token  Valid or no valid",
+     *    @OA\JsonContent(
+     *       required={"required"},
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="valid token",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+    public function change_token_valid(){
+        $auth = auth()->guard('api')->user();
+
+        if($auth == null){
+            return response()->json([
+               'status' => false,
+               'message' => 'invalid token'
+            ],422);
+        }elseif($auth != null){
+            return response()->json([
+               'status' => true,
+                'message' => 'valid token'
+            ],200);
+        }
+    }
+
+
+    /**
+     * @OA\Post(
+     * path="api/check_auth_seen",
+     * summary="check_auth_seen",
+     * description="check_auth_seen",
+     * operationId="check_auth_seen",
+     * tags={"Profile"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="check_auth_seen",
+     *    @OA\JsonContent(
+     *       required={"required"},
+     *         @OA\Property(property="status", type="status", format="status", example="true or false"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Empty Post Request With Token",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+
+
+
+
+
+    public function check_auth_seen(Request $request){
+        if($request->status == true){
+            User::where('id', \auth()->user()->id)->update([
+                    'last_seen' => 'online'
+            ]);
+
+            return response()->json(['status' => true, 'message' => 'status changet online']);
+        }elseif($request->status == false){
+            User::where('id', \auth()->user()->id)->update([
+                'last_seen' => 'offline'
+            ]);
+            return response()->json(['status' => true, 'message' => 'status changet offline']);
+        }
+    }
+
+
+    /**
+     * @OA\Post(
      * path="api/GetCountsFromProject",
      * summary="GetCountsFromProject",
      * description="GetCountsFromProject",
@@ -66,6 +151,17 @@ class UserController extends Controller
     }
 
 
+    public function DocumentsCategory(){
+      $get =  VatanServiceDocumentList::OrderBy('id', 'Desc')->get();
+
+
+
+        return response()->json([
+           'status' => true,
+           'data' =>  $get
+        ],200);
+    }
+
     /**
      * @OA\Post(
      * path="api/CreateNewDocument",
@@ -93,13 +189,15 @@ class UserController extends Controller
     public function CreateNewDocument(Request $request){
         $rules=array(
             'document_id' => 'required',
-            'photo' => 'required',
+//            'photo' => 'required',
         );
         $validator=Validator::make($request->all(),$rules);
         if($validator->fails())
         {
             return $validator->errors();
         }
+
+
         $getDocType = VatanServiceDocumentList::where('id' , $request->document_id)->first();
         if($getDocType == null){
             return response()->json([
@@ -111,7 +209,6 @@ class UserController extends Controller
             foreach ($file as $files){
                 $fileName = uniqid() . '.' . $files->getClientOriginalExtension();
                 $files->move(public_path('uploads'), $fileName);
-
                 UserDocument::create([
                     'user_id' => \auth()->user()->id,
                     'document_id' => $request->document_id,
@@ -192,7 +289,7 @@ class UserController extends Controller
             });
         }
 
-        $users = $users->where('id','!=',1)->get();
+        $users = $users->where('id', '!=', auth()->user()->id)->where('id','!=',1)->get();
 
 //     $user =    User::where('name', 'Like', '%'.$request->search)
 //         ->orwhere('surname', 'Like', '%'.$request->search)
@@ -221,10 +318,13 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
+        $count = \App\Models\Chat::where('receiver_id', \auth()->user()->id)->where('review',1)->sum('review');
+
         if ($user) {
             return response()->json([
                 'success' => true,
-                $user
+                $user,
+                'MessageCount' => $count
             ], 200);
         } else {
             return response()->json([
@@ -305,6 +405,9 @@ class UserController extends Controller
     public function logout()
     {
         $user = Auth::user()->token();
+        User::where('id', \auth()->user()->id)->update([
+           'last_seen' => 'offline'
+        ]);
 //        if ($user) {
 //            $offline = User::where('id', auth()->user()->id)->update(['last_seen' => Carbon::now()]);
 //            $offlineUser = User::where('id', auth()->user()->id)->get();

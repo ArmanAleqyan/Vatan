@@ -6,6 +6,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ForgotController;
 use App\Http\Controllers\Admin\ChatController;
+use App\Http\Controllers\Orders\ReturnOrderController;
 
 
 
@@ -35,3 +36,6 @@ Route::post('UpdateStatusChat', [ChatController::class, 'UpdateStatusChat'])->na
 
 Route::post('getRoomChat', [ChatController::class, 'getRoomChat'])->name('getRoomChat');
 Route::post('SendAdminMessage', [ChatController::class, 'SendAdminMessage'])->name('SendAdminMessage');
+
+
+Route::get('successOrder', [ReturnOrderController::class, 'successOrder'])->name('successOrder');

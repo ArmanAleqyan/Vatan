@@ -14,6 +14,50 @@ class ProfileController extends Controller
 {
     /**
      * @OA\Post(
+     * path="api/delete_avatar_and_back_round_photo",
+     * summary="delete_avatar_and_back_round_photo",
+     * description="delete_avatar_and_back_round_photo",
+     * operationId="delete_avatar_and_back_round_photo ",
+     * tags={"Profile"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="User add default avatar and backroun",
+     *    @OA\JsonContent(
+     *       required={"required"},
+     *          @OA\Property(property="avatar", type="boolean", format="int", example="true"),
+     *          @OA\Property(property="backraundPhoto", type="boolean", format="int", example="true"),
+     *
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *        )
+     *     )
+     * )
+     */
+
+
+    public function delete_avatar_and_back_round_photo(Request $request){
+        if(isset($request->avatar) && $request->avatar == true){
+            User::where('id', auth()->user()->id)->update([
+               'avatar' => 'default.png'
+            ]);
+        }
+        if (isset($request->backraundPhoto) && $request->backraundPhoto == true){
+            User::where('id', auth()->user()->id)->update([
+                'backraundPhoto' => 'defaultBackround.png'
+            ]);
+        }
+        return response()->json([
+           'status' => true,
+           'message' => 'photo updated'
+        ],200);
+    }
+
+    /**
+     * @OA\Post(
      * path="api/change-number",
      * summary="User Send Number for change",
      * description="User Send Number for change",

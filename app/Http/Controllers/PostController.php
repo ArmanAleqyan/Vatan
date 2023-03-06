@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+
+use App\Jobs\FfmpegConversion;
+use Symfony\Component\Process\Process;
+use Illuminate\Support\Facades\Async;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
@@ -595,9 +599,10 @@ class PostController extends Controller
                     ]);
 
 
-//                    exec("ffmpeg -i /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/NewVideo/$filesname -vf 'scale=trunc(iw/4)*2:trunc(ih/4)*2' -c:v libx265 -crf 28  /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/$filesname");
-//                    exec("ffmpeg -i /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/NewVideo/$filesname -b:v 360k -bufsize 360k /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/$filesname");
-                    exec("ffmpeg -i /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/NewVideo/$filesname  /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/$filesname");
+                   exec("ffmpeg -i /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/NewVideo/$filesname  /var/www/vatan/data/www/dev.vatan.su/public_html/public/uploads/$filesname");
+
+
+
                     $image_path = "uploads/NewVideo/".$filesname;  // Value is not URL but directory file path
                     if(file_exists($image_path)){
                         unlink($image_path);
@@ -614,8 +619,6 @@ class PostController extends Controller
              ]);
          }
 
-
-//                ffmpeg -i 1674810250lake_aerial_view_drone_flight_view_943.mp4 -b:v 144k -bufsize 144k output.mp4
 
 
 

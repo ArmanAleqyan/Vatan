@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\VatanService;
+use App\Models\RegisterPrice;
+use App\Models\OrderTranzaction;
 use Voronkovich\SberbankAcquiring\Client;
 use Voronkovich\SberbankAcquiring\Currency;
 
@@ -33,15 +35,27 @@ class VatanServiceController extends Controller
 
     public function createOrder(Request $request){
 
-        $client = new Client(['userName' => 't7733381896-api', 'password' => 'giJpZdtF' , 'apiUri' => Client::API_URI_TEST,'currency' => Currency::RUB]);
+
+
+
+        $client = new Client(['userName' =>  env('SberBankLogin'), 'password' =>  env('SberBankPassword'), 'apiUri' => Client::API_URI_TEST,'currency' => Currency::RUB]);
         $orderId     = time();
-        $orderAmount = 1000;
-        $returnUrl   = 'http://mycoolshop.local/payment-success';
+        $orderAmount = $request->price;
+        $returnUrl   = $request->return;
+//        route('successOrder');
         $params['currency'] = Currency::RUB;
-        $params['failUrl']  = 'http://mycoolshop.local/payment-failure';
+        $params['failUrl']  =   'http://mycoolshop.local/payment-failure';
+
         $result = $client->registerOrder($orderId, $orderAmount, $returnUrl, $params);
         $paymentOrderId = $result['orderId'];
+
         $paymentFormUrl = $result['formUrl'];
+
+        OrderTranzaction::create([
+             'user_id' => auth()->user()->id,
+             'order_id' =>  $paymentOrderId,
+            'status' => 1
+        ]);
 
 
 

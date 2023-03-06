@@ -17,6 +17,7 @@ use App\Nova\Group;
 use App\Nova\VatanService;
 use App\Nova\RegisterPrice;
 use App\Nova\Holiday;
+use App\Nova\BuyVatanService;
 use App\Nova\VatanServiceDocumentList;
 use Illuminate\Http\Request;
 use Laravel\Nova\Nova\Dashboards\Main;
@@ -84,6 +85,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(VatanService::class),
                     MenuItem::resource(RegisterPrice::class),
                     MenuItem::resource(VatanServiceDocumentList::class),
+                    MenuItem::resource(BuyVatanService::class),
                 ])->icon('post')->collapsable(),
 
                 MenuSection::make('Праздники', [

@@ -40,6 +40,7 @@ class ChatController extends Controller
 
     public function store(Request $request)
     {
+
         $get_chat = Chat::where('receiver_id', $request->receiver_id)->where('sender_id', auth()->user()->id)->first();
         if ($get_chat == null) {
             $get_chat2 = Chat::where('receiver_id', auth()->user()->id)->where('sender_id', $request->receiver_id)->first();
@@ -51,16 +52,13 @@ class ChatController extends Controller
         } else {
             $room_id = $get_chat->room_id;
         }
-
-
         $fileNames = $request->file;
-
-
         if (isset($fileNames)) {
             $time = time();
             foreach ($fileNames as $fileName) {
+
                 $destinationPath = 'uploads';
-                $originalFile = $time++ . $fileName->getClientOriginalName();
+                $originalFile = $time++ .str_replace(' ', '',$fileName->getClientOriginalName()) ;
                 $fileName->move($destinationPath, $originalFile);
                 $file = $originalFile;
 
@@ -72,9 +70,6 @@ class ChatController extends Controller
                     'room_id' => $room_id,
                     'file' => $file,
                 ];
-
-
-
                 $chat = Chat::create([
                         'sender_id' => auth()->user()->id,
                         'receiver_id' => $request->receiver_id,
@@ -82,22 +77,12 @@ class ChatController extends Controller
                         'file' => $file,
                         'notification' => 0,
                         'room_id' => $room_id,
-                        'created_at' => Carbon::now()
+                        'created_at' => Carbon::now(),
                     ]
-
-
                 );
-
                 $getCount = Chat::where('sender_id', auth()->user()->id)->where('receiver_id',$request->receiver_id)->sum('review');
                 $lattestMessage = Chat::where('sender_id', auth()->user()->id)->where('receiver_id',$request->receiver_id)->latest()->first();
-
-
                 $lattestMessage['notification'] = $lattestMessage->created_at->diffForHumans();
-
-
-
-
-
                 if ($chat) {
                     $chat_data = Chat::where("receiver_id", $request->receiver_id)->where("sender_id", auth()->user()->id)->get();
                     foreach ($chat_data as $chat_datum)
@@ -107,17 +92,18 @@ class ChatController extends Controller
                         }
                     $user = auth()->user();
                     $receiverUser = User::where('id', $chat_datum->receiver_id)->get();
-                    event(new ChatNotification($chat, $receiverUser, auth()->user(),$getCount,$lattestMessage->created_at->diffForHumans()));
-
-                } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'something was wrong'
-                    ], 422);
+                    $AllMessageCount = Chat::where('receiver_id',$chat_datum->receiver_id)->where('review',1)->count();
+                    event(new ChatNotification($chat, $receiverUser, auth()->user(),$getCount,$lattestMessage->created_at->diffForHumans(),$AllMessageCount));
                 }
-
-
             }
+            return response()->json([
+                "success" => true,
+                "message" => "your message has been successfully sent",
+                "data" => [
+                    'message' =>  'message created with file',
+                    'count' => $AllMessageCount
+                ]
+            ]);
         } else {
             $data = [
                 'sender_id' => auth()->user()->id,
@@ -135,7 +121,8 @@ class ChatController extends Controller
             'messages' => $request->messages,
             'notification' => 0,
             'room_id' => $room_id,
-                'created_at' => Carbon::now()
+                'created_at' => Carbon::now(),
+//                'review' => 1
         ]
 
 
@@ -152,20 +139,24 @@ class ChatController extends Controller
                 }
             $user = auth()->user();
             $receiverUser = User::where('id', $chat_datum->receiver_id)->get();
-            event(new ChatNotification($chat, $receiverUser, auth()->user(),$getCount,$lattestMessage->created_at->diffForHumans()));
+            $AllMessageCount = Chat::where('receiver_id',$chat_datum->receiver_id)->where('review',1)->count();
+//            dd($AllMessageCount);
+
+            event(new ChatNotification($chat, $receiverUser, auth()->user(),$getCount,  $lattestMessage->created_at->diffForHumans(),$AllMessageCount));
             return response()->json([
                 "success" => true,
                 "message" => "your message has been successfully sent",
                 "data" => [
-                    'message' =>  'message created'
+                    'message' =>  'message created',
+                    'count' => $AllMessageCount
                 ]
             ]);
-        } else {
+        }
             return response()->json([
                 'success' => false,
                 'message' => 'something was wrong'
             ], 422);
-        }
+
     }
 
     /**
@@ -194,6 +185,7 @@ class ChatController extends Controller
 
     public function RightSiteUsers(Request $request)
     {
+
         $usersChat = Chat::query()->where(function ($query) use ($request) {
             $query->where([
                 'sender_id' => auth()->id(),
@@ -222,7 +214,10 @@ class ChatController extends Controller
             $messages = $item["messages"];
             $et_message = Chat::where('receiver_id', $receiver_id)->where('room_id', $item['room_id'])->sum('review');
 
-          $rev = Chat::where('room_id',$item['room_id'])->where('receiver_id', auth()->user()->id)->sum('review');
+
+            $Count  =  Chat::where('sender_id', $receiver_id)->where('receiver_id', auth()->user()->id)->sum('review');
+
+              $rev = Chat::where('sender_id',$receiver_id)->where('receiver_id', auth()->user()->id)->sum('review');
 //            $rev = Chat::where('room_id',$item['room_id'])->where('receiver_id', $request->auth_user_id)->sum('review');
 
             $hty = Chat::where('room_id', $item['room_id'])->latest()->first();
@@ -233,7 +228,7 @@ class ChatController extends Controller
                 'messages' => $hty['message'],
                 'image' => $hty['file'],
                 'receiver_id' => $receiver_id,
-                'review' => $rev,
+                'review' => $Count,
                 'count' => $et_message,
                 'room_id' => $item['room_id'],
                 'surname' => $user_surname,
@@ -276,6 +271,7 @@ class ChatController extends Controller
 
     public function getUsersData(Request $request, $receiver_id)
     {
+    
         $data = Chat::where(function ($query) use ($receiver_id) {
             $query->where([
                 'sender_id' => auth()->id()
@@ -285,10 +281,10 @@ class ChatController extends Controller
                 ])->where('sender_id', $receiver_id);
         })
             ->with(['user', 'forusers'])
-            ->orderBy('id', 'ASC')
-            ->get();
+            ->orderBy('id', 'DESC')
+            ->simplePaginate(30)->reverse()->values();
 
-        $get_views = Chat::where('review', 1, 'room_id', $request->room_id, 'receiver_id', \auth()->id())
+        $get_views = Chat::where('review', 1)->where( 'sender_id', $receiver_id)->where('receiver_id', \auth()->id())
             ->update([
                 'review' => 0
             ]);
@@ -319,17 +315,16 @@ class ChatController extends Controller
                 'success' => true,
                 'sender' => auth()->user(),
                 'message' => "chat between two users",
-                'data' => $data,
+                'data' =>  $data,
                 "receiver_user_data" =>$getuser2,
                 "receiver_id" => $reciver_id,
 
             ], 200);
+        }else{
+            return response()->json([
+               'status' => true,
+               'user' =>  User::where('id', $receiver_id)->first()
+            ]);
         }
-//        else {
-//            return response()->json([
-//                'success' => false,
-//                'message' => 'user with this not found'
-//            ], 500);
-//        }
     }
 }

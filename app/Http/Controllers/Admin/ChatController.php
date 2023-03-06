@@ -245,7 +245,9 @@ class ChatController extends Controller
                 }
             $user = auth()->user();
             $receiverUser = User::where('id', $chat_datum->receiver_id)->get();
-            event(new ChatNotification($chat, $receiverUser, auth()->user(),$getCount,$lattestMessage->created_at->diffForHumans()));
+            $AllMessageCount = Chat::where('receiver_id',$chat_datum->receiver_id)->where('review',1)->count();
+            $chat[0]['review'] = $getCount;
+            event(new ChatNotification($chat, $receiverUser, auth()->user(),$getCount,$lattestMessage->created_at->diffForHumans(),$AllMessageCount));
             return response()->json([
                 "success" => true,
                 "message" => "your message has been successfully sent",

@@ -2769,6 +2769,254 @@
                 }
             }
         },
+        "api/add_balance": {
+            "post": {
+                "tags": [
+                    "add_balance"
+                ],
+                "summary": "add_balance",
+                "description": "add_balance",
+                "operationId": "add_balance",
+                "requestBody": {
+                    "description": "add_balance",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "price": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "1000"
+                                    },
+                                    "return": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "1000"
+                                    },
+                                    "failUrl": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "1000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/suc_add_balance": {
+            "post": {
+                "tags": [
+                    "add_balance"
+                ],
+                "summary": "suc_add_balance",
+                "description": "suc_add_balance",
+                "operationId": "suc_add_balance",
+                "requestBody": {
+                    "description": "add_balance",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "order_id": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "567a1bd0-0d95-7995-8c0c-c48c28ea21ef"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/err_add_balance": {
+            "post": {
+                "tags": [
+                    "add_balance"
+                ],
+                "summary": "err_add_balance",
+                "description": "err_add_balance",
+                "operationId": "err_add_balance",
+                "requestBody": {
+                    "description": "add_balance",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "order_id": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "567a1bd0-0d95-7995-8c0c-c48c28ea21ef"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/buy_vatan_service_tranzaction": {
+            "post": {
+                "tags": [
+                    "orders"
+                ],
+                "summary": "buy_vatan_service_tranzaction",
+                "description": "buy_vatan_service_tranzaction",
+                "operationId": "buy_vatan_service_tranzaction",
+                "requestBody": {
+                    "description": "buy_vatan_service_tranzaction",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "service_id": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/buy_vatan_service_register": {
+            "post": {
+                "tags": [
+                    "orders"
+                ],
+                "summary": "buy_vatan_service_register",
+                "description": "buy_vatan_service_register",
+                "operationId": "buy_vatan_service_register",
+                "requestBody": {
+                    "description": "buy_vatan_service_register",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "register_id": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/get_history_buy": {
+            "get": {
+                "tags": [
+                    "orders"
+                ],
+                "summary": "get_history_buy",
+                "description": "get_history_buy",
+                "operationId": "get_history_buy",
+                "requestBody": {
+                    "description": "buy_vatan_servic\n     * e_register",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "api/AllFile": {
             "post": {
                 "tags": [
@@ -3096,6 +3344,52 @@
                 }
             }
         },
+        "api/delete_avatar_and_back_round_photo": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "delete_avatar_and_back_round_photo",
+                "description": "delete_avatar_and_back_round_photo",
+                "operationId": "delete_avatar_and_back_round_photo ",
+                "requestBody": {
+                    "description": "User add default avatar and backroun",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "avatar": {
+                                        "type": "boolean",
+                                        "format": "int",
+                                        "example": "true"
+                                    },
+                                    "backraundPhoto": {
+                                        "type": "boolean",
+                                        "format": "int",
+                                        "example": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "api/change-number": {
             "post": {
                 "tags": [
@@ -3337,6 +3631,80 @@
                 "responses": {
                     "200": {
                         "description": "User Create Comments",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/change_token_valid": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "change_token_valid",
+                "description": "change_token_valid",
+                "operationId": "change_token_valid",
+                "requestBody": {
+                    "description": "Change token  Valid or no valid",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "valid token",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/check_auth_seen": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "check_auth_seen",
+                "description": "check_auth_seen",
+                "operationId": "check_auth_seen",
+                "requestBody": {
+                    "description": "check_auth_seen",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "required"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "status",
+                                        "format": "status",
+                                        "example": "true or false"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Empty Post Request With Token",
                         "content": {
                             "application/json": {
                                 "schema": {}

@@ -5,6 +5,7 @@ namespace App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -55,8 +56,9 @@ class RegisterPrice extends Resource
     public function fields(NovaRequest $request)
     {
         return [
-            Text::make('title'),
-            Number::make('price'),
+            Text::make('Загаловок','title'),
+            Textarea::make('Описание','description'),
+            Number::make('Цена','price'),
         ];
     }
 

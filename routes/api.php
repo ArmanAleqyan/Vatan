@@ -23,6 +23,7 @@ use App\Http\Controllers\GroupMembersController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\Orders\BuyVatanServiceController;
 
 use App\Http\Controllers\Api\VatanServiceController;
 
@@ -63,6 +64,8 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::get('user-logout', [UserController::class, 'logout']);
 
+    Route::post('check_auth_seen', [UserController::class,'check_auth_seen']);
+
     Route::get('group-data/{id?}', [GroupMembersController::class, 'index']);
 
 //Admin
@@ -91,7 +94,9 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('some-user/{id?}', [UserController::class, 'OtherProfile']);
     Route::get('all-friends', [FriendsController::class, 'AllFriends']);
     Route::get('/rightsidechat', [ChatController::class, 'RightSiteUsers']);
+    
     Route::get('AllService', [VatanServiceController::class, 'AllService']);
+
     Route::get('createOrder', [VatanServiceController::class, 'createOrder']);
 
 
@@ -99,6 +104,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('UpdatePhotoAndBagraundPhoto', [UserController::class, 'UpdatePhotoAndBagraundPhoto']);
     Route::post('change-number', [ProfileController::class, 'addNumber']);
     Route::post('update-number', [ProfileController::class, 'UpdateNumber']);
+    Route::post('delete_avatar_and_backround_photo', [ProfileController::class, 'delete_avatar_and_backround_photo']);
 
     Route::post('change-email', [ChangeEmailController::class, 'addEmail']);
     Route::post('update-email', [ChangeEmailController::class, 'UpdateEmail']);
@@ -185,6 +191,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
 
     Route::post('SearchUser', [UserController::class, 'SearchUser']);
+    Route::get('DocumentsCategory', [UserController::class, 'DocumentsCategory']);
     Route::post('CreateNewDocument', [UserController::class,'CreateNewDocument' ]);
     Route::get('GetMyDocuments', [UserController::class,'GetMyDocuments' ]);
     Route::get('GetCountsFromProject', [UserController::class,'GetCountsFromProject' ]);
@@ -205,6 +212,16 @@ Route::group(['middleware' => ['auth:api']], function () {
 //
 
 
+    Route::post('buy_vatan_service_tranzaction', [BuyVatanServiceController::class, 'buy_vatan_service_tranzaction']);
+    Route::post('buy_vatan_service_register', [BuyVatanServiceController::class, 'buy_vatan_service_register']);
+    Route::post('add_balance', [BuyVatanServiceController::class, 'add_balance']);
+    Route::post('suc_add_balance', [BuyVatanServiceController::class, 'suc_add_balance']);
+    Route::post('err_add_balance', [BuyVatanServiceController::class, 'err_add_balance']);
+    Route::get('get_history_buy', [BuyVatanServiceController::class, 'get_history_buy']);
+
+
+
+
 });
 
 
@@ -215,10 +232,11 @@ Route::get('status/{id?}', [UserController::class, 'userOnlineStatus']);
 ///
 
 Route::get('CronDeleteImageTable', [\App\Http\Controllers\Cron\ImageDeletController::class, 'CronDeleteImageTable']);
+Route::get('UpdateDateHolidayController', [\App\Http\Controllers\Cron\UpdateDateHolidayController::class, 'UpdateDateHolidayController']);
 
 
 
-
+Route::post('change_token_valid', [UserController::class, 'change_token_valid']);
 
 
 

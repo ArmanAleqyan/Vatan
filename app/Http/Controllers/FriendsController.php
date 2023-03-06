@@ -378,31 +378,84 @@ class FriendsController extends Controller
         }else{
             $datas = [];
         }
+
+
         $today = Carbon::now();
         $today2 = Carbon::now();
-        $getUser = User::whereIn('id', $datas)->where('month' , $today->month)
-            ->whereBetween('day',
-                array(
-                    $today->day, $today2
-            ->addDays(5)->day))->orderBY('day')->get();
+        $getUser = User::whereIn('id', $datas)
+            ->whereMonth('date_of_birth', '=', $today->month)
+            ->orwhereMonth('date_of_birth', '=', $today->month +1)
+            ->whereDay('date_of_birth', '>=', $today->day)
+            ->whereDay('date_of_birth', '<=',  $today2 ->addDays(6)->day)
+            ->orderBY('day')->get();
+
+        foreach ($getUser as $user){
+//            dd($user->date_of_birth->year);
+            $user->date_of_birth->year = Carbon::now()->year;
+            $a = Carbon::parse($user->date_of_birth);
+            $a->year = Carbon::now()->year;
+            $user['NewDateString'] =$a->diffForHumans();
+        }
+
+
 
         $Date = Carbon::now()->format('Y');
 
 
+        $holiday = Holiday::
+            whereBetween(
+            'dateTime', array($today->addDays(-1), $today2))
+            ->orderBY('dateTime','ASC')->get();
 
-        $holiday = Holiday::where('month',$today->month )->whereBetween('day', array($today
-            ->day, $today2
-            ->addDays(5)->day))->orderBY('day')->get();
+
+
+
+//        dd($holiday);
+
+//            dd($holiday);
+//            foreach ($holiday as $hol){
+//                if ($hol->month < 10){
+//                    $mount = '0'.$hol->month;
+//                }else{
+//                    $mount = $hol->month;
+//                }
+//
+//                if ($hol->day < 10){
+//                    $day = '0'.$hol->day;
+//                }else{
+//                    $day = $hol->day;
+//                }
+//              $date = Carbon::now()->year.$mount.$day;
+//                $birthdate = Carbon::parse($date);
+//                if($birthdate = Carbon::now() || $birthdate > Carbon::now() && $birthdate <= $today2->addDays(5)->day){
+//
+//                    $birthHol[] = [
+//                        'id' =>  $hol->id,
+//                        'title' => $hol->title
+//                    ];
+//                }
+//            }
+//
+//            dd($birthHol);
+
 
         foreach ($holiday as $item) {
             if($item->month < 10){
-
                 $month = '0'.$item->month;
             }else{
                 $month = $item->month;
             }
             $test = Carbon::parse($Date.$month.$item->day);
             $item['date'] = $test;
+
+
+            if($item->dateTime->format('Y m d') == Carbon::now()->format('Y m d')){
+
+                $item['NewDateString'] ='Сегодня';
+            }else{
+                $item['NewDateString'] = $item->dateTime->diffForHumans();
+
+            }
         }
 
 
