@@ -47,6 +47,11 @@ class User extends Authenticatable
         return $this->hasMany(UserDocument::class);
     }
 
+    public function UserVerifyDoc()
+    {
+        return $this->hasMany(UserDocument::class);
+    }
+
 
     public function UserGroup()
     {

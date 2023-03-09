@@ -228,7 +228,7 @@ class ChatController extends Controller
                 'messages' => $hty['message'],
                 'image' => $hty['file'],
                 'receiver_id' => $receiver_id,
-                'review' => $Count,
+                'review' => (int)$Count,
                 'count' => $et_message,
                 'room_id' => $item['room_id'],
                 'surname' => $user_surname,

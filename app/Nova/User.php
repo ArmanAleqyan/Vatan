@@ -91,8 +91,10 @@ class User extends Resource
                 ->onlyOnForms()
                 ->creationRules('required', Rules\Password::defaults())
                 ->updateRules('nullable', Rules\Password::defaults()),
-            HasMany::make('Документы','UserDoc','App\Nova\UserDocument'),
-            HasMany::make('Post'),
+
+            HasMany::make('Посты','post', 'App\Nova\Post'),
+            HasMany::make('Проверенные Документы','UserVerifyDoc','App\Nova\UserVerifyDocument'),
+            HasMany::make('Непроверенные Документы','UserDoc','App\Nova\UserDocument'),
 
 
         ];

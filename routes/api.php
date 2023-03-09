@@ -103,6 +103,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::post('UpdatePhotoAndBagraundPhoto', [UserController::class, 'UpdatePhotoAndBagraundPhoto']);
     Route::post('change-number', [ProfileController::class, 'addNumber']);
+    Route::post('delete_avatar_and_back_round_photo', [ProfileController::class, 'delete_avatar_and_back_round_photo']);
     Route::post('update-number', [ProfileController::class, 'UpdateNumber']);
     Route::post('delete_avatar_and_backround_photo', [ProfileController::class, 'delete_avatar_and_backround_photo']);
 

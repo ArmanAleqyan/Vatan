@@ -256,7 +256,7 @@ class UserController extends Controller
             $get = UserDocument::where('user_id', \auth()->user()->id)->with('user_documents')->get();
             return response()->json([
                'status' => true,
-               'message' => $get
+               'data' => $get
             ],200);
     }
 

@@ -9,4 +9,10 @@ class BuyVatanServiceTranzaction extends Model
 {
     use HasFactory;
     protected $guarded =[];
+
+
+    public function AddBalance()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
 }

@@ -24,6 +24,21 @@ class UserDocument extends Resource
     {
         return $query->where('status','Ожидает Проверки');
     }
+    public function authorizedToDelete(Request $request)
+    {
+        return false;
+    }
+
+
+    public function authorizedToReplicate(Request $request)
+    {
+        return false;
+    }
+
+    public static function authorizedToCreate(Request $request)
+    {
+        return false;
+    }
 
     /**
      * The single value that should be used to represent the resource when being displayed.

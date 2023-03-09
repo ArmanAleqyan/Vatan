@@ -24,7 +24,10 @@ class RegisterPrice extends Resource
      * @var string
      */
     public static $title = 'title';
-
+    public function authorizedToDelete(Request $request)
+    {
+        return false;
+    }
     public static function authorizedToCreate(Request $request)
     {
         return false;

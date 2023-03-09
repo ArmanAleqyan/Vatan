@@ -382,8 +382,11 @@ class FriendsController extends Controller
 
         $today = Carbon::now();
         $today2 = Carbon::now();
+
         $getUser = User::whereIn('id', $datas)
             ->whereMonth('date_of_birth', '=', $today->month)
+            ->whereDay('date_of_birth', '>=', $today->day)
+            ->whereDay('date_of_birth', '<=',  $today2 ->addDays(6)->day)
             ->orwhereMonth('date_of_birth', '=', $today->month +1)
             ->whereDay('date_of_birth', '>=', $today->day)
             ->whereDay('date_of_birth', '<=',  $today2 ->addDays(6)->day)

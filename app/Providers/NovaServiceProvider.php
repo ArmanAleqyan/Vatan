@@ -13,6 +13,7 @@ use App\Nova\UserDocument;
 use App\Nova\Post;
 use App\Nova\Comment;
 use App\Nova\Comentreply;
+use App\Nova\BuyVatanServiceTranzaction;
 use App\Nova\Group;
 use App\Nova\VatanService;
 use App\Nova\RegisterPrice;
@@ -86,6 +87,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(RegisterPrice::class),
                     MenuItem::resource(VatanServiceDocumentList::class),
                     MenuItem::resource(BuyVatanService::class),
+                    MenuItem::resource(BuyVatanServiceTranzaction::class),
                 ])->icon('post')->collapsable(),
 
                 MenuSection::make('Праздники', [
